@@ -1,0 +1,16 @@
+{
+  "additionalProperties": false,
+  "description": "Sends greeting with user's name",
+  "type": "object",
+  "properties": {
+    "username": {
+      "type": "string",
+      "description": "The user's name",
+      "minLength": 1,
+      "maxLength": 50
+    }
+  },
+  "required": [
+    "username"
+  ]
+}

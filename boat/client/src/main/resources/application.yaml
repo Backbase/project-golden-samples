@@ -1,0 +1,36 @@
+server:
+  port: 9917
+
+# API Registry client configuration
+eureka:
+  instance:
+    metadata-map:
+      public: true
+      role: live
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8080/registry/eureka/
+    enabled: false
+
+# Configure Internal JWT handler
+sso:
+  jwt:
+    internal:
+      signature:
+        key:
+          type: ENV
+          value: SIG_SECRET_KEY
+
+# Spring health monitoring
+management:
+  health:
+    jms:
+      enabled: false
+
+backbase:
+  example:
+    greeting-base-url: 'http://localhost:9915'
+  security:
+    public:
+      paths:
+        - "/client-api/register"
