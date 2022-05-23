@@ -1,0 +1,13 @@
+{
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "message": {
+      "description": "The greeting message containing the user name",
+      "type": "string"
+    }
+  },
+  "required": [
+    "message"
+  ]
+}

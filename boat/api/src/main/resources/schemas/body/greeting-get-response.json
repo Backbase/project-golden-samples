@@ -1,0 +1,10 @@
+{
+  "additionalProperties": false,
+  "type": "object",
+  "properties": {
+    "message": {
+      "description": "The greeting message",
+      "type": "string"
+    }
+  }
+}

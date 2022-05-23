@@ -1,0 +1,116 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- The simplest way to build a service with service-sdk-starter-core 
+        is to use it as a parent in your project’s POM file, alternatively if you 
+        don’t want to use service-sdk-starter-core as your project’s parent, you 
+        can declare it as a dependency instead, see pom-as-dependency.xml -->
+    <parent>
+        <groupId>com.backbase.buildingblocks</groupId>
+        <version>14.1.0</version>
+        <artifactId>service-sdk-starter-core</artifactId>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.backbase</groupId>
+    <artifactId>boat-example-client</artifactId>
+    <version>1.0.0</version>
+    <packaging>war</packaging>
+    <name>Backbase :: boat-example-client</name>
+
+    <properties>
+        <java.version>11</java.version>
+        <!-- plugin versions -->
+        <boat-maven-plugin.version>0.15.5</boat-maven-plugin.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.backbase.buildingblocks</groupId>
+            <artifactId>service-sdk-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.backbase.buildingblocks</groupId>
+            <artifactId>communication</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.6.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.22</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.backbase.buildingblocks</groupId>
+            <artifactId>api</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.backbase</groupId>
+                                    <artifactId>boat-example-api</artifactId>
+                                    <version>1.0.0</version>
+                                    <classifier>api</classifier>
+                                    <outputDirectory>${project.build.directory}/yaml</outputDirectory>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                </artifactItem>
+                            </artifactItems>
+                            <includes>**/*.yaml, **/*.json</includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.backbase.oss</groupId>
+                <artifactId>boat-maven-plugin</artifactId>
+                <version>${boat-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>boat-example-api</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate-rest-template-embedded</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.build.directory}/yaml/boat-example-api/greeting-api-v1.0.0.yaml
+                            </inputSpec>
+                            <apiPackage>com.backbase.greeting.api.service.v1</apiPackage>
+                            <modelPackage>com.backbase.greeting.api.service.v1.model</modelPackage>
+                            <typeMappings>
+                                <typeMapping>OffsetDateTime=java.time.ZonedDateTime</typeMapping>
+                            </typeMappings>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

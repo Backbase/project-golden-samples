@@ -1,0 +1,89 @@
+openapi: 3.0.3
+info:
+  title: Boat Example service
+  version: 1.0.0
+  description: Sends greetings to users
+servers:
+  - description: Prism mock server
+    url: http://localhost:8080
+tags:
+  - name: confirmations
+paths:
+  /client-api/v1/greeting:
+    get:
+      tags:
+        - greeting
+      summary: sends a generic greetings
+      description: This endpoint returns a generic greetings.
+      operationId: getGreeting
+      responses:
+        "200":
+          description: A successful operation. Greeting is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreetingGetResponse'
+              examples:
+                greetingGetResponse:
+                  $ref: '#/components/examples/GreetingGetResponse'
+
+    post:
+      tags:
+        - greeting
+      summary: sends a greeting
+      description: This endpoint returns a greeting containing received user's name.
+      operationId: postGreeting
+      requestBody:
+        required: true
+        description: Send user's name
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GreetingPostRequest'
+            examples:
+              greetingPostRequest:
+                $ref: '#/components/examples/GreetingPostRequest'
+      responses:
+        "200":
+          description: A successful operation. Greeting is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreetingPostResponse'
+              examples:
+                greetingPostResponse:
+                  $ref: '#/components/examples/GreetingPostResponse'
+        "400":
+          description: The request was bad.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+              examples:
+                badRequestError:
+                  $ref: '#/components/examples/BadRequestError'
+
+components:
+  schemas:
+    GreetingGetResponse:
+      $ref: 'schemas/body/greeting-get-response.json'
+    GreetingPostRequest:
+      $ref: 'schemas/body/greeting-post-request.json'
+    GreetingPostResponse:
+      $ref: 'schemas/body/greeting-post-response.json'
+    BadRequestError:
+      $ref: 'lib/schemas/bad-request-error.yaml'
+
+  examples:
+    GreetingGetResponse:
+      value:
+        $ref: 'examples/body/greeting-get-response.json'
+    GreetingPostResponse:
+      value:
+        $ref: 'examples/body/greeting-post-response.json'
+    GreetingPostRequest:
+      value:
+        $ref: 'examples/body/greeting-post-request.json'
+    BadRequestError:
+      value:
+        $ref: 'lib/examples/bad-request-validation-error.json'
