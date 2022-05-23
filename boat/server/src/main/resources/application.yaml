@@ -26,8 +26,3 @@ management:
   health:
     jms:
       enabled: false
-backbase:
-  security:
-    public:
-      paths:
-        - "/client-api/v1/greeting"

@@ -9,14 +9,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
+import static com.backbase.buildingblocks.communication.http.HttpCommunicationConfiguration.INTER_SERVICE_REST_TEMPLATE_BEAN_NAME;
+
 @Configuration
 public class GreetingClientConfiguration {
     @Value("${backbase.example.greeting-base-url}")
     private String greetingBasePath;
 
     @Bean
-    public ApiClient greetingApiClient() {
-        ApiClient apiClient = new ApiClient(new RestTemplate());
+    public ApiClient greetingApiClient(@Qualifier(INTER_SERVICE_REST_TEMPLATE_BEAN_NAME) RestTemplate restTemplate) {
+        ApiClient apiClient = new ApiClient(restTemplate);
         apiClient.setBasePath(this.greetingBasePath);
         apiClient.addDefaultHeader(HttpCommunicationConfiguration.INTERCEPTORS_ENABLED_HEADER, Boolean.TRUE.toString());
         apiClient.setDebugging(true);
@@ -24,7 +26,7 @@ public class GreetingClientConfiguration {
     }
 
     @Bean
-    public GreetingApi createConfirmationApi(@Qualifier("greetingApiClient") ApiClient greetingApiClient) {
+    public GreetingApi createGreetingApi(@Qualifier("greetingApiClient") ApiClient greetingApiClient) {
         return new GreetingApi(greetingApiClient);
     }
 }

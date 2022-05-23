@@ -2,23 +2,23 @@
 
 This example consists of three modules:
 
-- Server: This service provides a greeting message based on the received name
-- Client: This service registers a user and calls the `Server` service to get a greeting message
-- Api: The OpenAPI specification for the greeting services are stored in this module.
+- [Server](server): This service provides a greeting message based on the received name
+- [Client](client): This service registers a user and calls the [Server](server) service to get a greeting message
+- [Api](api): The OpenAPI specification for the greeting services are stored in this module.
 
 **Note**: It's important to keep your specifications in a separate module to prevent duplicating it in the server and
 client.
 
 ## API
 
-This module will package the OpenAPI specs using `maven-assembly-plugin`. Take a look at the `/api/assembly/api.xml`
-file to see how it's configured.<br/>
+This module will package the OpenAPI specs using `maven-assembly-plugin`. Take a look at
+the [api.xml](api/assembly/api.xml) file to see how it's configured.<br/>
 For validating and bundling the spec file we can use `boat-maven-plugin`. Take a look at the executions of the plugin.
 
 ## Server
 
 The server uses the api dependency to generate the rest controller interfaces.</br>
-First we need to unpack the API dependency using the `maven-dependency-plugin`:
+First we need to unpack the API dependency using the `maven-dependency-plugin` in the [POM file](server/pom.xml):
 
 ```xml
 
@@ -129,8 +129,8 @@ public class GreetingClientConfiguration {
     private String greetingBasePath;
 
     @Bean
-    public ApiClient greetingApiClient() {
-        ApiClient apiClient = new ApiClient(new RestTemplate());
+    public ApiClient greetingApiClient(@Qualifier(INTER_SERVICE_REST_TEMPLATE_BEAN_NAME) RestTemplate restTemplate) {
+        ApiClient apiClient = new ApiClient(restTemplate);
         apiClient.setBasePath(this.greetingBasePath);
         apiClient.addDefaultHeader(HttpCommunicationConfiguration.INTERCEPTORS_ENABLED_HEADER, Boolean.TRUE.toString());
         return apiClient;
@@ -143,25 +143,18 @@ public class GreetingClientConfiguration {
 }
 ```
 
-In this example for simplicity we haven't used token converter and made all the endpoints public and they can be called
-without providing any tokens.<br/>
 If we want to call a service-api, we need to provide a client-credential token which is created by the Token Converter
-service.<br/>
-We can use the rest template that is provided by the SSDK communication library which will automatically injects the
-client credential token in the request:
-
-```java
-    @Bean
-public ApiClient greetingApiClient(@Qualifier(INTER_SERVICE_REST_TEMPLATE_BEAN_NAME) RestTemplate restTemplate){
-        ApiClient apiClient=new ApiClient(restTemplate);
-        apiClient.setBasePath(this.greetingBasePath);
-        apiClient.addDefaultHeader(HttpCommunicationConfiguration.INTERCEPTORS_ENABLED_HEADER,Boolean.TRUE.toString());
-        return apiClient;
-        }
-```
+service. We can use the rest template that is provided by the SSDK communication library which will automatically inject
+the
+client credential token in the request using `@Qualifier(INTER_SERVICE_REST_TEMPLATE_BEAN_NAME)`.</br>
+For more information you can read the HTTP
+communication [here](https://community.backbase.com/documentation/ServiceSDK/latest/http_service_to_service_communication)
+.<br/>
 
 The `INTERCEPTORS_ENABLED_HEADER` header enables the `ApiErrorExceptionInterceptor` class of the SSDK communication
 library to intercept errors.
+For more info about client configuration you can read
+the [community doc](https://community.backbase.com/documentation/ServiceSDK/latest/generate_clients_from_openapi).
 
 ### Enabling logging
 
@@ -176,6 +169,17 @@ public ApiClient greetingApiClient(){
         apiClient.setDebugging(true);
         return apiClient;
         }
+```
+
+## Writing tests
+
+In the client for writing tests, we can mock the server's API like this:
+
+```java
+  //mock server's response
+  GreetingPostResponse greetingPostResponse=new GreetingPostResponse();
+          greetingPostResponse.setMessage(HELLO_USERNAME);
+          when(greetingApi.postGreeting(any())).thenReturn(greetingPostResponse);
 ```
 
 For more info you can read

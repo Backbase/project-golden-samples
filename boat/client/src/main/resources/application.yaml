@@ -30,7 +30,3 @@ management:
 backbase:
   example:
     greeting-base-url: 'http://localhost:9915'
-  security:
-    public:
-      paths:
-        - "/client-api/register"
