@@ -182,5 +182,7 @@ In the client for writing tests, we can mock the server's API like this:
           when(greetingApi.postGreeting(any())).thenReturn(greetingPostResponse);
 ```
 
+You can check the whole test class [here](client/src/test/java/com/example/RegisterControllerIT.java)
+
 For more info you can read
 the [boat documentation](https://github.com/Backbase/backbase-openapi-tools/blob/main/boat-maven-plugin/README.md)
