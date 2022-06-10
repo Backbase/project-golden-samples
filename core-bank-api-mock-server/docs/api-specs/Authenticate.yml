@@ -1,0 +1,176 @@
+openapi: 3.0.0
+info:
+  version: '1.0.0'
+  title: Cookbook - Open Banking Backend APIs
+  description: Swagger definition
+  license:
+    name: Contact Backbase
+    url: 'http://www.backbase.com'
+paths:
+  "/authentication/v1/tokens":
+    post:
+      tags:
+        - authentication
+      summary: Authenticate user to get an Authentication Token – i.e. login
+      operationId: authenticate
+
+      parameters:
+        - name: apiRequestOriginator
+          description: Application invoking the API
+          in: header
+          schema:
+            type: string
+          required: true
+        - name: requestID
+          description: Unique request Id for tracking purposes
+          in: header
+          schema:
+            type: string
+          required: true
+
+      requestBody:
+        description: Authenticate request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request'
+
+      responses:
+        '201':
+          description: Token created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Response"
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errorCode: EAUT201
+                errorDescription: Malformed Request - Required input data missing
+
+        '403':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errorCode: EAUT202
+                errorDescription: Authentication Failed - Invalid Authentication Data
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errorCode: EAUT903
+                errorDescription: Internal Error
+        '502':
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errorCode: EAUT902
+                errorDescription: Cannot connect to Target System
+
+components:
+  schemas:
+    Request:
+      type: object
+      properties:
+        customerNumber:
+          type: string
+          description: Customer number
+          example: 12345678910
+        surname:
+          type: string
+          description: Customer surname
+          example: Smith
+        password:
+          type: string
+          description: Customer password
+          example: abc123
+      required:
+        - customerNumber
+        - surname
+        - password
+
+    Response:
+      type: object
+      properties:
+        authenticationToken:
+          type: string
+          description: Authentication token
+
+    ErrorResponse:
+      description: >
+        <table>
+          <tr>
+            <th>HTTP Status code </th><th>error code </th><th>Error description</th>
+          </tr>
+          <tr>
+            <td>400</td><td>EAUT101</td><td>Missing Input Parameter - RequestID</td>
+          </tr>
+          <tr>
+            <td> </td><td>EAUT102</td><td>Missing Input Parameter - apiRequestOriginator</td>
+          </tr>
+          <tr>
+            <td> </td><td>EAUT103</td><td>Missing Input Parameter - Customer Number</td>
+          </tr>
+          <tr>
+            <td> </td><td>EAUT104</td><td>Missing Input Parameter - Surname</td>
+          </tr>
+          <tr>
+            <td> </td><td>EAUT105</td><td>Missing Input Parameter - Password</td>
+          </tr>
+          <tr>
+            <td></td><td>EAUT201</td><td>Malformed Request - Required input data missing</td>
+          </tr>
+          <tr>
+            <td>403 </td><td>EAUT202</td><td>Authentication Failed - Invalid Authentication Data</td>
+          </tr>
+          <tr>
+            <td>  </td><td>EAUT203</td><td>Authentication Failed - Password suspended</td>
+          </tr>
+          <tr>
+            <td>  </td><td>EAUT204</td><td>Authentication Failed - Password expired</td>
+          </tr>
+          <tr>
+            <td>  </td><td>EAUT205</td><td>Authentication Failed - Customer blocked</td>
+          </tr>
+          <tr>
+            <td>  </td><td>EAUT206</td><td>Authentication Failed - Customer access not allowed as managed by proxy</td>
+          </tr>
+          <tr>
+            <td>  </td><td>EAUT207</td><td>Authentication Failed - Authentication Details could not be retrieved. Possibly Unregistered customer.</td>
+          </tr>
+          <tr>
+            <td>  </td><td>EAUT208</td><td>Authentication Failed - Invalid Authentication Data</td>
+          </tr>
+          <tr>
+            <td>  </td><td>EAUT299</td><td>Authentication Failed - Target system (SBP) returned Error code <errorMessageId> <errorMessage> <comment></td>
+          </tr>
+          <tr>
+            <td>500</td><td>EAUT903</td><td>Internal Error</td>
+          </tr>
+        </table>
+        </br>
+
+      type: object
+      properties:
+        errorCode:
+          description: Error code identifying cause of the problem, format EAUT###
+          type: string
+          example: EAUT101
+        errorDescription:
+          description: Description of the error
+          type: string
+          example: Authentication Failed - Invalid Authentication Data

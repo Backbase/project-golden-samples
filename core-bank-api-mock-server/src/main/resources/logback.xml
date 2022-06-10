@@ -1,0 +1,28 @@
+<!-- Logback configuration. See http://logback.qos.ch/manual/index.html -->
+<configuration scan="true" scanPeriod="30 seconds">
+
+    <contextName>CS Cookbook Mock Server</contextName>
+
+    <!-- Console output -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoder defaults to ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+    </appender>
+
+
+    <!-- Enable STDOUT appenders for all log messages. By default, at level INFO and above. -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="httpclient.wire.header" level="INFO"/>
+    <logger name="httpclient.wire.content" level="INFO"/>
+    <logger name="com.backbase.openbanking" level="INFO"/>
+
+</configuration>
