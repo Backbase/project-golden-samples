@@ -1,0 +1,106 @@
+environments:
+  default:
+    kubeContext: colima
+    values:
+      - environment/colima.yaml
+
+repositories:
+  - name: ingress-nginx
+    url: https://kubernetes.github.io/ingress-nginx
+
+{{- $identityBaseUrl := "http://backbase-identity:8080/auth" }}
+{{- $ingressHost := "kubernetes.docker.internal" }}
+releases:
+  - name: ingress-nginx
+    chart: ingress-nginx/ingress-nginx
+    version: 4.0.19
+    labels:
+      tier: infrastructure
+      component: nginx
+    values:
+      - controller:
+          config:
+            use-forwarded-headers: "true"
+
+  - name: spring-boot-admin
+    chart: backbase-charts/backbase-app
+    version: 0.23.12
+    labels:
+      tier: infrastructure
+      component: sba-server
+    values:
+      - global.yaml.gotmpl
+      - app:
+          name: spring-boot-admin-server
+          image:
+            registry: backbasecs
+            repository: spring-boot-admin-server
+            tag: latest
+        env:
+          # Configuration for non-spring boot health check (Identity)
+          SPRING_CLOUD_KUBERNETES_DISCOVERY_FILTER: "metadata.labels != null && metadata.labels['app.backbase.com/tier'] != null && metadata.labels['app.kubernetes.io/name'] != 'backbaseidentity'"
+          SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_IDENTITY-SERVER_0_URI: http://backbase-identity:8080
+          SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_IDENTITY-SERVER_0_METADATA_MANAGEMENT_CONTEXT-PATH: /auth/q/health
+          SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_IDENTITY-SERVER_0_METADATA_HEALTH_PATH: live
+          # Pre-configuration for nginx-ingress
+          SPRING_BOOT_ADMIN_UI_PUBLIC_URL: "http://{{ $ingressHost }}/admin"
+          SPRING_BOOT_ADMIN_CONTEXT_PATH: /admin
+        ingress:
+          enabled: true
+          annotations:
+            "kubernetes.io/ingress.class": "nginx"
+            "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/admin"
+          hosts:
+            - host: {{ $ingressHost }}
+              paths:
+                - /admin
+
+  - name: backbase-env
+    chart: backbase-charts/backbase-env
+    version: 0.5.62
+    labels:
+      tier: infrastructure
+      component: env
+    values:
+      - activemq:
+          enabled: true
+        mysql:
+          enabled: true
+          mysqlRootPassword: backbase321!
+          mysqlPassword: backbase123!
+          image: mysql
+          imageTag: 5.7
+        jwt:
+          enabled: true
+          internalSecretKey: "JWTSecretKeyDontUseInProduction!"
+          externalSecretKey: "JWTSecretKeyDontUseInProduction!"
+          externalEncSecretKey: "JWTEncKeyDontUseInProduction666!"
+          userctxKey: "JWTSecretKeyDontUseInProduction!"
+
+  # Foundation - Edge
+  - name: foundation-edge
+    chart: backbase-charts/edge
+    version: 0.12.5
+    labels:
+      tier: foundation
+      component: edge
+    values:
+      - global.yaml.gotmpl
+      - edge:
+          env:
+            GATEWAY_ACTUATOR_SECURITY_ENABLED: "false"
+            SPRING_CLOUD_GATEWAY_DISCOVERY_LOCATOR_INCLUDEEXPRESSION: "metadata.get('app.backbase.com/public')"
+          javaOpts:
+            extra:
+              - "-Dreactor.netty.http.server.accessLogEnabled=true"
+              - "-Dlogging.level.reactor.netty.http.server.AccessLog=DEBUG"
+          ingress:
+            enabled: true
+            annotations:
+              "kubernetes.io/ingress.class": "nginx"
+              "nginx.ingress.kubernetes.io/proxy-body-size": "50m"
+              "nginx.ingress.kubernetes.io/rewrite-target": /$1
+            hosts:
+              - host: {{ $ingressHost }}
+                paths:
+                  - /(.*)
