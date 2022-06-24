@@ -6,10 +6,12 @@ global:
   imagePullSecrets:
     - name: backbase-registry
   database:
+    checkEnabled: true
     host: backbase-env-mysql
     existingSecret: backbase-env-mysql
-    urlTemplate: "jdbc:mysql://{{`{{.database.host}}`}}:{{`{{.database.port}}`}}/{{`{{.database.sid}}`}}?useSSL=false&createDatabaseIfNotExist=true"
+    urlTemplate: "jdbc:mysql://{{`{{.database.host}}`}}:{{`{{.database.port}}`}}/{{`{{.database.sid}}`}}?useSSL=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true"
   activemq:
+    checkEnabled: true
     host: backbase-env-activemq
     existingSecret: backbase-env-activemq
   jwt:
@@ -30,9 +32,9 @@ global:
     MANAGEMENT_HEALTH_CONFIG_ENABLED: "false"
     MANAGEMENT_SECURITY_ROLES: "ANONYMOUS,ACTUATOR,ADMIN,USER,group_user(USER)"
   jmx:
-    enabled: true
+    enabled: false
   debug:
-    enabled: true
+    enabled: false
   javaOpts:
     extra:
       - "--add-opens=java.base/java.lang=ALL-UNNAMED"

@@ -8,8 +8,8 @@ repositories:
   - name: ingress-nginx
     url: https://kubernetes.github.io/ingress-nginx
 
-{{- $identityBaseUrl := "http://backbase-identity:8080/auth" }}
 {{- $ingressHost := "kubernetes.docker.internal" }}
+{{- $identityHost := "backbase-identity:8080" }}
 releases:
   - name: ingress-nginx
     chart: ingress-nginx/ingress-nginx
@@ -39,11 +39,11 @@ releases:
         env:
           # Configuration for non-spring boot health check (Identity)
           SPRING_CLOUD_KUBERNETES_DISCOVERY_FILTER: "metadata.labels != null && metadata.labels['app.backbase.com/tier'] != null && metadata.labels['app.kubernetes.io/name'] != 'backbaseidentity'"
-          SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_IDENTITY-SERVER_0_URI: http://backbase-identity:8080
+          SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_IDENTITY-SERVER_0_URI: http://{{ $identityHost }}
           SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_IDENTITY-SERVER_0_METADATA_MANAGEMENT_CONTEXT-PATH: /auth/q/health
           SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_IDENTITY-SERVER_0_METADATA_HEALTH_PATH: live
           # Pre-configuration for nginx-ingress
-          SPRING_BOOT_ADMIN_UI_PUBLIC_URL: "http://{{ $ingressHost }}/admin"
+          SPRING_BOOT_ADMIN_UI_PUBLIC_URL: http://{{ $ingressHost }}/admin
           SPRING_BOOT_ADMIN_CONTEXT_PATH: /admin
         ingress:
           enabled: true
@@ -64,12 +64,15 @@ releases:
     values:
       - activemq:
           enabled: true
+          image:
+            repository: symptoma/activemq
+            tag: 5.17.0
         mysql:
           enabled: true
           mysqlRootPassword: backbase321!
           mysqlPassword: backbase123!
           image: mysql
-          imageTag: 5.7
+          imageTag: 8.0.29-oracle
         jwt:
           enabled: true
           internalSecretKey: "JWTSecretKeyDontUseInProduction!"
@@ -89,7 +92,6 @@ releases:
       - edge:
           env:
             GATEWAY_ACTUATOR_SECURITY_ENABLED: "false"
-            SPRING_CLOUD_GATEWAY_DISCOVERY_LOCATOR_INCLUDEEXPRESSION: "metadata.get('app.backbase.com/public')"
           javaOpts:
             extra:
               - "-Dreactor.netty.http.server.accessLogEnabled=true"
@@ -104,3 +106,137 @@ releases:
               - host: {{ $ingressHost }}
                 paths:
                   - /(.*)
+
+  # Identity Authorization Server
+  - name: identity-server
+    chart: backbase-charts/backbase-identity
+    version: 0.3.2
+    labels:
+      tier: identity
+      component: identity-server
+    values:
+      - global:
+          app:
+            image:
+              registry: repo.backbase.com/backbase-docker-releases
+              tag: "2022.06"
+          imagePullSecrets:
+            - name: backbase-registry
+          database:
+            checkEnabled: true
+            host: backbase-env-mysql
+            existingSecret: backbase-env-mysql
+            urlTemplate: "jdbc:mysql://{{`{{.database.host}}`}}:{{`{{.database.port}}`}}/{{`{{.database.sid}}`}}?useSSL=false&allowPublicKeyRetrieval=true"
+      - backbaseidentity:
+          liquibase:
+            enabled: true
+          database:
+            sid: backbase_identity
+          service:
+            nameOverride: backbase-identity
+          env:
+            KEYCLOAK_ADMIN: admin
+            KEYCLOAK_ADMIN_PASSWORD: admin
+            keycloak.hostname.default.frontendUrl: http://{{ $ingressHost }}/auth
+            backbase.basic-authentication.username: admin
+            backbase.basic-authentication.password: admin
+            QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING: "true"
+            QUARKUS_JAEGER_PROPAGATION: b3
+            QUARKUS_JAEGER_SERVICE_NAME: backbase-identity
+            QUARKUS_LOG_LEVEL: INFO
+            QUARKUS_LOG_CONSOLE_FORMAT: "%d{yyy:MM:dd HH:mm:ss.SSS} %-5p [${quarkus.jaeger.service-name},%X{traceId},%X{spanId},%X{sampled}] %i --- %c{2.} : %m%n"
+          jmx:
+            enabled: true
+          debug:
+            enabled: true
+          javaOpts:
+            extra:
+              - "--add-opens=java.base/java.lang=ALL-UNNAMED"
+              - "-Dquarkus.log.category.'\"com.backbase\"'.level=DEBUG"
+              - "-Dquarkus.log.category.'\"org.keycloak.protocol.oidc\"'.level=TRACE"
+          ingress:
+            enabled: true
+            annotations:
+              "kubernetes.io/ingress.class": "nginx"
+              "nginx.ingress.kubernetes.io/proxy-read-timeout": "600"
+              "nginx.ingress.kubernetes.io/proxy-buffer-size": "16k"
+              "nginx.ingress.kubernetes.io/rewrite-target": /auth$1
+            hosts:
+              - host: {{ $ingressHost }}
+                paths:
+                  - /auth(.*)
+
+  # Token Converter
+  - name: identity-token-converter
+    chart: backbase-charts/oidc-token-converter
+    version: 0.2.1
+    labels:
+      tier: identity
+      component: token-converter
+    values:
+      - global.yaml.gotmpl
+      - oidctokenconverter:
+          env:
+            BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOSTSCHEME: http
+            BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOST: {{ $identityHost }}
+            BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_ISSUERHOST: {{ $ingressHost }}
+
+  - name: identity-integration
+    chart: backbase-charts/identity-integration
+    version: 0.1.8
+    labels:
+      tier: identity
+      component: identity-integration
+    values:
+      - global.yaml.gotmpl
+      - identityintegrationservice:
+          env:
+            IDENTITY_SERVERURL: http://{{ $identityHost }}/auth
+            IDENTITY_MASTERADMIN_USERNAME: admin
+            IDENTITY_MASTERADMIN_PASSWORD: admin
+            IDENTITY_MASTERADMIN_REALMNAME: master
+            IDENTITY_MASTERADMIN_CLIENTID: admin-cli
+            IDENTITY_REALMCONFIGURATION_FALLBACKOPTIONS_ENABLEUSER: "true"
+            IDENTITY_REALMCONFIGURATION_FALLBACKOPTIONS_USETEMPORARYPASSWORD: "true"
+
+  # DBS
+  # Access Control
+  - name: dbs-access-control
+    chart: backbase-charts/access-control
+    version: 0.1.9
+    labels:
+      tier: dbs
+      capability: access-control
+    values:
+      - global.yaml.gotmpl
+      - accesscontrol:
+          liquibase:
+            enabled: true
+
+  # Arrangement Manager
+  - name: dbs-arrangement-manager
+    chart: backbase-charts/arrangement-manager
+    version: 0.3.0
+    labels:
+      tier: dbs
+      capability: arrangement-manager
+    values:
+      - global.yaml.gotmpl
+      - arrangement-manager:
+          liquibase:
+            enabled: true
+
+  # User Manager
+  - name: dbs-user-manager
+    chart: backbase-charts/user-manager
+    version: 0.1.8
+    labels:
+      tier: dbs
+      capability: user-manager
+    values:
+      - global.yaml.gotmpl
+      - usermanager:
+          liquibase:
+            enabled: true
+          database:
+            sid: user_pandp
