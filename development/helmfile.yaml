@@ -92,6 +92,18 @@ releases:
       - edge:
           env:
             GATEWAY_ACTUATOR_SECURITY_ENABLED: "false"
+            SPRING_CONFIG_ADDITIONAL_LOCATION: "file:/customfiles/application.yaml"
+          customFiles:
+            application.yaml: |-
+              spring:
+                cloud:
+                  gateway:
+                    globalcors:
+                      corsConfigurations:
+                        '[/**]':
+                          allowedOrigins: "*"
+                          allowedHeaders: "*"
+                          allowedMethods: "*"
           javaOpts:
             extra:
               - "-Dreactor.netty.http.server.accessLogEnabled=true"
