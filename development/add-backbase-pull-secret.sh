@@ -9,7 +9,8 @@ read -r -p "Enter Ldap username: "  username
 ### Input password as hidden characters ###
 read -r -s -p "Enter Ldap password: "  password
 
-kubectl config use-context colima
+# Set the Kubernetes context
+# kubectl config use-context colima
 
 # Clean if existent
 kubectl delete secret backbase-registry --ignore-not-found=true

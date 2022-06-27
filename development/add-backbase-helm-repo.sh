@@ -11,4 +11,5 @@ read -r -s -p "Enter password: "  password
 
 # Add backbase-charts repo
 helm repo add backbase-charts https://repo.backbase.com/backbase-charts --username "$username" --password "$password" --force-update
+helm repo add internal https://harbor.backbase.eu/chartrepo/internal --username "$username" --password "$password" --force-update
 helm repo update

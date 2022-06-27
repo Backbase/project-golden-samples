@@ -1,3 +1,0 @@
-ingress:
-  schema: http
-  host: kubernetes.docker.internal

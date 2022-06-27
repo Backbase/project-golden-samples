@@ -2,26 +2,21 @@ environments:
   default:
     kubeContext: colima
     values:
-      - environment/colima.yaml
+      - ingress:
+          managed: false
+          schema: http
+          host: kubernetes.docker.internal
+  aws:
+    kubeContext: arn:aws:eks:eu-west-1:078210564863:cluster/recruitment-eks
+    values:
+      - ingress:
+          managed: true
+          schema: http
+          host: recruitment.cs.backbasecloud.com
 
-repositories:
-  - name: ingress-nginx
-    url: https://kubernetes.github.io/ingress-nginx
-
-{{- $ingressHost := "kubernetes.docker.internal" }}
 {{- $identityHost := "backbase-identity:8080" }}
 releases:
-  - name: ingress-nginx
-    chart: ingress-nginx/ingress-nginx
-    version: 4.0.19
-    labels:
-      tier: infrastructure
-      component: nginx
-    values:
-      - controller:
-          config:
-            use-forwarded-headers: "true"
-
+  {{- $adminServerPath := "/admin" }}
   - name: spring-boot-admin
     chart: backbase-charts/backbase-app
     version: 0.23.12
@@ -43,17 +38,17 @@ releases:
           SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_IDENTITY-SERVER_0_METADATA_MANAGEMENT_CONTEXT-PATH: /auth/q/health
           SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_IDENTITY-SERVER_0_METADATA_HEALTH_PATH: live
           # Pre-configuration for nginx-ingress
-          SPRING_BOOT_ADMIN_UI_PUBLIC_URL: http://{{ $ingressHost }}/admin
-          SPRING_BOOT_ADMIN_CONTEXT_PATH: /admin
+          SPRING_BOOT_ADMIN_UI_PUBLIC_URL: {{ .Values.ingress.schema }}://{{ .Values.ingress.host }}{{ $adminServerPath }}
+          SPRING_BOOT_ADMIN_CONTEXT_PATH: {{ $adminServerPath }}
         ingress:
           enabled: true
           annotations:
             "kubernetes.io/ingress.class": "nginx"
-            "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/admin"
+            "nginx.ingress.kubernetes.io/x-forwarded-prefix": {{ $adminServerPath }}
           hosts:
-            - host: {{ $ingressHost }}
+            - host: {{ .Values.ingress.host }}
               paths:
-                - /admin
+                - {{ $adminServerPath }}
 
   - name: backbase-env
     chart: backbase-charts/backbase-env
@@ -69,10 +64,10 @@ releases:
             tag: 5.17.0
         mysql:
           enabled: true
-          mysqlRootPassword: backbase321!
-          mysqlPassword: backbase123!
           image: mysql
           imageTag: 8.0.29-oracle
+          mysqlRootPassword: backbase321!
+          mysqlPassword: backbase123!
         jwt:
           enabled: true
           internalSecretKey: "JWTSecretKeyDontUseInProduction!"
@@ -115,7 +110,7 @@ releases:
               "nginx.ingress.kubernetes.io/proxy-body-size": "50m"
               "nginx.ingress.kubernetes.io/rewrite-target": /$1
             hosts:
-              - host: {{ $ingressHost }}
+              - host: {{ .Values.ingress.host }}
                 paths:
                   - /(.*)
 
@@ -149,7 +144,7 @@ releases:
           env:
             KEYCLOAK_ADMIN: admin
             KEYCLOAK_ADMIN_PASSWORD: admin
-            keycloak.hostname.default.frontendUrl: http://{{ $ingressHost }}/auth
+            keycloak.hostname.default.frontendUrl: {{ .Values.ingress.schema }}://{{ .Values.ingress.host }}/auth
             backbase.basic-authentication.username: admin
             backbase.basic-authentication.password: admin
             QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING: "true"
@@ -174,7 +169,7 @@ releases:
               "nginx.ingress.kubernetes.io/proxy-buffer-size": "16k"
               "nginx.ingress.kubernetes.io/rewrite-target": /auth$1
             hosts:
-              - host: {{ $ingressHost }}
+              - host: {{ .Values.ingress.host }}
                 paths:
                   - /auth(.*)
 
@@ -191,7 +186,7 @@ releases:
           env:
             BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOSTSCHEME: http
             BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOST: {{ $identityHost }}
-            BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_ISSUERHOST: {{ $ingressHost }}
+            BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_ISSUERHOST: {{ .Values.ingress.host }}
           ingress:
             enabled: true
             annotations:
@@ -199,7 +194,7 @@ releases:
               "nginx.ingress.kubernetes.io/rewrite-target": /$1
               "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/external/token-converter"
             hosts:
-              - host: {{ $ingressHost }}
+              - host: {{ .Values.ingress.host }}
                 paths:
                   - /external/token-converter/(.*)
 
@@ -227,7 +222,7 @@ releases:
               "nginx.ingress.kubernetes.io/rewrite-target": /$1
               "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/external/identity-integration-service"
             hosts:
-              - host: {{ $ingressHost }}
+              - host: {{ .Values.ingress.host }}
                 paths:
                   - /external/identity-integration-service/(.*)
 
@@ -251,7 +246,7 @@ releases:
               "nginx.ingress.kubernetes.io/rewrite-target": /$1
               "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/external/access-control"
             hosts:
-              - host: {{ $ingressHost }}
+              - host: {{ .Values.ingress.host }}
                 paths:
                   - /external/access-control/(.*)
 
@@ -267,6 +262,10 @@ releases:
       - arrangement-manager:
           liquibase:
             enabled: true
+          database:
+            checkEnabled: true
+          activemq:
+            checkEnabled: true
           ingress:
             enabled: true
             annotations:
@@ -274,14 +273,14 @@ releases:
               "nginx.ingress.kubernetes.io/rewrite-target": /$1
               "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/external/arrangement-manager"
             hosts:
-              - host: {{ $ingressHost }}
+              - host: {{ .Values.ingress.host }}
                 paths:
                   - /external/arrangement-manager/(.*)
 
   # User Manager
   - name: dbs-user-manager
     chart: backbase-charts/user-manager
-    version: 0.1.8
+    version: 0.1.9
     labels:
       tier: dbs
       capability: user-manager
@@ -292,6 +291,9 @@ releases:
             enabled: true
           database:
             sid: user_pandp
+          env:
+            BACKBASE_USERS_IDENTITYENDPOINTSENABLED: "true"
+            BACKBASE_USERS_IDENTITYINTEGRATIONENABLED: "true"
           ingress:
             enabled: true
             annotations:
@@ -299,6 +301,59 @@ releases:
               "nginx.ingress.kubernetes.io/rewrite-target": /$1
               "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/external/user-manager"
             hosts:
-              - host: {{ $ingressHost }}
+              - host: {{ .Values.ingress.host }}
                 paths:
                   - /external/user-manager/(.*)
+
+  # User Manager
+  - name: web-employee-app
+    chart: internal/employee-web-app-essentials
+    version: 1.1.1
+    labels:
+      tier: web
+      capability: employee-app
+    values:
+      - ewaessentialsservice:
+          app:
+            name: employee-web-app
+            image:
+              registry: 078210564863.dkr.ecr.eu-west-1.amazonaws.com
+              repository: employee-essentials
+              tag: latest
+          env:
+            API_ROOT: /api
+            AUTH_URL: "{{ .Values.ingress.schema }}://{{ .Values.ingress.host }}/auth"
+          ingress:
+            enabled: true
+            annotations:
+              "kubernetes.io/ingress.class": "nginx"
+            hosts:
+              - host: employee.{{ .Values.ingress.host }}
+                paths:
+                  - /
+                customPaths:
+                  - path: /api
+                    pathType: ImplementationSpecific
+                    backend:
+                      service:
+                        name: edge
+                        port:
+                          number: 8080
+
+
+{{- if not .Values.ingress.managed }}
+  - name: ingress-nginx
+    chart: ingress-nginx/ingress-nginx
+    version: 4.0.19
+    labels:
+      tier: infrastructure
+      component: nginx
+    values:
+      - controller:
+          config:
+            use-forwarded-headers: "true"
+
+repositories:
+  - name: ingress-nginx
+    url: https://kubernetes.github.io/ingress-nginx
+{{- end }}
