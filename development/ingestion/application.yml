@@ -1,0 +1,53 @@
+---
+spring:
+  config:
+    activate:
+      on-profile: default
+  security:
+    oauth2:
+      client:
+        registration:
+          bb:
+            authorization-grant-type: client_credentials
+            client-id: bb-client
+            client-secret: bb-secret
+            client-authentication-method: post
+        provider:
+          bb:
+            token-uri: http://kubernetes.docker.internal/external/token-converter/oauth/token
+
+backbase:
+  stream:
+    dbs:
+      user-manager-base-url: http://kubernetes.docker.internal/external/user-manager
+      access-control-base-url: http://kubernetes.docker.internal/external/access-control
+      arrangement-manager-base-url: http://kubernetes.docker.internal/external/arrangement-manager
+    identity:
+      identity-integration-base-url: http://kubernetes.docker.internal/external/identity-integration-service
+
+---
+spring:
+  config:
+    activate:
+      on-profile: aws
+  security:
+    oauth2:
+      client:
+        registration:
+          bb:
+            authorization-grant-type: client_credentials
+            client-id: bb-client
+            client-secret: bb-secret
+            client-authentication-method: post
+        provider:
+          bb:
+            token-uri: https://stream.recruitment.cs.backbasecloud.com/external/token-converter/oauth/token
+
+backbase:
+  stream:
+    dbs:
+      user-manager-base-url: https://stream.recruitment.cs.backbasecloud.com/external/user-manager
+      access-control-base-url: https://stream.recruitment.cs.backbasecloud.com/external/access-control
+      arrangement-manager-base-url: https://stream.recruitment.cs.backbasecloud.com/external/arrangement-manager
+    identity:
+      identity-integration-base-url: https://stream.recruitment.cs.backbasecloud.com/external/identity-integration-service

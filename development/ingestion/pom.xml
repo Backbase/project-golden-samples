@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.backbase.stream</groupId>
+    <artifactId>ingestion</artifactId>
+    <version>1.0.0</version>
+    <name>Backbase Stream</name>
+    <packaging>pom</packaging>
+
+    <properties>
+        <stream-services.version>2.78.0</stream-services.version>
+        <env.profile>default</env.profile>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.backbase.stream</groupId>
+            <artifactId>product-catalog-task</artifactId>
+            <version>${stream-services.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.backbase.stream</groupId>
+            <artifactId>legal-entity-bootstrap-task</artifactId>
+            <version>${stream-services.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <excludeTransitive>true</excludeTransitive>
+                            <includeTypes>jar</includeTypes>
+                            <stripVersion>true</stripVersion>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>run-product-catalog-task</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-jar</argument>
+                                <argument>${project.build.directory}/product-catalog-task.jar</argument>
+                                <argument>--spring.profiles.active=moustache-bank,${env.profile}</argument>
+                                <argument>--spring.config.additional-location=${project.basedir}/application.yml
+                                </argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>run-legal-entity-bootstrap-task</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>install</phase>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-jar</argument>
+                                <argument>${project.build.directory}/legal-entity-bootstrap-task.jar</argument>
+                                <argument>--spring.profiles.active=moustache-bank,${env.profile}</argument>
+                                <argument>--spring.config.additional-location=${project.basedir}/application.yml
+                                </argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
