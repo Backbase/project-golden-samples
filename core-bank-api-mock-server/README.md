@@ -154,4 +154,5 @@ The project provides other classes to support common mechanism between the mock 
 The idea behind all the classes provided by the project is to be updated and customized depending of the project's need.
 
 
-> Happy mocking!!!
+### Exercise
+Generate the Payment Initiation API Mock Controller and create mock data under /mock-data for Open Banking API Spec [Open Banking API](https://github.com/OpenBankingUK/read-write-api-specs).

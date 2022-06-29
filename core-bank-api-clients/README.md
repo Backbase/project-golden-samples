@@ -19,4 +19,4 @@ To install the generated clients into you local Maven repository run:
 > If you're facing error to generate java doc use this argument to skip api doc generation while installing artifacts `-Dmaven.javadoc.skip=true`
 
 ### Exercise
-Generate the Payment Initiation API client from Open Banking API Spec [Open Banking API](https://github.com/OpenBankingUK/read-write-api-specs) and add it the this project.
+Generate the Payment Initiation API client from Open Banking API Spec [Open Banking API](https://github.com/OpenBankingUK/read-write-api-specs).
