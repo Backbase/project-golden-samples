@@ -84,6 +84,7 @@ releases:
       component: edge
     values:
       - global.yaml.gotmpl
+      - global-ssdk.yaml.gotmpl
       - edge:
           env:
             GATEWAY_ACTUATOR_SECURITY_ENABLED: "false"
@@ -122,18 +123,7 @@ releases:
       tier: identity
       component: identity-server
     values:
-      - global:
-          app:
-            image:
-              registry: repo.backbase.com/backbase-docker-releases
-              tag: "2022.04.6"
-          imagePullSecrets:
-            - name: backbase-registry
-          database:
-            checkEnabled: true
-            host: backbase-env-mysql
-            existingSecret: backbase-env-mysql
-            urlTemplate: "jdbc:mysql://{{`{{.database.host}}`}}:{{`{{.database.port}}`}}/{{`{{.database.sid}}`}}?useSSL=false&allowPublicKeyRetrieval=true"
+      - global.yaml.gotmpl
       - backbaseidentity:
           liquibase:
             enabled: true
@@ -180,6 +170,7 @@ releases:
       component: token-converter
     values:
       - global.yaml.gotmpl
+      - global-ssdk.yaml.gotmpl
       - oidctokenconverter:
           env:
             BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOSTSCHEME: http
@@ -204,6 +195,7 @@ releases:
       component: identity-integration
     values:
       - global.yaml.gotmpl
+      - global-ssdk.yaml.gotmpl
       - identityintegrationservice:
           env:
             IDENTITY_SERVERURL: http://{{ $identityHost }}/auth
@@ -234,6 +226,7 @@ releases:
       capability: access-control
     values:
       - global.yaml.gotmpl
+      - global-ssdk.yaml.gotmpl
       - accesscontrol:
           liquibase:
             enabled: true
@@ -257,6 +250,7 @@ releases:
       capability: arrangement-manager
     values:
       - global.yaml.gotmpl
+      - global-ssdk.yaml.gotmpl
       - arrangement-manager:
           liquibase:
             enabled: true
@@ -284,6 +278,7 @@ releases:
       capability: user-manager
     values:
       - global.yaml.gotmpl
+      - global-ssdk.yaml.gotmpl
       - usermanager:
           liquibase:
             enabled: true
@@ -317,6 +312,7 @@ releases:
             image:
               registry: 078210564863.dkr.ecr.eu-west-1.amazonaws.com
               tag: latest
+              pullPolicy: Always
           env:
             API_ROOT: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/api"
             AUTH_URL: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/auth"
