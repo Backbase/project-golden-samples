@@ -14,6 +14,8 @@ read -r -s -p "Enter Ldap password: "  password
 
 # Clean if existent
 kubectl delete secret backbase-registry --ignore-not-found=true
+# kubectl delete secret harbor-registry --ignore-not-found=true
 
 # Create key used to pull Backbase images
 kubectl create secret docker-registry backbase-registry --docker-server=repo.backbase.com/backbase-docker-releases --docker-username="$username" --docker-password="$password" --docker-email="$username"@backbase.com
+# kubectl create secret docker-registry harbor-registry --docker-server=harbor.backbase.eu --docker-username="$username" --docker-password="$password" --docker-email="$username"@backbase.com

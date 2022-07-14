@@ -2,6 +2,10 @@ environments:
   default:
     kubeContext: colima
     values:
+      - web:
+          image:
+            registry: ''
+            pullPolicy: IfNotPresent
       - ingress:
           managed: false
           proto: http
@@ -9,6 +13,10 @@ environments:
   aws:
     kubeContext: arn:aws:eks:eu-west-1:078210564863:cluster/recruitment-eks
     values:
+      - web:
+          image:
+            registry: 078210564863.dkr.ecr.eu-west-1.amazonaws.com
+            pullPolicy: Always
       - ingress:
           managed: true
           proto: https
@@ -31,6 +39,7 @@ releases:
             registry: backbasecs
             repository: spring-boot-admin-server
             tag: latest
+            pullPolicy: Always
         env:
           # Configuration for non-spring boot health check (Identity)
           SPRING_CLOUD_KUBERNETES_DISCOVERY_FILTER: "metadata.labels != null && metadata.labels['app.backbase.com/tier'] != null && metadata.labels['app.kubernetes.io/name'] != 'backbaseidentity'"
@@ -310,9 +319,9 @@ releases:
           app:
             name: employee-web-app
             image:
-              registry: 078210564863.dkr.ecr.eu-west-1.amazonaws.com
+              registry: {{ .Values.web.image.registry }}
+              pullPolicy: {{ .Values.web.image.pullPolicy }}
               tag: latest
-              pullPolicy: Always
           env:
             API_ROOT: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/api"
             AUTH_URL: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/auth"
