@@ -131,6 +131,7 @@ releases:
     labels:
       tier: identity
       component: identity-server
+      with-database: true
     values:
       - global.yaml.gotmpl
       - backbaseidentity:
@@ -149,15 +150,16 @@ releases:
             QUARKUS_JAEGER_SERVICE_NAME: backbase-identity
             QUARKUS_LOG_LEVEL: INFO
             QUARKUS_LOG_CONSOLE_FORMAT: "%d{yyy:MM:dd HH:mm:ss.SSS} %-5p [${quarkus.jaeger.service-name},%X{traceId},%X{spanId},%X{sampled}] %i --- %c{2.} : %m%n"
-          jmx:
-            enabled: true
-          debug:
-            enabled: true
           javaOpts:
             extra:
               - "--add-opens=java.base/java.lang=ALL-UNNAMED"
               - "-Dquarkus.log.category.'\"com.backbase\"'.level=DEBUG"
               - "-Dquarkus.log.category.'\"org.keycloak.protocol.oidc\"'.level=TRACE"
+              - "-Dkeycloak.profile.feature.upload_scripts=enabled"
+              - "-Dkeycloak.import=/home/nonroot/conf/backbase-realm.json"
+          customFiles:
+            backbase-realm.json: |-
+              {{- readFile "config/backbase-realm.json" | nindent 14 }}
           ingress:
             enabled: true
             annotations:
@@ -233,6 +235,7 @@ releases:
     labels:
       tier: dbs
       capability: access-control
+      with-database: true
     values:
       - global.yaml.gotmpl
       - global-ssdk.yaml.gotmpl
@@ -257,6 +260,7 @@ releases:
     labels:
       tier: dbs
       capability: arrangement-manager
+      with-database: true
     values:
       - global.yaml.gotmpl
       - global-ssdk.yaml.gotmpl
@@ -285,6 +289,7 @@ releases:
     labels:
       tier: dbs
       capability: user-manager
+      with-database: true
     values:
       - global.yaml.gotmpl
       - global-ssdk.yaml.gotmpl
