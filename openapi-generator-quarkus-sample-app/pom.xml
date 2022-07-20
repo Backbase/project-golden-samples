@@ -6,50 +6,38 @@
     <groupId>org.quarkus.openapi.generator</groupId>
     <artifactId>code-with-quarkus</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+
     <properties>
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>2.9.2.Final</quarkus.platform.version>
         <skipITs>true</skipITs>
-        <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
+        <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
+        <quarkus.platform.version>1.13.4.Final</quarkus.platform.version>
         <generated-sources-dir>${project.build.directory}/generated-sources</generated-sources-dir>
         <codegen.openapi.generated-sources-dir>${generated-sources-dir}/openapi</codegen.openapi.generated-sources-dir>
     </properties>
     <dependencyManagement>
         <dependencies>
-
-
             <dependency>
-                <groupId>${quarkus.platform.group-id}</groupId>
-                <artifactId>${quarkus.platform.artifact-id}</artifactId>
-                <version>${quarkus.platform.version}</version>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-bom</artifactId>
+                <version>1.13.7.Final</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
         </dependencies>
+
     </dependencyManagement>
     <dependencies>
         <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-arc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy-reactive</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-junit5</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
-            <scope>test</scope>
+            <groupId>com.backbase.identity</groupId>
+            <artifactId>backbase-identity</artifactId>
+            <scope>provided</scope>
+            <version>1.10.5-cr.0</version>
         </dependency>
         <dependency>
             <groupId>io.swagger</groupId>
@@ -98,16 +86,16 @@
         </dependency>
     </dependencies>
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>${quarkus.platform.group-id}</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>
-                <version>${quarkus.platform.version}</version>
+                <version>2.2.1.Final</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>build</goal>
                             <goal>generate-code</goal>
                             <goal>generate-code-tests</goal>
                         </goals>
@@ -123,10 +111,55 @@
                     </compilerArgs>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <inherited>true</inherited>
+                        <id>add-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${codegen.openapi.generated-sources-dir}/src/main/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${compiler-plugin.version}</version>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.7</version>
+            </plugin>
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>5.3.1</version>
                 <configuration>
                     <output>${codegen.openapi.generated-sources-dir}</output>
                     <generatorName>java</generatorName>
@@ -139,42 +172,30 @@
                         <dateLibrary>java11</dateLibrary>
                         <withXml>false</withXml>
                         <openApiNullable>false</openApiNullable>
-                        <invokerPackage>org.quarkus.openapi.artists.api</invokerPackage>
+                        <invokerPackage>org.quarkus.openapi.todo.api</invokerPackage>
                     </configOptions>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>artists-integration-api</id>
+                        <id>todo-api</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/artists.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/src/main/resources/todo.yaml</inputSpec>
                             <configOptions>
-                                <modelPackage>org.quarkus.openapi.artists.model</modelPackage>
-                                <apiPackage>org.quarkus.openapi.artists.api</apiPackage>
+                                <modelPackage>org.quarkus.openapi.todo.model</modelPackage>
+                                <apiPackage>org.quarkus.openapi.todo.api</apiPackage>
                             </configOptions>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>native</id>
-            <activation>
-                <property>
-                    <name>native</name>
-                </property>
-            </activation>
-            <properties>
-                <skipITs>false</skipITs>
-                <quarkus.package.type>native</quarkus.package.type>
-                <generated-sources-dir>${project.build.directory}/generated-sources</generated-sources-dir>
-                <codegen.openapi.generated-sources-dir>${generated-sources-dir}/openapi
-                </codegen.openapi.generated-sources-dir>
-            </properties>
-        </profile>
-    </profiles>
+
 </project>
