@@ -9,13 +9,13 @@ You have the following options:
 After connecting to Backbase VPN you can run:
 ```shell
 docker login harbor.backbase.eu
-docker pull harbor.backbase.eu/internal/employee-web-app-essentials:<tag>
-docker tag harbor.backbase.eu/internal/employee-web-app-essentials:<tag> employee-web-app-essentials:latest
+docker pull harbor.backbase.eu/development/employee-web-app-essentials:2022.06
+docker tag harbor.backbase.eu/development/employee-web-app-essentials:2022.06 employee-web-app-essentials:latest
 ```
 
 ## Building the image locally
 
-You can run by using the following commands:
+You can build it by using the following commands:
 
 ```shell
 # Create a .npmrc file using your credentials.

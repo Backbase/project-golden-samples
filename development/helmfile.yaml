@@ -314,16 +314,20 @@ releases:
 
   - name: web-employee-app
     chart: oci://repo.backbase.com/docker-test/portalless
-    version: 2022.05.6
+    version: 2022.05.6-ingress
     labels:
       tier: web
       capability: employee-app
     values:
       - image:
-          repository: {{ .Values.web.image.registry }}/employee-web-app-essentials
+          registries:
+            default: {{ .Values.web.image.registry }}/
+          registry: default
+          repository: employee-web-app-essentials
           pullPolicy: {{ .Values.web.image.pullPolicy }}
           tag: latest
         priorityClassName: ''
+        replicaCount: 1
         env:
           API_ROOT: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/api"
           AUTH_URL: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/auth"
@@ -334,7 +338,8 @@ releases:
           hosts:
             - host: {{ .Values.ingress.host }}
               paths:
-                - /
+                - path: /
+                  pathType: ImplementationSpecific
 
   - name: job-moustache-bootstrap-task
     chart: oci://repo.backbase.com/docker-test/retail-bootstrap-task
@@ -344,7 +349,11 @@ releases:
       component: bootstrap-task
     values:
       - image:
-          repository: {{ .Values.web.image.registry }}/moustache-bootstrap-task
+          registries:
+            default: {{ .Values.web.image.registry }}/
+          registry: default
+          repository: moustache-bootstrap-task
+          pullPolicy: {{ .Values.web.image.pullPolicy }}
           tag: latest
         priorityClassName: ''
         env:
