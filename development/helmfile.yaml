@@ -2,28 +2,13 @@ environments:
   default:
     kubeContext: colima
     values:
-      - web:
-          image:
-            registry: ''
-            pullPolicy: IfNotPresent
       - ingress:
-          managed: false
           proto: http
           host: kubernetes.docker.internal
-  aws:
-    kubeContext: arn:aws:eks:eu-west-1:078210564863:cluster/recruitment-eks
-    values:
-      - web:
-          image:
-            registry: 078210564863.dkr.ecr.eu-west-1.amazonaws.com
-            pullPolicy: Always
-      - ingress:
-          managed: true
-          proto: https
-          host: stream.recruitment.cs.backbasecloud.com
 
 {{- $identityHost := "backbase-identity:8080" }}
 releases:
+  # Spring Boot Admin for Monitoring
   {{- $adminServerPath := "/admin" }}
   - name: spring-boot-admin
     chart: backbase-charts/backbase-app
@@ -59,6 +44,7 @@ releases:
               paths:
                 - {{ $adminServerPath }}
 
+  # Environment Initial Setup
   - name: backbase-env
     chart: backbase-charts/backbase-env
     version: 0.5.62
@@ -84,7 +70,8 @@ releases:
           externalEncSecretKey: "JWTEncKeyDontUseInProduction666!"
           userctxKey: "JWTSecretKeyDontUseInProduction!"
 
-  # Foundation - Edge
+  # Foundation
+  # Edge
   - name: foundation-edge
     chart: backbase-charts/edge
     version: 0.12.5
@@ -124,6 +111,7 @@ releases:
                 paths:
                   - /api
 
+  # Identity
   # Identity Authorization Server
   - name: identity-server
     chart: backbase-charts/backbase-identity
@@ -198,6 +186,7 @@ releases:
                 paths:
                   - /external/token-converter/(.*)
 
+  # Identity Integration Service
   - name: identity-integration
     chart: backbase-charts/identity-integration
     version: 0.1.8
@@ -312,6 +301,36 @@ releases:
                 paths:
                   - /external/user-manager/(.*)
 
+  # Bootstrap Task
+  - name: job-moustache-bootstrap-task
+    chart: oci://repo.backbase.com/docker-test/retail-bootstrap-task
+    version: 2022.05.6
+    labels:
+      tier: job
+      component: bootstrap-task
+    values:
+      - image:
+          repository: moustache-bootstrap-task
+          tag: latest
+        priorityClassName: ''
+        env: # All Envs that need external secrets are overridden here.
+          admin.username: ''
+          admin.password: ''
+          admin.defaultUserPassword: ''
+          mambu.username: ''
+          mambu.password: ''
+          mambu.basePath: ''
+          mambu.branchKey: ''
+          mambu.currentAccountProductKey: ''
+          mambu.savingsAccountProductKey: ''
+          mambu.transactionsBeneficiaryAccountKey: ''
+          marqeta.username: ''
+          marqeta.password: ''
+          marqeta.basePath: ''
+          SPRING_PROFILES_INCLUDE: ''
+
+  # Web
+  # Employee Web Portal
   - name: web-employee-app
     chart: oci://repo.backbase.com/docker-test/portalless
     version: 2022.05.6-ingress
@@ -320,11 +339,7 @@ releases:
       capability: employee-app
     values:
       - image:
-          registries:
-            default: {{ .Values.web.image.registry }}/
-          registry: default
           repository: employee-web-app-essentials
-          pullPolicy: {{ .Values.web.image.pullPolicy }}
           tag: latest
         priorityClassName: ''
         replicaCount: 1
@@ -341,38 +356,7 @@ releases:
                 - path: /
                   pathType: ImplementationSpecific
 
-  - name: job-moustache-bootstrap-task
-    chart: oci://repo.backbase.com/docker-test/retail-bootstrap-task
-    version: 2022.05.6
-    labels:
-      tier: job
-      component: bootstrap-task
-    values:
-      - image:
-          registries:
-            default: {{ .Values.web.image.registry }}/
-          registry: default
-          repository: moustache-bootstrap-task
-          pullPolicy: {{ .Values.web.image.pullPolicy }}
-          tag: latest
-        priorityClassName: ''
-        env:
-          admin.username: ''
-          admin.password: ''
-          admin.defaultUserPassword: ''
-          mambu.username: ''
-          mambu.password: ''
-          mambu.basePath: ''
-          mambu.branchKey: ''
-          mambu.currentAccountProductKey: ''
-          mambu.savingsAccountProductKey: ''
-          mambu.transactionsBeneficiaryAccountKey: ''
-          marqeta.username: ''
-          marqeta.password: ''
-          marqeta.basePath: ''
-          SPRING_PROFILES_INCLUDE: ''
-
-{{- if not .Values.ingress.managed }}
+  # Ingress Infra
   - name: ingress-nginx
     chart: ingress-nginx/ingress-nginx
     version: 4.0.19
@@ -387,4 +371,3 @@ releases:
 repositories:
   - name: ingress-nginx
     url: https://kubernetes.github.io/ingress-nginx
-{{- end }}
