@@ -28,6 +28,7 @@ nb-configuration.xml
 
 # OSX
 .DS_Store
+.dockerignore
 
 # Vim
 *.swp
