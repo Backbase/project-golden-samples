@@ -9,9 +9,9 @@ read -r -p "Enter username (the prefix to '@backbase.com'): " username
 ### Input password as hidden characters ###
 read -r -s -p "Enter password: " password
 
-# Adding Backbase OCI repo
+# Adding Backbase OCI repo for Topstack
 helm registry login --username "$username" --password "$password" repo.backbase.com
 
-# Add backbase-charts repo
+# Adding backbase-charts repo
 helm repo add backbase-charts https://repo.backbase.com/backbase-charts --username "$username" --password "$password" --force-update
 helm repo update

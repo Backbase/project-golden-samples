@@ -6,8 +6,24 @@ environments:
           proto: http
           host: kubernetes.docker.internal
 
+repositories:
+  - name: ingress-nginx
+    url: https://kubernetes.github.io/ingress-nginx
+
 {{- $identityHost := "backbase-identity:8080" }}
 releases:
+  # Ingress Controller
+  - name: ingress-nginx
+    chart: ingress-nginx/ingress-nginx
+    version: 4.0.19
+    labels:
+      tier: infrastructure
+      component: nginx
+    values:
+      - controller:
+          config:
+            use-forwarded-headers: "true"
+
   # Spring Boot Admin for Monitoring
   {{- $adminServerPath := "/admin" }}
   - name: spring-boot-admin
@@ -312,6 +328,7 @@ releases:
       - image:
           repository: moustache-bootstrap-task
           tag: latest
+          pullPolicy: IfNotPresent
         priorityClassName: ''
         env: # All Envs that need external secrets are overridden here.
           admin.username: ''
@@ -341,6 +358,7 @@ releases:
       - image:
           repository: employee-web-app-essentials
           tag: latest
+          pullPolicy: IfNotPresent
         priorityClassName: ''
         replicaCount: 1
         env:
@@ -355,19 +373,3 @@ releases:
               paths:
                 - path: /
                   pathType: ImplementationSpecific
-
-  # Ingress Infra
-  - name: ingress-nginx
-    chart: ingress-nginx/ingress-nginx
-    version: 4.0.19
-    labels:
-      tier: infrastructure
-      component: nginx
-    values:
-      - controller:
-          config:
-            use-forwarded-headers: "true"
-
-repositories:
-  - name: ingress-nginx
-    url: https://kubernetes.github.io/ingress-nginx
