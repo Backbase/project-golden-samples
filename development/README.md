@@ -10,6 +10,5 @@
 * Run: `add-backbase-helm-repo.sh`
 * Run: `add-backbase-pull-secret.sh`
 * Add: `127.0.0.1 kubernetes.docker.internal` in your `/etc/hosts` file.
-* Obtain the [employee-web-app-essentials](employee-web-app-essentials/README.md) image as it is not yet public available.
-* Run: `helmfile sync`
-* When all pods are up, execute the [ingestion](ingestion/README.md).
+* Obtain the [employee-web-app-essentials](images/employee-web-app-essentials/README.md) image as it is not yet public available.
+* Run: `helmfile sync`.

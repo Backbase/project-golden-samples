@@ -312,32 +312,56 @@ releases:
                 paths:
                   - /external/user-manager/(.*)
 
-  # User Manager
   - name: web-employee-app
-    chart: internal/employee-web-app-essentials
-    version: 1.1.1
+    chart: oci://repo.backbase.com/docker-test/portalless
+    version: 2022.05.6
     labels:
       tier: web
       capability: employee-app
     values:
-      - ewaessentialsservice:
-          app:
-            name: employee-web-app
-            image:
-              registry: {{ .Values.web.image.registry }}
-              pullPolicy: {{ .Values.web.image.pullPolicy }}
-              tag: latest
-          env:
-            API_ROOT: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/api"
-            AUTH_URL: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/auth"
-          ingress:
-            enabled: true
-            annotations:
-              "kubernetes.io/ingress.class": "nginx"
-            hosts:
-              - host: {{ .Values.ingress.host }}
-                paths:
-                  - /
+      - image:
+          repository: {{ .Values.web.image.registry }}/employee-web-app-essentials
+          pullPolicy: {{ .Values.web.image.pullPolicy }}
+          tag: latest
+        priorityClassName: ''
+        env:
+          API_ROOT: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/api"
+          AUTH_URL: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/auth"
+        ingress:
+          enabled: true
+          annotations:
+            "kubernetes.io/ingress.class": "nginx"
+          hosts:
+            - host: {{ .Values.ingress.host }}
+              paths:
+                - /
+
+  - name: job-moustache-bootstrap-task
+    chart: oci://repo.backbase.com/docker-test/retail-bootstrap-task
+    version: 2022.05.6
+    labels:
+      tier: job
+      component: bootstrap-task
+    values:
+      - image:
+          repository: {{ .Values.web.image.registry }}/moustache-bootstrap-task
+          tag: latest
+        priorityClassName: ''
+        env:
+          admin.username: ''
+          admin.password: ''
+          admin.defaultUserPassword: ''
+          mambu.username: ''
+          mambu.password: ''
+          mambu.basePath: ''
+          mambu.branchKey: ''
+          mambu.currentAccountProductKey: ''
+          mambu.savingsAccountProductKey: ''
+          mambu.transactionsBeneficiaryAccountKey: ''
+          marqeta.username: ''
+          marqeta.password: ''
+          marqeta.basePath: ''
+          SPRING_PROFILES_INCLUDE: ''
 
 {{- if not .Values.ingress.managed }}
   - name: ingress-nginx
