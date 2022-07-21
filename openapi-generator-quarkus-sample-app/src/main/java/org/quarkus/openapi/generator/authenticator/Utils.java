@@ -35,19 +35,10 @@ public final class Utils {
             return defaultValue;
         }
     }
-    public static boolean nonEmpty(String value) {
-        return Objects.nonNull(value) && !value.trim().isEmpty();
-    }
-
 
     public static String getRealmId(KeycloakSession keycloakSession) {
         return keycloakSession.getContext().getRealm().getId();
     }
-
-    public static String getPropertyWithPrefix(String prefix, String property) {
-        return prefix + "." + property;
-    }
-
     private Utils() {}
 
 }
