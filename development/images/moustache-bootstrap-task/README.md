@@ -18,9 +18,5 @@ docker tag harbor.backbase.eu/development/moustache-bootstrap-task:2.82.0 mousta
 You can build it by using the following commands:
 
 ```shell
-mkdir -p target
-mvn dependency:get -DgroupId=com.backbase.stream -DartifactId=product-catalog-task -Dversion=2.82.0 -Dtransitive=false -Ddest=./target/product-catalog-task.jar
-mvn dependency:get -DgroupId=com.backbase.stream -DartifactId=legal-entity-bootstrap-task -Dversion=2.82.0 -Dtransitive=false -Ddest=./target/legal-entity-bootstrap-task.jar
-
-docker build -t moustache-bootstrap-task:latest .
+./build.sh
 ```

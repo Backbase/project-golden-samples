@@ -36,10 +36,12 @@ health_check "user-manager" $USER_MANAGER_HEALTH_ENDPOINT
 health_check "identity-integration-service" $IDENTITY_INTEGRATION_HEALTH_ENDPOINT
 health_check "identity" $IDENTITY_HEALTH_ENDPOINT
 
+export JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -Dspring.profiles.active=moustache-bank -Dspring.cloud.kubernetes.config.enabled=false -Dlogging.level.com.backbase.stream=DEBUG"
+
 echo "Running product-catalog-task..."
-java -jar target/product-catalog-task.jar --spring.profiles.active=moustache-bank --spring.cloud.kubernetes.config.enabled=false
+java -jar product-catalog-task.jar
 echo "Executed product-catalog-task successfully"
 
 echo "Running legal-entity-bootstrap-task..."
-java -jar target/legal-entity-bootstrap-task.jar --spring.profiles.active=moustache-bank --spring.cloud.kubernetes.config.enabled=false
+java -jar legal-entity-bootstrap-task.jar
 echo "Executed legal-entity-bootstrap-task successfully"
