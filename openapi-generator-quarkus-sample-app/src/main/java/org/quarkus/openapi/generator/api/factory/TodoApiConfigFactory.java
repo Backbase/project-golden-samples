@@ -1,21 +1,21 @@
-package org.quarkus.openapi.generator.config.api.factory;
+package org.quarkus.openapi.generator.api.factory;
 
-import static org.quarkus.openapi.generator.config.global.GlobalConfigConstants.TODO_API_BASE_URL;
+import static org.quarkus.openapi.generator.config.global.GlobalConfigConstants.TODO_API_BASE_URL_KEY;
 
 import com.backbase.identity.m10y.models.Tenant;
 import java.util.Objects;
 import java.util.Optional;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.keycloak.Config;
+import org.quarkus.openapi.generator.config.ConfigUtils;
 import org.quarkus.openapi.generator.config.TodoApiConfig;
 import org.quarkus.openapi.todo.api.TodosApi;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TodoApiConfigFactory {
-
-    private TodoApiConfigFactory() {
-    }
-
-    private static final Logger log = LoggerFactory.getLogger(TodoApiConfigFactory.class);
 
     /**
      * Create Todo Api Config without tenant data.
@@ -28,15 +28,17 @@ public class TodoApiConfigFactory {
 
     /**
      * Create Todo Api Config for a given tenant.
-     * Global scope can be used to get base url. In this ex, we will just retrieve base url for the api from the constants
+     * Global scope is used to get base url.
      *
      * @return {@link TodoApiConfig}
      */
     public static TodoApiConfig createTodoApiConfig(Tenant tenant) {
+        Config.Scope scope = ConfigUtils.getGlobalScope();
+
         Optional<String> tenantId = Optional.ofNullable(tenant).map(Tenant::getId);
 
         TodosApi todosApi =
-            createTodoApi(tenantId.orElse(null), TODO_API_BASE_URL);
+            createTodoApi(tenantId.orElse(null), scope.get(TODO_API_BASE_URL_KEY));
 
         if (Objects.isNull(todosApi)) {
             log.error("Can't initialize Todos api for tenant: {}", tenantId.orElse("<no tenant>"));

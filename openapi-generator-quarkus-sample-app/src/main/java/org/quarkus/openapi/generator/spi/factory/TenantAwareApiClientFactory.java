@@ -12,7 +12,7 @@ import org.keycloak.models.KeycloakSessionFactory;
 import org.quarkus.openapi.generator.TenantConfigurationUtils;
 import org.quarkus.openapi.generator.authenticator.Utils;
 import org.quarkus.openapi.generator.config.TodoApiConfig;
-import org.quarkus.openapi.generator.config.api.factory.TodoApiConfigFactory;
+import org.quarkus.openapi.generator.api.factory.TodoApiConfigFactory;
 import org.quarkus.openapi.generator.spi.provider.ApiClientProvider;
 
 public class TenantAwareApiClientFactory implements ApiClientProviderFactory {
