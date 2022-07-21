@@ -23,22 +23,35 @@
 > Grab a coffee and wait for a few minutes, so everything can start. I recommend installing `k9s` to monitor the status
 > of the pods.
 
-## Infra Installed
+**Hint**: You can test if the environment is up once the Job `job-moustache-bootstrap-task-retail-bootstrap-task` is completed:
+```shell
+$ kubectl get job job-moustache-bootstrap-task-retail-bootstrap-task
+
+NAME                                                 COMPLETIONS   DURATION   AGE
+job-moustache-bootstrap-task-retail-bootstrap-task   1/1           56s        138m
+```
+
+## Components
+### Infrastructure
 
 - MySQL
 - ActiveMQ
 - Nginx Ingress Controller
 - Spring Boot Admin Server
 
-## Backbase Services Available
+### Backbase Services
 
 - Edge
 - Identity Server
+  * With `backbase` realm included.
 - Identity Integration
 - Token Converter
 - Access Control
 - Arrangement Manager
 - User Manager
+
+### Jobs
+- Moustache Bootstrap Task
 
 ## Endpoints
 
