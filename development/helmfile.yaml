@@ -19,10 +19,6 @@ releases:
     labels:
       tier: infrastructure
       component: nginx
-    values:
-      - controller:
-          config:
-            use-forwarded-headers: "true"
 
   # Spring Boot Admin for Monitoring
   {{- $adminServerPath := "/admin" }}
