@@ -31,7 +31,7 @@ NAME                                                 COMPLETIONS   DURATION   AG
 job-moustache-bootstrap-task-retail-bootstrap-task   1/1           56s        138m
 ```
 
-## Components
+## Components Installed
 ### Infrastructure
 
 - MySQL
@@ -53,11 +53,14 @@ job-moustache-bootstrap-task-retail-bootstrap-task   1/1           56s        13
 ### Jobs
 - Moustache Bootstrap Task
 
+### Web Applications
+- [Employee Web App Essentials](https://community.backbase.com/documentation/employee_web_app/latest/deploy_web_app)
+
 ## Endpoints
 
 Once your environment is up and running you can access it using the following URLs:
 
-- Employee Web Portal: http://kubernetes.docker.internal/
+- Employee Web App: http://kubernetes.docker.internal/
     * Employee Admin Credentials: `admin` / `admin`
 - Identity: http://kubernetes.docker.internal/auth
     * Realm Admin Credentials: `admin` / `admin`
