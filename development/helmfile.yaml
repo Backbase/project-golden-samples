@@ -192,11 +192,11 @@ releases:
             annotations:
               "kubernetes.io/ingress.class": "nginx"
               "nginx.ingress.kubernetes.io/rewrite-target": /$1
-              "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/external/token-converter"
+              "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/internal/token-converter"
             hosts:
               - host: {{ .Values.ingress.host }}
                 paths:
-                  - /external/token-converter/(.*)
+                  - /internal/token-converter/(.*)
 
   # Identity Integration Service
   - name: identity-integration
@@ -222,11 +222,11 @@ releases:
             annotations:
               "kubernetes.io/ingress.class": "nginx"
               "nginx.ingress.kubernetes.io/rewrite-target": /$1
-              "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/external/identity-integration-service"
+              "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/internal/identity-integration-service"
             hosts:
               - host: {{ .Values.ingress.host }}
                 paths:
-                  - /external/identity-integration-service/(.*)
+                  - /internal/identity-integration-service/(.*)
 
   # DBS
   # Access Control
@@ -248,11 +248,11 @@ releases:
             annotations:
               "kubernetes.io/ingress.class": "nginx"
               "nginx.ingress.kubernetes.io/rewrite-target": /$1
-              "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/external/access-control"
+              "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/internal/access-control"
             hosts:
               - host: {{ .Values.ingress.host }}
                 paths:
-                  - /external/access-control/(.*)
+                  - /internal/access-control/(.*)
 
   # Arrangement Manager
   - name: dbs-arrangement-manager
@@ -277,11 +277,11 @@ releases:
             annotations:
               "kubernetes.io/ingress.class": "nginx"
               "nginx.ingress.kubernetes.io/rewrite-target": /$1
-              "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/external/arrangement-manager"
+              "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/internal/arrangement-manager"
             hosts:
               - host: {{ .Values.ingress.host }}
                 paths:
-                  - /external/arrangement-manager/(.*)
+                  - /internal/arrangement-manager/(.*)
 
   # User Manager
   - name: dbs-user-manager
@@ -307,11 +307,11 @@ releases:
             annotations:
               "kubernetes.io/ingress.class": "nginx"
               "nginx.ingress.kubernetes.io/rewrite-target": /$1
-              "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/external/user-manager"
+              "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/internal/user-manager"
             hosts:
               - host: {{ .Values.ingress.host }}
                 paths:
-                  - /external/user-manager/(.*)
+                  - /internal/user-manager/(.*)
 
   # Bootstrap Task
   - name: job-moustache-bootstrap-task
