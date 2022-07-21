@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
-import org.quarkus.openapi.generator.api.factory.ApiClientFactory;
+import org.quarkus.openapi.generator.config.api.factory.ApiClientFactory;
 import org.quarkus.openapi.todo.api.ApiClient;
 
 class ApiClientFactoryTest {

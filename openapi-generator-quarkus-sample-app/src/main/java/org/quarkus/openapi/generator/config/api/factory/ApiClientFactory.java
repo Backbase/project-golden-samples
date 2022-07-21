@@ -1,4 +1,4 @@
-package org.quarkus.openapi.generator.api.factory;
+package org.quarkus.openapi.generator.config.api.factory;
 
 import com.backbase.identity.util.HeaderConstants;
 import io.opentracing.Tracer;

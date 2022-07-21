@@ -1,6 +1,6 @@
 package org.quarkus.openapi.generator.config;
 
-import static org.quarkus.openapi.generator.config.global.GlobalConfigConstants.BACKBASE_SCOPE;
+import static org.quarkus.openapi.generator.config.api.global.GlobalConfigConstants.BACKBASE_SCOPE;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

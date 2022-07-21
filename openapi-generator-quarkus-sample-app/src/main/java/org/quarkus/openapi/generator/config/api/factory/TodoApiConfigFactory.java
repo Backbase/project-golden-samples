@@ -1,6 +1,6 @@
-package org.quarkus.openapi.generator.api.factory;
+package org.quarkus.openapi.generator.config.api.factory;
 
-import static org.quarkus.openapi.generator.config.global.GlobalConfigConstants.TODO_API_BASE_URL_KEY;
+import static org.quarkus.openapi.generator.config.api.global.GlobalConfigConstants.TODO_API_BASE_URL_KEY;
 
 import com.backbase.identity.m10y.models.Tenant;
 import java.util.Objects;

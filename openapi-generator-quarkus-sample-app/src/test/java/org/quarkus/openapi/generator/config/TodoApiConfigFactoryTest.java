@@ -14,8 +14,8 @@ import org.keycloak.Config;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.quarkus.openapi.generator.api.factory.ApiClientFactory;
-import org.quarkus.openapi.generator.api.factory.TodoApiConfigFactory;
+import org.quarkus.openapi.generator.config.api.factory.ApiClientFactory;
+import org.quarkus.openapi.generator.config.api.factory.TodoApiConfigFactory;
 import org.quarkus.openapi.todo.api.ApiClient;
 
 @ExtendWith(MockitoExtension.class)

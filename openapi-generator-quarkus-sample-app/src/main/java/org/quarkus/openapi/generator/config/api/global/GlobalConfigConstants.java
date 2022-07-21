@@ -1,4 +1,4 @@
-package org.quarkus.openapi.generator.config.global;
+package org.quarkus.openapi.generator.config.api.global;
 
 import org.quarkus.openapi.generator.config.TodoApiConfig;
 
