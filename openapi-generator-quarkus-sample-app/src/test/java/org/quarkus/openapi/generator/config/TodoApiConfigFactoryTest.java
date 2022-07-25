@@ -7,7 +7,6 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
-import com.backbase.identity.m10y.models.Tenant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.keycloak.Config;
@@ -16,6 +15,7 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.quarkus.openapi.generator.config.api.factory.ApiClientFactory;
 import org.quarkus.openapi.generator.config.api.factory.TodoApiConfigFactory;
+import org.quarkus.openapi.generator.models.Tenant;
 import org.quarkus.openapi.todo.api.ApiClient;
 
 @ExtendWith(MockitoExtension.class)

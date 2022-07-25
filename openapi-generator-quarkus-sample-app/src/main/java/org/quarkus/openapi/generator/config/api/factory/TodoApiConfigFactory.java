@@ -2,7 +2,6 @@ package org.quarkus.openapi.generator.config.api.factory;
 
 import static org.quarkus.openapi.generator.config.api.global.GlobalConfigConstants.TODO_API_BASE_URL_KEY;
 
-import com.backbase.identity.m10y.models.Tenant;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.AccessLevel;
@@ -11,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.keycloak.Config;
 import org.quarkus.openapi.generator.config.ConfigUtils;
 import org.quarkus.openapi.generator.config.TodoApiConfig;
+import org.quarkus.openapi.generator.models.Tenant;
 import org.quarkus.openapi.todo.api.TodosApi;
 
 @Slf4j

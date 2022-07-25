@@ -1,6 +1,5 @@
 package org.quarkus.openapi.generator.config.api.factory;
 
-import com.backbase.identity.util.HeaderConstants;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedExecutorService;
 import io.opentracing.util.GlobalTracer;
@@ -51,6 +50,6 @@ public class ApiClientFactory {
             return apiClient;
         }
 
-        return apiClient.addDefaultHeader(HeaderConstants.TENANT_HEADER, tenantId);
+        return apiClient.addDefaultHeader("X-TID", tenantId);
     }
 }
