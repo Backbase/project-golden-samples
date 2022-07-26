@@ -2,8 +2,9 @@
 
 ## Pre-requisites
 
-- Colima with k3s
-    * `colima kubernetes start`
+- Colima with k3s with at least 16GB of RAM and 4 CPUs.
+    * `colima start --cpu 4 --memory 16 --kubernetes`
+> If you already have `colima` running with less resources I recommend deleting it first: `colima delete`
 - Helmfile
     * `brew install helmfile`
 - Kubectl or K9s
@@ -14,7 +15,7 @@
 
 * Run: `add-backbase-helm-repo.sh`
 * Run: `add-backbase-pull-secret.sh`
-* Add: `127.0.0.1 kubernetes.docker.internal` in your `/etc/hosts` file.
+* Add: `127.0.0.1 kubernetes.docker.internal` to your `/etc/hosts` file.
 * Obtain the [employee-web-app-essentials](images/employee-web-app-essentials/README.md) image as it is not yet public
   available.
 * Obtain the [moustache-bootstrap-task](images/moustache-bootstrap-task/README.md) image as it is not public available.
@@ -23,7 +24,7 @@
 > Grab a coffee and wait for a few minutes, so everything can start. I recommend installing `k9s` to monitor the status
 > of the pods.
 
-**Hint**: You can test if the environment is up once the Job `job-moustache-bootstrap-task-retail-bootstrap-task` is completed:
+**Hint**: You can test if the entire environment is up once the Job `job-moustache-bootstrap-task-retail-bootstrap-task` is completed:
 ```shell
 $ kubectl get job job-moustache-bootstrap-task-retail-bootstrap-task
 
@@ -76,3 +77,8 @@ Internal endpoints are made available via ingress in case you want to access int
 - Access Control: http://kubernetes.docker.internal/internal/access-control
 - Arrangement Manager: http://kubernetes.docker.internal/internal/arrangement-manager
 - User Manager: http://kubernetes.docker.internal/internal/user-manager
+
+## Future Improvements
+
+1. Use all helm charts from [Topstack](https://backbase.atlassian.net/wiki/spaces/BAAS/pages/3842146431/New+helm+charts+based+on+library+first+implementation) once it is stable.
+2. Create an umbrella chart where we could replace this `helmfile` itself by a simple `helm` execution.
