@@ -322,8 +322,8 @@ releases:
       component: bootstrap-task
     values:
       - image:
-          repository: moustache-bootstrap-task
-          tag: latest
+          repository: harbor.backbase.eu/development/moustache-bootstrap-task
+          tag: 2.82.0
           pullPolicy: IfNotPresent
         priorityClassName: ''
         env: # All Envs that need external secrets are overridden here.
@@ -352,8 +352,8 @@ releases:
       capability: employee-app
     values:
       - image:
-          repository: employee-web-app-essentials
-          tag: latest
+          repository: harbor.backbase.eu/development/employee-web-app-essentials
+          tag: 2022.06
           pullPolicy: IfNotPresent
         priorityClassName: ''
         replicaCount: 1
