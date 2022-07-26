@@ -4,19 +4,19 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-: "${TOKEN_CONVERTER_URL:=http://token-converter:8080}"
-: "${ACCESS_CONTROL_URL:=http://access-control:8080}"
-: "${ARRANGEMENT_MANAGER_URL:=http://arrangement-manager:8080}"
-: "${USER_MANAGER_URL:=http://user-manager:8080}"
-: "${IDENTITY_INTEGRATION_URL:=http://identity-integration-service:8080}"
-: "${IDENTITY_URL:=http://backbase-identity:8080/auth}"
+: "${DBS_TOKEN_URI:=http://token-converter:8080/oauth/token}"
+: "${BACKBASE_STREAM_DBS_ACCESSCONTROLBASEURL:=http://access-control:8080}"
+: "${BACKBASE_STREAM_DBS_ARRANGEMENTMANAGERBASEURL:=http://arrangement-manager:8080}"
+: "${BACKBASE_STREAM_DBS_USERMANAGERBASEURL:=http://user-manager:8080}"
+: "${BACKBASE_STREAM_IDENTITY_IDENTITYINTEGRATIONBASEURL:=http://identity-integration-service:8080}"
+: "${ADMIN_BASEPATH:=http://backbase-identity:8080/auth}"
 
-TOKEN_CONVERTER_HEALTH_ENDPOINT="${TOKEN_CONVERTER_URL}/actuator/health/readiness"
-ACCESS_CONTROL_HEALTH_ENDPOINT="${ACCESS_CONTROL_URL}/actuator/health/readiness"
-ARRANGEMENT_MANAGER_ENDPOINT="${ARRANGEMENT_MANAGER_URL}/actuator/health/readiness"
-USER_MANAGER_HEALTH_ENDPOINT="${USER_MANAGER_URL}/actuator/health/readiness"
-IDENTITY_INTEGRATION_HEALTH_ENDPOINT="${IDENTITY_INTEGRATION_URL}/actuator/health/readiness"
-IDENTITY_HEALTH_ENDPOINT="${IDENTITY_URL}/q/health/ready"
+TOKEN_CONVERTER_HEALTH_ENDPOINT="$(echo $DBS_TOKEN_URI | rev | cut -d'/' -f3- | rev)/actuator/health/readiness"
+ACCESS_CONTROL_HEALTH_ENDPOINT="${BACKBASE_STREAM_DBS_ACCESSCONTROLBASEURL}/actuator/health/readiness"
+ARRANGEMENT_MANAGER_ENDPOINT="${BACKBASE_STREAM_DBS_ARRANGEMENTMANAGERBASEURL}/actuator/health/readiness"
+USER_MANAGER_HEALTH_ENDPOINT="${BACKBASE_STREAM_DBS_USERMANAGERBASEURL}/actuator/health/readiness"
+IDENTITY_INTEGRATION_HEALTH_ENDPOINT="${BACKBASE_STREAM_IDENTITY_IDENTITYINTEGRATIONBASEURL}/actuator/health/readiness"
+IDENTITY_HEALTH_ENDPOINT="${ADMIN_BASEPATH}/q/health/ready"
 
 health_check() {
   SERVICE_NAME=$1
@@ -29,7 +29,7 @@ health_check() {
   echo "The ${SERVICE_NAME} service is up and running"
 }
 
-health_check "token-converter" $TOKEN_CONVERTER_HEALTH_ENDPOINT
+health_check "token-converter" "$TOKEN_CONVERTER_HEALTH_ENDPOINT"
 health_check "access-control" $ACCESS_CONTROL_HEALTH_ENDPOINT
 health_check "arrangement-manager" $ARRANGEMENT_MANAGER_ENDPOINT
 health_check "user-manager" $USER_MANAGER_HEALTH_ENDPOINT
