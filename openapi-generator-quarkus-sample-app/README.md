@@ -1,6 +1,6 @@
 # OpenApi Generator Usage on Sample Quarkus Application
 
-This example covers how to use OpenApiGenerator on the Quarkus Applications.
+This example covers the approach adopted on the Natwest project when generating API clients with Resteasy for Identity Service Provider Interfaces using Quarkus native libraries
 
 ## Running the application in dev mode
 
