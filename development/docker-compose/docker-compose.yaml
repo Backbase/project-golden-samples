@@ -57,6 +57,9 @@ services:
       <<: *common-variables
       gateway.actuator.user: admin
       gateway.actuator.password: admin
+      spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedOrigins: "*"
+      spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedHeaders: "*"
+      spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedMethods: "*"
     links:
       - registry
       - token-converter
@@ -79,7 +82,7 @@ services:
     image: repo.backbase.com/backbase-docker-releases/backbase-identity:${BB_VERSION}
     container_name: identity
     environment:
-      KEYCLOAK_BACKBASE_OIDC_TOKEN_CONVERTER_URL: "http://token-converter:8080/oidc-token-converter-service"
+      KEYCLOAK_BACKBASE_OIDC_TOKEN_CONVERTER_URL: "http://token-converter:8080"
       # KEYCLOAK_BACKBASE_EVENT_LISTENERS_AUDIT_INTEGRATIONSERVICEURL: "http://host.docker.internal:8092/audit-service"
       # KEYCLOAK_BACKBASE_DEVICE_URL: "http://host.docker.internal:8181/device-management-service"
       # KEYCLOAK_BACKBASE_FIDO_URL: "http://host.docker.internal:8181/fido-service"
@@ -88,6 +91,7 @@ services:
       QUARKUS_DATASOURCE_PASSWORD: "root"
       QUARKUS_DATASOURCE_DRIVER: "com.mysql.cj.jdbc.Driver"
       QUARKUS_LOG_FILE_ENABLE: "false"
+      keycloak.hostname.default.frontendUrl: http://localhost:8180/auth
       KEYCLOAK_ADMIN: "admin"
       KEYCLOAK_ADMIN_PASSWORD: "admin"
       KEYCLOAK_CONNECTIONSJPA_QUARKUS_INITIALIZEEMPTY: "true"
@@ -172,7 +176,7 @@ services:
 
   
   retail-bootstrap-task:
-    image: harbor.backbase.eu/development/moustache-bootstrap-task:latest
+    image: harbor.backbase.eu/development/moustache-bootstrap-task:2.82.0
     environment:
       SPRING_PROFILES_INCLUDE: ''
       JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70.0 -XX:+UseContainerSupport
@@ -188,7 +192,7 @@ services:
     image: harbor.backbase.eu/development/employee-web-app-essentials:2022.06
     environment:
       AUTH_URL: "http://localhost:8180/auth"
-      API_ROOT: "http://localhost:8180/api"
+      API_ROOT: "http://localhost:8080/api"
     ports:
       - '8280:8080'
 
