@@ -1,10 +1,68 @@
 # OpenApi Generator Usage on Sample Quarkus Application
 
-This example covers the approach adopted on the Natwest project when generating API clients with Resteasy for Identity Service Provider Interfaces using Quarkus native libraries
+This example covers the approach adopted on the Natwest Identity project when generating API clients with Resteasy for
+**Identity Service Provider Interfaces** which they are using Quarkus native libraries.
+
+For **Spring**, with the help of the **boat-plugin**, we have the default configuration to use open-api-generator with
+Spring. It's already documented and is well known in Backbase.
+
+>**_NOTE:_** Please take a look at the [BOAT Golden Example](https://github.com/Backbase/project-golden-samples/tree/main/boat)
+to understand how to use boat-plugin.
+
+For **Quarkus**, to use openapi-generator the plugin must be configured.
+
+## Configuration of OpenApiGenerator Plugin
+The input spec of this sample application can be found [here](https://raw.githubusercontent.com/redhat-appdev-practice/todo-api/trunk/openapi.yml).
+
+>TODO : Explaining the configuration details.
+
+```xml
+    <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>todo-api</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/todo.yaml</inputSpec>
+                            <configOptions>
+                                <modelPackage>org.quarkus.openapi.todo.model</modelPackage>
+                                <apiPackage>org.quarkus.openapi.todo.api</apiPackage>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <output>${codegen.openapi.generated-sources-dir}</output>
+                    <generatorName>java</generatorName>
+                    <generateApiTests>false</generateApiTests>
+                    <generateModelTests>false</generateModelTests>
+                    <generateModelDocumentation>false</generateModelDocumentation>
+                    <generateApiDocumentation>false</generateApiDocumentation>
+                    <configOptions>
+                        <library>resteasy</library>
+                        <useBeanValidation>true</useBeanValidation>
+                        <useSwaggerAnnotations>false</useSwaggerAnnotations>
+                        <dateLibrary>java8</dateLibrary>
+                        <withXml>false</withXml>
+                        <openApiNullable>false</openApiNullable>
+                        <invokerPackage>org.quarkus.openapi.todo.api</invokerPackage>
+                    </configOptions>
+                </configuration>
+            </plugin>
+```
+
+
+
+
 
 ## Running the application in dev mode
 
 You can run your application in dev mode that enables live coding using:
+
 ```shell script
 ./mvnw compile quarkus:dev
 ```
@@ -14,15 +72,18 @@ You can run your application in dev mode that enables live coding using:
 ## Packaging and running the application
 
 The application can be packaged using:
+
 ```shell script
 ./mvnw package
 ```
+
 It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
 Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
 
 The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
 
 If you want to build an _über-jar_, execute the following command:
+
 ```shell script
 ./mvnw package -Dquarkus.package.type=uber-jar
 ```
@@ -31,12 +92,14 @@ The application, packaged as an _über-jar_, is now runnable using `java -jar ta
 
 ## Creating a native executable
 
-You can create a native executable using: 
+You can create a native executable using:
+
 ```shell script
 ./mvnw package -Pnative
 ```
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
+Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+
 ```shell script
 ./mvnw package -Pnative -Dquarkus.native.container-build=true
 ```
