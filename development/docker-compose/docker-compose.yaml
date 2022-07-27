@@ -98,7 +98,7 @@ services:
       - '8180:8080'
       - '10090:10090'
     volumes:
-      - ./identity/json:/tmp/keycloak-export
+      - ../config:/tmp/keycloak-export
     links:
       - mysql
       - token-converter
