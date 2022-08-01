@@ -1,0 +1,371 @@
+environments:
+  default:
+    kubeContext: colima
+    values:
+      - ingress:
+          proto: http
+          host: kubernetes.docker.internal
+
+repositories:
+  - name: ingress-nginx
+    url: https://kubernetes.github.io/ingress-nginx
+
+{{- $identityHost := "backbase-identity:8080" }}
+releases:
+  # Ingress Controller
+  - name: ingress-nginx
+    chart: ingress-nginx/ingress-nginx
+    version: 4.0.19
+    labels:
+      tier: infrastructure
+      component: nginx
+
+  # Spring Boot Admin for Monitoring
+  {{- $adminServerPath := "/admin" }}
+  - name: spring-boot-admin
+    chart: backbase-charts/backbase-app
+    version: 0.23.12
+    labels:
+      tier: infrastructure
+      component: sba-server
+    values:
+      - global.yaml.gotmpl
+      - app:
+          name: spring-boot-admin-server
+          image:
+            registry: backbasecs
+            repository: spring-boot-admin-server
+            tag: latest
+            pullPolicy: Always
+        env:
+          # Configuration for non-spring boot health check (Identity)
+          SPRING_CLOUD_KUBERNETES_DISCOVERY_FILTER: "metadata.labels != null && metadata.labels['app.backbase.com/tier'] != null && metadata.labels['app.kubernetes.io/name'] != 'backbaseidentity'"
+          SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_IDENTITY-SERVER_0_URI: http://{{ $identityHost }}
+          SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_IDENTITY-SERVER_0_METADATA_MANAGEMENT_CONTEXT-PATH: /auth/q/health
+          SPRING_CLOUD_DISCOVERY_CLIENT_SIMPLE_INSTANCES_IDENTITY-SERVER_0_METADATA_HEALTH_PATH: live
+          # Pre-configuration for nginx-ingress
+          SPRING_BOOT_ADMIN_UI_PUBLIC_URL: {{ .Values.ingress.proto }}://{{ .Values.ingress.host }}{{ $adminServerPath }}
+          SPRING_BOOT_ADMIN_CONTEXT_PATH: {{ $adminServerPath }}
+        ingress:
+          enabled: true
+          annotations:
+            "kubernetes.io/ingress.class": "nginx"
+            "nginx.ingress.kubernetes.io/x-forwarded-prefix": {{ $adminServerPath }}
+          hosts:
+            - host: {{ .Values.ingress.host }}
+              paths:
+                - {{ $adminServerPath }}
+
+                # Environment Initial Setup
+  - name: backbase-env
+    chart: backbase-charts/backbase-env
+    version: 0.5.62
+    labels:
+      tier: infrastructure
+      component: env
+    values:
+      - activemq:
+          enabled: true
+          image:
+            repository: symptoma/activemq
+            tag: 5.17.0
+        mysql:
+          enabled: true
+          image: mysql
+          imageTag: 8.0.29-oracle
+          mysqlRootPassword: backbase321!
+          mysqlPassword: backbase123!
+        jwt:
+          enabled: true
+          internalSecretKey: "JWTSecretKeyDontUseInProduction!"
+          externalSecretKey: "JWTSecretKeyDontUseInProduction!"
+          externalEncSecretKey: "JWTEncKeyDontUseInProduction666!"
+          userctxKey: "JWTSecretKeyDontUseInProduction!"
+
+  # Foundation
+  # Edge
+  - name: foundation-edge
+    chart: backbase-charts/edge
+    version: 0.12.5
+    labels:
+      tier: foundation
+      component: edge
+    values:
+      - global.yaml.gotmpl
+      - global-ssdk.yaml.gotmpl
+      - edge:
+          env:
+            GATEWAY_ACTUATOR_SECURITY_ENABLED: "false"
+            GATEWAY_CSRF_ENABLED: "false"
+            SPRING_CONFIG_ADDITIONAL_LOCATION: "file:/customfiles/application.yaml"
+          customFiles:
+            application.yaml: |-
+              spring:
+                cloud:
+                  gateway:
+                    globalcors:
+                      corsConfigurations:
+                        '[/**]':
+                          allowedOrigins: "*"
+                          allowedHeaders: "*"
+                          allowedMethods: "*"
+          javaOpts:
+            extra:
+              - "-Dreactor.netty.http.server.accessLogEnabled=true"
+              - "-Dlogging.level.reactor.netty.http.server.AccessLog=DEBUG"
+          ingress:
+            enabled: true
+            annotations:
+              "kubernetes.io/ingress.class": "nginx"
+              "nginx.ingress.kubernetes.io/proxy-body-size": "50m"
+            hosts:
+              - host: {{ .Values.ingress.host }}
+                paths:
+                  - /api
+
+  # Identity
+  # Identity Authorization Server
+  - name: identity-server
+    chart: backbase-charts/backbase-identity
+    version: 0.3.2
+    labels:
+      tier: identity
+      component: identity-server
+      with-database: true
+    values:
+      - global.yaml.gotmpl
+      - backbaseidentity:
+          liquibase:
+            enabled: true
+          database:
+            sid: backbase_identity
+          service:
+            nameOverride: backbase-identity
+          env:
+            KEYCLOAK_ADMIN: admin
+            KEYCLOAK_ADMIN_PASSWORD: admin
+            keycloak.hostname.default.frontendUrl: {{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/auth
+            QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING: "true"
+            QUARKUS_JAEGER_PROPAGATION: b3
+            QUARKUS_JAEGER_SERVICE_NAME: backbase-identity
+            QUARKUS_LOG_LEVEL: INFO
+            QUARKUS_LOG_CONSOLE_FORMAT: "%d{yyy:MM:dd HH:mm:ss.SSS} %-5p [${quarkus.jaeger.service-name},%X{traceId},%X{spanId},%X{sampled}] %i --- %c{2.} : %m%n"
+          javaOpts:
+            extra:
+              - "--add-opens=java.base/java.lang=ALL-UNNAMED"
+              - "-Dquarkus.log.category.'\"com.backbase\"'.level=DEBUG"
+              - "-Dquarkus.log.category.'\"org.keycloak.protocol.oidc\"'.level=TRACE"
+              - "-Dkeycloak.profile.feature.upload_scripts=enabled"
+              - "-Dkeycloak.import=/home/nonroot/conf/backbase-realm.json"
+          customFiles:
+            backbase-realm.json: |-
+              {{- readFile "config/identity/backbase-realm.json" | nindent 14 }}
+          ingress:
+            enabled: true
+            annotations:
+              "kubernetes.io/ingress.class": "nginx"
+              "nginx.ingress.kubernetes.io/proxy-read-timeout": "600"
+              "nginx.ingress.kubernetes.io/proxy-buffer-size": "16k"
+              "nginx.ingress.kubernetes.io/rewrite-target": /auth$1
+            hosts:
+              - host: {{ .Values.ingress.host }}
+                paths:
+                  - /auth(.*)
+
+  # Token Converter
+  - name: identity-token-converter
+    chart: backbase-charts/oidc-token-converter
+    version: 0.2.1
+    labels:
+      tier: identity
+      component: token-converter
+    values:
+      - global.yaml.gotmpl
+      - global-ssdk.yaml.gotmpl
+      - oidctokenconverter:
+          env:
+            BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOSTSCHEME: http
+            BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOST: {{ $identityHost }}
+            BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_ISSUERHOST: {{ .Values.ingress.host }}
+          ingress:
+            enabled: true
+            annotations:
+              "kubernetes.io/ingress.class": "nginx"
+              "nginx.ingress.kubernetes.io/rewrite-target": /$1
+              "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/internal/token-converter"
+            hosts:
+              - host: {{ .Values.ingress.host }}
+                paths:
+                  - /internal/token-converter/(.*)
+
+  # Identity Integration Service
+  - name: identity-integration
+    chart: backbase-charts/identity-integration
+    version: 0.1.8
+    labels:
+      tier: identity
+      component: identity-integration
+    values:
+      - global.yaml.gotmpl
+      - global-ssdk.yaml.gotmpl
+      - identityintegrationservice:
+          env:
+            IDENTITY_SERVERURL: http://{{ $identityHost }}/auth
+            IDENTITY_MASTERADMIN_USERNAME: admin
+            IDENTITY_MASTERADMIN_PASSWORD: admin
+            IDENTITY_MASTERADMIN_REALMNAME: master
+            IDENTITY_MASTERADMIN_CLIENTID: admin-cli
+            IDENTITY_REALMCONFIGURATION_FALLBACKOPTIONS_ENABLEUSER: "true"
+            IDENTITY_REALMCONFIGURATION_FALLBACKOPTIONS_USETEMPORARYPASSWORD: "true"
+          ingress:
+            enabled: true
+            annotations:
+              "kubernetes.io/ingress.class": "nginx"
+              "nginx.ingress.kubernetes.io/rewrite-target": /$1
+              "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/internal/identity-integration-service"
+            hosts:
+              - host: {{ .Values.ingress.host }}
+                paths:
+                  - /internal/identity-integration-service/(.*)
+
+  # DBS
+  # Access Control
+  - name: dbs-access-control
+    chart: backbase-charts/access-control
+    version: 0.1.9
+    labels:
+      tier: dbs
+      capability: access-control
+      with-database: true
+    values:
+      - global.yaml.gotmpl
+      - global-ssdk.yaml.gotmpl
+      - accesscontrol:
+          liquibase:
+            enabled: true
+          ingress:
+            enabled: true
+            annotations:
+              "kubernetes.io/ingress.class": "nginx"
+              "nginx.ingress.kubernetes.io/rewrite-target": /$1
+              "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/internal/access-control"
+            hosts:
+              - host: {{ .Values.ingress.host }}
+                paths:
+                  - /internal/access-control/(.*)
+
+  # Arrangement Manager
+  - name: dbs-arrangement-manager
+    chart: backbase-charts/arrangement-manager
+    version: 0.3.0
+    labels:
+      tier: dbs
+      capability: arrangement-manager
+      with-database: true
+    values:
+      - global.yaml.gotmpl
+      - global-ssdk.yaml.gotmpl
+      - arrangement-manager:
+          liquibase:
+            enabled: true
+          database:
+            checkEnabled: true
+          activemq:
+            checkEnabled: true
+          ingress:
+            enabled: true
+            annotations:
+              "kubernetes.io/ingress.class": "nginx"
+              "nginx.ingress.kubernetes.io/rewrite-target": /$1
+              "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/internal/arrangement-manager"
+            hosts:
+              - host: {{ .Values.ingress.host }}
+                paths:
+                  - /internal/arrangement-manager/(.*)
+
+  # User Manager
+  - name: dbs-user-manager
+    chart: backbase-charts/user-manager
+    version: 0.1.9
+    labels:
+      tier: dbs
+      capability: user-manager
+      with-database: true
+    values:
+      - global.yaml.gotmpl
+      - global-ssdk.yaml.gotmpl
+      - usermanager:
+          liquibase:
+            enabled: true
+          database:
+            sid: user_pandp
+          env:
+            BACKBASE_USERS_IDENTITYENDPOINTSENABLED: "true"
+            BACKBASE_USERS_IDENTITYINTEGRATIONENABLED: "true"
+          ingress:
+            enabled: true
+            annotations:
+              "kubernetes.io/ingress.class": "nginx"
+              "nginx.ingress.kubernetes.io/rewrite-target": /$1
+              "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/internal/user-manager"
+            hosts:
+              - host: {{ .Values.ingress.host }}
+                paths:
+                  - /internal/user-manager/(.*)
+
+  # Bootstrap Task
+  - name: job-moustache-bootstrap-task
+    chart: oci://repo.backbase.com/docker-test/retail-bootstrap-task
+    version: 2022.05.6
+    labels:
+      tier: job
+      component: bootstrap-task
+    values:
+      - image:
+          repository: harbor.backbase.eu/development/moustache-bootstrap-task
+          tag: "2.85.0"
+          pullPolicy: IfNotPresent
+        priorityClassName: ''
+        env: # All Envs that need external secrets are overridden here.
+          admin.username: ''
+          admin.password: ''
+          admin.defaultUserPassword: ''
+          mambu.username: ''
+          mambu.password: ''
+          mambu.basePath: ''
+          mambu.branchKey: ''
+          mambu.currentAccountProductKey: ''
+          mambu.savingsAccountProductKey: ''
+          mambu.transactionsBeneficiaryAccountKey: ''
+          marqeta.username: ''
+          marqeta.password: ''
+          marqeta.basePath: ''
+          SPRING_PROFILES_INCLUDE: ''
+
+  # Web
+  # Employee Web Portal
+  - name: web-employee-app
+    chart: oci://repo.backbase.com/docker-test/portalless
+    version: 2022.05.6-ingress
+    labels:
+      tier: web
+      capability: employee-app
+    values:
+      - image:
+          repository: harbor.backbase.eu/development/employee-web-app-essentials
+          tag: "2022.06"
+          pullPolicy: IfNotPresent
+        priorityClassName: ''
+        replicaCount: 1
+        env:
+          API_ROOT: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/api"
+          AUTH_URL: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/auth"
+        ingress:
+          enabled: true
+          annotations:
+            "kubernetes.io/ingress.class": "nginx"
+          hosts:
+            - host: {{ .Values.ingress.host }}
+              paths:
+                - path: /
+                  pathType: ImplementationSpecific

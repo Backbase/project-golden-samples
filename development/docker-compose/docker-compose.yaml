@@ -1,0 +1,210 @@
+version: "3.9" # https://docs.docker.com/compose/compose-file/
+
+x-common-variables: &common-variables
+  SIG_SECRET_KEY: JWTSecretKeyDontUseInProduction!
+  USERCTX_KEY: JWTSecretKeyDontUseInProduction!
+  eureka.client.serviceUrl.defaultZone: http://registry:8080/eureka
+  eureka.instance.non-secure-port: 8080
+  management.endpoints.web.exposure.include: info,health,beans,bindings,gateway
+  SPRING_MAIN_BANNER-MODE: 'off'
+
+x-database-variables: &database-variables
+  spring.liquibase.enabled: 'true'
+  spring.datasource.username: root
+  spring.datasource.password: root
+  spring.datasource.driver-class-name: com.mysql.cj.jdbc.Driver
+  spring.jpa.database-platform: org.hibernate.dialect.MySQL5Dialect
+  spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+
+x-message-broker-variables: &message-broker-variables
+  spring.activemq.broker-url: tcp://message-broker:61616
+  spring.activemq.user: admin
+  spring.activemq.password: admin
+
+services:
+
+  message-broker:
+    image: symptoma/activemq:5.17.0
+    privileged: true
+    ports:
+      - "61616:61616"
+      - "8161:8161"
+      - "5672:5672"
+      - "61613:61613"
+      - "1883:1883"
+      - "61614:61614"
+
+  mysql:
+    image: mysql:5.7.18
+    # Set max_allowed_packet to 512M for provisioning
+    command: --max-allowed-packet=512M --performance-schema=FALSE --transaction-isolation=READ-COMMITTED --init-connect='SET collation_connection=utf8_bin' --init-connect='SET NAMES utf8;' --character-set-server=utf8 --collation-server=utf8_bin --lower-case-table-names=2 --max-connections=500
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "3306:3306"
+    volumes:
+      - dev_mysql_data:/var/lib/mysql
+
+  edge:
+    image: repo.backbase.com/backbase-docker-releases/edge:${BB_VERSION}
+    ports:
+      - "8180:8080"
+    environment:
+      <<: *common-variables
+      gateway.actuator.user: admin
+      gateway.actuator.password: admin
+      spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedOrigins: "*"
+      spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedHeaders: "*"
+      spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedMethods: "*"
+    links:
+      - registry
+      - token-converter
+
+  registry:
+    image: repo.backbase.com/backbase-docker-releases/registry:${BB_VERSION}
+    ports:
+      - "8761:8080"
+
+  token-converter:
+    image: repo.backbase.com/backbase-docker-releases/oidc-token-converter-service:${BB_VERSION}
+    ports:
+      - "7779:8080"
+    environment:
+      <<: *common-variables
+      JAVA_TOOL_OPTIONS: -Dlogging.level.com.backbase=DEBUG
+      BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOSTSCHEME: http
+      BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOST: identity:8080
+      BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_ISSUERHOST: localhost
+    links:
+      - registry
+
+  identity:
+    image: repo.backbase.com/backbase-docker-releases/backbase-identity:${BB_VERSION}
+    container_name: identity
+    environment:
+      KEYCLOAK_BACKBASE_OIDC_TOKEN_CONVERTER_URL: "http://token-converter:8080"
+      # KEYCLOAK_BACKBASE_EVENT_LISTENERS_AUDIT_INTEGRATIONSERVICEURL: "http://host.docker.internal:8092/audit-service"
+      # KEYCLOAK_BACKBASE_DEVICE_URL: "http://host.docker.internal:8181/device-management-service"
+      # KEYCLOAK_BACKBASE_FIDO_URL: "http://host.docker.internal:8181/fido-service"
+      QUARKUS_DATASOURCE_URL: "jdbc:mysql://mysql:3306/backbase_identity?useSSL=false&cacheServerConfiguration=true&createDatabaseIfNotExist=true"
+      QUARKUS_DATASOURCE_USERNAME: "root"
+      QUARKUS_DATASOURCE_PASSWORD: "root"
+      QUARKUS_DATASOURCE_DRIVER: "com.mysql.cj.jdbc.Driver"
+      QUARKUS_LOG_FILE_ENABLE: "false"
+      keycloak.hostname.default.frontendUrl: http://localhost:8080/auth
+      KEYCLOAK_ADMIN: "admin"
+      KEYCLOAK_ADMIN_PASSWORD: "admin"
+      KEYCLOAK_CONNECTIONSJPA_QUARKUS_INITIALIZEEMPTY: "true"
+      KEYCLOAK_CONNECTIONSJPA_QUARKUS_MIGRATIONSTRATEGY: "update"
+      KEYCLOAK_HOME_DIR: "/"
+      JAVA_TOOL_OPTIONS: "-Dkeycloak.migration.strategy=IGNORE_EXISTING -Dkeycloak.migration.action=import -Dkeycloak.profile.feature.upload_scripts=enabled -Dquarkus.log.category.'\"com.backbase\"'.level=DEBUG -Dquarkus.log.category.'\"org.keycloak.protocol.oidc\"'.level=TRACE"
+    ports:
+      - '8080:8080'
+      - '10090:10090'
+    volumes:
+      - ../config/identity:/tmp/keycloak-export
+    links:
+      - mysql
+      - token-converter
+
+  access-control:
+    image: repo.backbase.com/backbase-docker-releases/access-control:${BB_VERSION}
+    hostname: accesscontrol
+    ports:
+      - "8040:8080"
+    environment:
+      <<: *common-variables
+      <<: *message-broker-variables
+      <<: *database-variables
+      spring.datasource.url: jdbc:mysql://mysql:3306/access-control?useSSL=false&cacheServerConfiguration=true&createDatabaseIfNotExist=true
+    links:
+      - mysql
+      - registry
+      - message-broker
+
+  arrangement-manager:
+    image: repo.backbase.com/backbase-docker-releases/arrangement-manager:${BB_VERSION}
+    hostname: arrangementmanager
+    ports:
+      - "8050:8080"
+    environment:
+      <<: *common-variables
+      <<: *message-broker-variables
+      <<: *database-variables
+      spring.datasource.url: jdbc:mysql://mysql:3306/arrangement-manager?useSSL=false&cacheServerConfiguration=true&createDatabaseIfNotExist=true
+    links:
+      - mysql
+      - registry
+      - message-broker
+
+  user-manager:
+    image: repo.backbase.com/backbase-docker-releases/user-manager:${BB_VERSION}
+    hostname: arrangementmanager
+    ports:
+      - "8060:8080"
+    environment:
+      <<: *common-variables
+      <<: *message-broker-variables
+      <<: *database-variables
+      spring.datasource.url: jdbc:mysql://mysql:3306/user-manager?useSSL=false&cacheServerConfiguration=true&createDatabaseIfNotExist=true
+      BACKBASE_USERS_IDENTITYENDPOINTSENABLED: "true"
+      BACKBASE_USERS_IDENTITYINTEGRATIONENABLED: "true"
+    links:
+      - mysql
+      - registry
+      - message-broker
+
+  identity-integration-service:
+    image: repo.backbase.com/backbase-docker-releases/identity-integration-service:${BB_VERSION}
+    hostname: identityintegration
+    ports:
+      - "8070:8080"
+    environment:
+      <<: *common-variables
+      <<: *message-broker-variables
+      IDENTITY_SERVERURL: http://identity:8080/auth
+      IDENTITY_MASTERADMIN_USERNAME: admin
+      IDENTITY_MASTERADMIN_PASSWORD: admin
+      IDENTITY_MASTERADMIN_REALMNAME: master
+      IDENTITY_MASTERADMIN_CLIENTID: admin-cli
+      IDENTITY_REALMCONFIGURATION_FALLBACKOPTIONS_ENABLEUSER: "true"
+      IDENTITY_REALMCONFIGURATION_FALLBACKOPTIONS_USETEMPORARYPASSWORD: "true"
+    links:
+      - registry
+      - message-broker
+
+  legal-entity-bootstrap-task-checks:
+    image: alpine/curl
+    entrypoint:
+      - "sh"
+      - "-c"
+      - "until curl -s 'http://token-converter:8080/actuator/health/readiness' | grep UP; do echo 'Waiting for token converter...'; sleep 3; done &&
+         until curl -s 'http://access-control:8080/actuator/health/readiness' | grep UP; do echo 'Waiting for access control...'; sleep 3; done &&
+         until curl -s 'http://arrangement-manager:8080/actuator/health/readiness' | grep UP; do echo 'Waiting for arrangement manager...'; sleep 3; done &&
+         until curl -s 'http://user-manager:8080/actuator/health/readiness' | grep UP; do echo 'Waiting for user manager...'; sleep 3; done &&
+         until curl -s 'http://identity-integration-service:8080/actuator/health/readiness' | grep UP; do echo 'Waiting for identity integration...'; sleep 3; done &&
+         until curl -s 'http://identity:8080/auth/q/health/ready' | grep UP; do echo 'Waiting for identity...'; sleep 3; done"
+
+  legal-entity-bootstrap-task:
+    image: repo.backbase.com/backbase-stream-images/legal-entity-bootstrap-task:2.85.0
+    environment:
+      JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70.0 -Dlogging.level.com.backbase.stream=DEBUG
+      SPRING_PROFILES_INCLUDE: 'moustache-bank'
+    depends_on:
+      legal-entity-bootstrap-task-checks:
+        condition: service_completed_successfully
+
+  employee-app:
+    image: harbor.backbase.eu/development/employee-web-app-essentials:2022.06
+    environment:
+      AUTH_URL: "http://localhost:8080/auth"
+      API_ROOT: "http://localhost:8180/api"
+    ports:
+      - '8280:8080'
+    links:
+      - identity
+      - edge
+
+
+volumes:
+  dev_mysql_data:
