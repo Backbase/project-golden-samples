@@ -1,5 +1,4 @@
-version: "3.7"
-# https://docs.docker.com/compose/compose-file/
+version: "3.9" # https://docs.docker.com/compose/compose-file/
 
 x-common-variables: &common-variables
   SIG_SECRET_KEY: JWTSecretKeyDontUseInProduction!
@@ -26,7 +25,6 @@ services:
 
   message-broker:
     image: symptoma/activemq:5.17.0
-    container_name: demo_activemq
     privileged: true
     ports:
       - "61616:61616"
@@ -40,13 +38,12 @@ services:
     image: mysql:5.7.18
     # Set max_allowed_packet to 512M for provisioning
     command: --max-allowed-packet=512M --performance-schema=FALSE --transaction-isolation=READ-COMMITTED --init-connect='SET collation_connection=utf8_bin' --init-connect='SET NAMES utf8;' --character-set-server=utf8 --collation-server=utf8_bin --lower-case-table-names=2 --max-connections=500
-    container_name: demo_mysql
     environment:
       - MYSQL_ROOT_PASSWORD=root
     ports:
       - "3306:3306"
     volumes:
-      - demo_mysql_data:/var/lib/mysql
+      - dev_mysql_data:/var/lib/mysql
 
   edge:
     image: repo.backbase.com/backbase-docker-releases/edge:${BB_VERSION}
@@ -62,7 +59,7 @@ services:
     links:
       - registry
       - token-converter
-  
+
   registry:
     image: repo.backbase.com/backbase-docker-releases/registry:${BB_VERSION}
     ports:
@@ -99,13 +96,13 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: "admin"
       KEYCLOAK_CONNECTIONSJPA_QUARKUS_INITIALIZEEMPTY: "true"
       KEYCLOAK_CONNECTIONSJPA_QUARKUS_MIGRATIONSTRATEGY: "update"
-      KEYCLOAK_HOME_DIR: "/" 
+      KEYCLOAK_HOME_DIR: "/"
       JAVA_TOOL_OPTIONS: "-Dkeycloak.migration.strategy=IGNORE_EXISTING -Dkeycloak.migration.action=import -Dkeycloak.profile.feature.upload_scripts=enabled -Dquarkus.log.category.'\"com.backbase\"'.level=DEBUG -Dquarkus.log.category.'\"org.keycloak.protocol.oidc\"'.level=TRACE"
     ports:
       - '8080:8080'
       - '10090:10090'
     volumes:
-      - ../config:/tmp/keycloak-export
+      - ../config/identity:/tmp/keycloak-export
     links:
       - mysql
       - token-converter
@@ -176,21 +173,26 @@ services:
       - registry
       - message-broker
 
-  
-  retail-bootstrap-task:
-    image: harbor.backbase.eu/development/moustache-bootstrap-task:2.82.0
+  legal-entity-bootstrap-task-checks:
+    image: alpine/curl
+    entrypoint:
+      - "sh"
+      - "-c"
+      - "until curl -s 'http://token-converter:8080/actuator/health/readiness' | grep UP; do echo 'Waiting for token converter...'; sleep 3; done &&
+         until curl -s 'http://access-control:8080/actuator/health/readiness' | grep UP; do echo 'Waiting for access control...'; sleep 3; done &&
+         until curl -s 'http://arrangement-manager:8080/actuator/health/readiness' | grep UP; do echo 'Waiting for arrangement manager...'; sleep 3; done &&
+         until curl -s 'http://user-manager:8080/actuator/health/readiness' | grep UP; do echo 'Waiting for user manager...'; sleep 3; done &&
+         until curl -s 'http://identity-integration-service:8080/actuator/health/readiness' | grep UP; do echo 'Waiting for identity integration...'; sleep 3; done &&
+         until curl -s 'http://identity:8080/auth/q/health/ready' | grep UP; do echo 'Waiting for identity...'; sleep 3; done"
+
+  legal-entity-bootstrap-task:
+    image: repo.backbase.com/backbase-stream-images/legal-entity-bootstrap-task:2.85.0
     environment:
-      SPRING_PROFILES_INCLUDE: ''
-      JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70.0 -XX:+UseContainerSupport
-      ADMIN_BASEPATH: http://identity:8080/auth
-    links:
-      - token-converter
-      - access-control
-      - arrangement-manager
-      - user-manager
-      - identity
-      - identity-integration-service
-  
+      JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70.0 -Dlogging.level.com.backbase.stream=DEBUG
+      SPRING_PROFILES_INCLUDE: 'moustache-bank'
+    depends_on:
+      legal-entity-bootstrap-task-checks:
+        condition: service_completed_successfully
 
   employee-app:
     image: harbor.backbase.eu/development/employee-web-app-essentials:2022.06
@@ -205,4 +207,4 @@ services:
 
 
 volumes:
-  demo_mysql_data:
+  dev_mysql_data:

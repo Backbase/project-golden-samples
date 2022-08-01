@@ -56,7 +56,7 @@ releases:
               paths:
                 - {{ $adminServerPath }}
 
-  # Environment Initial Setup
+                # Environment Initial Setup
   - name: backbase-env
     chart: backbase-charts/backbase-env
     version: 0.5.62
@@ -159,7 +159,7 @@ releases:
               - "-Dkeycloak.import=/home/nonroot/conf/backbase-realm.json"
           customFiles:
             backbase-realm.json: |-
-              {{- readFile "config/backbase-realm.json" | nindent 14 }}
+              {{- readFile "config/identity/backbase-realm.json" | nindent 14 }}
           ingress:
             enabled: true
             annotations:
@@ -323,7 +323,7 @@ releases:
     values:
       - image:
           repository: harbor.backbase.eu/development/moustache-bootstrap-task
-          tag: "2.82.0"
+          tag: "2.85.0"
           pullPolicy: IfNotPresent
         priorityClassName: ''
         env: # All Envs that need external secrets are overridden here.

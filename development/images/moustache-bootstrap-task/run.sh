@@ -36,7 +36,7 @@ health_check "user-manager" $USER_MANAGER_HEALTH_ENDPOINT
 health_check "identity-integration-service" $IDENTITY_INTEGRATION_HEALTH_ENDPOINT
 health_check "identity" $IDENTITY_HEALTH_ENDPOINT
 
-export JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -Dspring.profiles.active=moustache-bank -Dspring.cloud.kubernetes.config.enabled=false -Dlogging.level.com.backbase.stream=DEBUG"
+export JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -Dspring.profiles.include=moustache-bank,moustache-bank-subsidiaries -Dspring.cloud.kubernetes.config.enabled=false -Dlogging.level.com.backbase.stream=DEBUG"
 
 echo "Running product-catalog-task..."
 java -jar product-catalog-task.jar
