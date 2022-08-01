@@ -78,7 +78,7 @@ Once running, you can access the API documentation at:
 
 Do you have postman?
 
-If so, just import [Postman Collection](postman/Mock API Server Postman.postman_collection.json).
+If so, just import [Postman Collection](postman/Mock%20API%20Server%20Postman.postman_collection.json).
 
 ## Implement Mock Controllers
 

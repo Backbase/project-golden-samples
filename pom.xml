@@ -12,7 +12,7 @@
 
     <modules>
         <module>boat</module>
-        <module>core-bank-api-clients</module>
-        <module>core-bank-api-mock-server</module>
+        <module>client-api-and-mock-server/core-bank-api-clients</module>
+        <module>client-api-and-mock-server/core-bank-api-mock-server</module>
     </modules>
 </project>

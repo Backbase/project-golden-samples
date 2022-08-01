@@ -23,7 +23,7 @@ Both `accounts` folder and filename prefix are known by the service.
 
 #### Settings
 
-In [application.yaml](./../application.yaml) file you can configure:
+In [application.yaml](../application.yaml) file you can configure:
 
 - `cookbook.mockdata-path`: Location of mock data folder
 - `cookbook.file-extension`: File extension for the files. Currently "json" is used.
