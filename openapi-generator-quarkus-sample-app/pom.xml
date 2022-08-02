@@ -253,8 +253,6 @@
                     <generateApiDocumentation>false</generateApiDocumentation>
                     <configOptions>
                         <library>resteasy</library>
-                        <useBeanValidation>true</useBeanValidation>
-                        <useSwaggerAnnotations>false</useSwaggerAnnotations>
                         <dateLibrary>java8</dateLibrary>
                         <withXml>false</withXml>
                         <openApiNullable>false</openApiNullable>

@@ -6,57 +6,129 @@ This example covers the approach adopted on the Natwest Identity project when ge
 For **Spring**, with the help of the **boat-plugin**, we have the default configuration to use open-api-generator with
 Spring. It's already documented and is well known in Backbase.
 
->**_NOTE:_** Please take a look at the [BOAT Golden Example](https://github.com/Backbase/project-golden-samples/tree/main/boat)
-to understand how to use boat-plugin.
+Also, multi-tenancy (while creating api-client) and aspects of tracing will be covered with the examples.
+
+> **_NOTE:_** Please take a look at
+> the [BOAT Golden Example](https://github.com/Backbase/project-golden-samples/tree/main/boat)
+> to understand how to use boat-plugin.
 
 For **Quarkus**, to use openapi-generator the plugin must be configured.
 
 ## Configuration of OpenApiGenerator Plugin
-The input spec of this sample application can be found [here](https://raw.githubusercontent.com/redhat-appdev-practice/todo-api/trunk/openapi.yml).
 
->TODO : Explaining the configuration details.
+The input spec of this sample application can be
+found [here](https://raw.githubusercontent.com/redhat-appdev-practice/todo-api/trunk/openapi.yml).
 
 ```xml
-    <plugin>
-                <groupId>org.openapitools</groupId>
-                <artifactId>openapi-generator-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>todo-api</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/todo.yaml</inputSpec>
-                            <configOptions>
-                                <modelPackage>org.quarkus.openapi.todo.model</modelPackage>
-                                <apiPackage>org.quarkus.openapi.todo.api</apiPackage>
-                            </configOptions>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <output>${codegen.openapi.generated-sources-dir}</output>
-                    <generatorName>java</generatorName>
-                    <generateApiTests>false</generateApiTests>
-                    <generateModelTests>false</generateModelTests>
-                    <generateModelDocumentation>false</generateModelDocumentation>
-                    <generateApiDocumentation>false</generateApiDocumentation>
-                    <configOptions>
-                        <library>resteasy</library>
-                        <useBeanValidation>true</useBeanValidation>
-                        <useSwaggerAnnotations>false</useSwaggerAnnotations>
-                        <dateLibrary>java8</dateLibrary>
-                        <withXml>false</withXml>
-                        <openApiNullable>false</openApiNullable>
-                        <invokerPackage>org.quarkus.openapi.todo.api</invokerPackage>
-                    </configOptions>
-                </configuration>
-            </plugin>
+
+<plugin>
+    <groupId>org.openapitools</groupId>
+    <artifactId>openapi-generator-maven-plugin</artifactId>
+    <executions>
+        <execution>
+            <id>todo-api</id>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+            <configuration>
+                <inputSpec>${project.basedir}/src/main/resources/todo.yaml</inputSpec>
+                <configOptions>
+                    <modelPackage>org.quarkus.openapi.todo.model</modelPackage>
+                    <apiPackage>org.quarkus.openapi.todo.api</apiPackage>
+                </configOptions>
+            </configuration>
+        </execution>
+    </executions>
+    <configuration>
+        <output>${codegen.openapi.generated-sources-dir}</output>
+        <generatorName>java</generatorName>
+        <generateApiTests>false</generateApiTests>
+        <generateModelTests>false</generateModelTests>
+        <generateModelDocumentation>false</generateModelDocumentation>
+        <generateApiDocumentation>false</generateApiDocumentation>
+        <configOptions>
+            <library>resteasy</library>
+            <dateLibrary>java8</dateLibrary>
+            <openApiNullable>false</openApiNullable>
+            <invokerPackage>org.quarkus.openapi.todo.api</invokerPackage>
+        </configOptions>
+    </configuration>
+</plugin>
 ```
 
+```<library>resteasy</library>```
+
+The resteasy library is used to generate resteasy client.
+
+```<dateLibrary>java8</dateLibrary>```
+
+Java8 date library is used.
+
+```<openApiNullable>false</openApiNullable>```
+
+OpenAPI Jackson Nullable library is disabled.
+
+```<invokerPackage>org.quarkus.openapi.todo.api</invokerPackage>```
+
+Root package for generated code
+## Tracing
+```TODO : Tracing will be covered```
+
+## Multi-tenancy
+
+Each time an API request is performed, we need to know to tenant identifier to correctly route the persistence
+operations.
+
+There are around three most common ways to provide tenant identifier.
+
+1. Providing the tenant identifier as a **URL Part**
+2. Using a custom **HTTP Request header**
+3. Using JWTs to provide the tenant identifier as a JSON token claim
+
+For this sample-app, second option through a custom HTTP header called **'X-TID'** is used.
 
 
+```java
+    public class ApiClientFactory {
+
+    private ApiClientFactory() {
+    }
+
+    /**
+     * Getting ApiClient configured for given tenant.
+     */
+    public static ApiClient createTraceApiClient(String basePath) {
+        ApiClient apiClient = new ApiClient().setBasePath(basePath);
+        Tracer tracer = GlobalTracer.get();
+        ClientBuilder clientBuilder = ClientBuilder.newBuilder()
+            .executorService(new TracedExecutorService(Executors.newCachedThreadPool(), tracer))
+            .register(new SmallRyeClientTracingFeature(tracer))
+            .register(apiClient.getJSON());
+
+        if (LoggerFactory.getLogger(ApiClient.class).isDebugEnabled()) {
+            clientBuilder.register(Logger.class);
+        }
+
+        return apiClient.setHttpClient(clientBuilder.build());
+    }
+
+    /**
+     * Getting ApiClient configured for given tenant (or without tenant if tenantId is null).
+     */
+    public static ApiClient createTenantApiClient(String tenantId, String basePath) {
+        ApiClient apiClient = createTraceApiClient(basePath);
+        if (Objects.isNull(tenantId)) {
+            return apiClient;
+        }
+
+        return apiClient.addDefaultHeader("X-TID", tenantId);
+    }
+}
+```
+
+After the trace api client is created, the custom **HTTP request header** (**X-TID**) is added. 
+
+## Tests
 
 
 ## Running the application in dev mode
