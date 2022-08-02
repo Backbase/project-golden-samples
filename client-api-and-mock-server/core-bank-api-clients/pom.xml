@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.openbanking.api</groupId>
+    <artifactId>core-bank-api-clients</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <packaging>pom</packaging>
+
+    <name>Core Bank API :: Clients</name>
+    <description>Core Bank API Backend Java Client</description>
+
+    <properties>
+        <openapi-generator-maven-plugin.outputBaseDir>${project.basedir}/generated-clients
+        </openapi-generator-maven-plugin.outputBaseDir>
+        <openapi-generator-maven-plugin.library>resttemplate</openapi-generator-maven-plugin.library>
+        <openapi-generator-maven-plugin.java8>false</openapi-generator-maven-plugin.java8>
+        <openapi-generator-maven-plugin.dateLibrary>java8</openapi-generator-maven-plugin.dateLibrary>
+        <openapi-generator-maven-plugin.hideGenerationTimestamp>true
+        </openapi-generator-maven-plugin.hideGenerationTimestamp>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.openbanking.api.account</groupId>
+                <artifactId>account-info-openapi-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <profiles>
+        <profile>
+            <id>generate-clients</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-clean-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>${openapi-generator-maven-plugin.outputBaseDir}</directory>
+                                    <followSymlinks>false</followSymlinks>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.openapitools</groupId>
+                        <artifactId>openapi-generator-maven-plugin</artifactId>
+                        <version>5.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>generate-account-info-openapi-client</id>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                                <configuration>
+                                    <output>
+                                        ${openapi-generator-maven-plugin.outputBaseDir}/account-info-openapi-client
+                                    </output>
+                                    <inputSpec>${project.basedir}/specs/account-info-openapi.yml</inputSpec>
+                                    <groupId>com.openbanking.api.account</groupId>
+                                    <artifactId>account-info-openapi-client</artifactId>
+                                    <artifactVersion>${project.version}</artifactVersion>
+                                    <generatorName>java</generatorName>
+                                    <skipValidateSpec>true</skipValidateSpec>
+                                    <generateApis>true</generateApis>
+                                    <generateApiTests>false</generateApiTests>
+                                    <generateModelTests>false</generateModelTests>
+                                    <configOptions>
+                                        <library>${openapi-generator-maven-plugin.library}</library>
+                                        <java8>${openapi-generator-maven-plugin.java8}</java8>
+                                        <dateLibrary>${openapi-generator-maven-plugin.dateLibrary}</dateLibrary>
+                                        <apiPackage>com.openbanking.api.clients.api</apiPackage>
+                                        <modelPackage>com.openbanking.api.clients.model</modelPackage>
+                                        <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                                        <skipOverwrite>false</skipOverwrite>
+                                    </configOptions>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>include-clients</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-install-plugin</artifactId>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <modules>
+                <module>generated-clients/account-info-openapi-client</module>
+            </modules>
+        </profile>
+    </profiles>
+
+</project>

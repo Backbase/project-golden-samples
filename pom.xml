@@ -1,0 +1,18 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.backbas</groupId>
+    <artifactId>project-golden-samples</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>Backbase :: Project Golden Samples :: Parent</name>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>boat</module>
+        <module>client-api-and-mock-server/core-bank-api-clients</module>
+        <module>client-api-and-mock-server/core-bank-api-mock-server</module>
+    </modules>
+</project>

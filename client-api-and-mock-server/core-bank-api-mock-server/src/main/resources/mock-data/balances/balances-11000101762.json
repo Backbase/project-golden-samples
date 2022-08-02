@@ -1,0 +1,73 @@
+{
+  "status-code": 200,
+  "response": {
+    "Meta": {
+      "LastAvailableDateTime": "2000-01-23T04:56:07.000+00:00",
+      "FirstAvailableDateTime": "2000-01-23T04:56:07.000+00:00",
+      "TotalPages": 0
+    },
+    "Links": {
+      "Last": "https://openapi-generator.tech",
+      "Prev": "https://openapi-generator.tech",
+      "Next": "https://openapi-generator.tech",
+      "Self": "https://openapi-generator.tech",
+      "First": "https://openapi-generator.tech"
+    },
+    "Data": {
+      "Balance": [
+        {
+          "AccountId": "AccountId",
+          "CreditLine": [
+            {
+              "Type": "Available",
+              "Included": true,
+              "Amount": {
+                "Amount": "Amount",
+                "Currency": "Currency"
+              }
+            },
+            {
+              "Type": "Available",
+              "Included": true,
+              "Amount": {
+                "Amount": "Amount",
+                "Currency": "Currency"
+              }
+            }
+          ],
+          "Amount": {
+            "Amount": "Amount",
+            "Currency": "Currency"
+          },
+          "DateTime": "2000-01-23T04:56:07.000+00:00"
+        },
+        {
+          "AccountId": "AccountId",
+          "CreditLine": [
+            {
+              "Type": "Available",
+              "Included": true,
+              "Amount": {
+                "Amount": "Amount",
+                "Currency": "Currency"
+              }
+            },
+            {
+              "Type": "Available",
+              "Included": true,
+              "Amount": {
+                "Amount": "Amount",
+                "Currency": "Currency"
+              }
+            }
+          ],
+          "Amount": {
+            "Amount": "Amount",
+            "Currency": "Currency"
+          },
+          "DateTime": "2000-01-23T04:56:07.000+00:00"
+        }
+      ]
+    }
+  }
+}

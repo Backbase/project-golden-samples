@@ -1,0 +1,16 @@
+{
+  "status-code": 400,
+  "response": {
+    "Code": "400",
+    "Errors": [
+      {
+        "ErrorCode": "400",
+        "Message": "Not Found",
+        "Path": "/Error",
+        "Url": ""
+      }
+    ],
+    "Id": "123-123-123",
+    "Message": "Not Found"
+  }
+}
