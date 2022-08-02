@@ -353,7 +353,7 @@ releases:
     values:
       - image:
           repository: harbor.backbase.eu/development/employee-web-app-essentials
-          tag: "2022.06"
+          tag: "2022.07"
           pullPolicy: IfNotPresent
         priorityClassName: ''
         replicaCount: 1
