@@ -30,8 +30,12 @@ $ docker pull repo.backbase.com/backbase-docker-releases/edge:2022.07
 ```
 - Inside docker-compose directory run to the following to start up the env.
 ```sh 
-$ docker-componse up -d
+$ docker-componse --profile boostrap up -d
 ```
+> The profile `boostrap` is only required during the first execution (to ingest de data into DBS), after that you can simply run:
+> `docker-componse up -d`
+
+
 ### Useful commands
 - Kill all runing containers
 ```sh

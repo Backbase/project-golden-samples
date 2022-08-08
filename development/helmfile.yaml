@@ -72,7 +72,7 @@ releases:
         mysql:
           enabled: true
           image: mysql
-          imageTag: 8.0.29-oracle
+          imageTag: 8.0.30
           mysqlRootPassword: backbase321!
           mysqlPassword: backbase123!
         jwt:
