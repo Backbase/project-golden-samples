@@ -43,6 +43,9 @@ $ docker kill $(docker ps -q)
 
 # Remove database volume to clean up the environment
 $ docker volume rm docker-compose_dev_mysql_data
+
+# Tail docker-compose logs
+$ docker-compose logs -f 
 ```
 
 ### Backbase Services
