@@ -1,4 +1,5 @@
-version: "3.9" # https://docs.docker.com/compose/compose-file/
+version: "3.9"
+# https://docs.docker.com/compose/compose-file/
 
 x-common-variables: &common-variables
   JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=60.0
@@ -21,6 +22,13 @@ x-message-broker-variables: &message-broker-variables
   spring.activemq.broker-url: tcp://message-broker:61616
   spring.activemq.user: admin
   spring.activemq.password: admin
+
+x-healthcheck-defaults: &healthcheck-defaults
+  test: [ "CMD", "java", "/tmp/HealthCheck.java" ]
+  start_period: 30s
+  interval: 10s
+  timeout: 5s
+  retries: 8
 
 services:
   mysql:
@@ -78,14 +86,18 @@ services:
       BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOSTSCHEME: "http"
       BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOST: "identity:8080"
       BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_ISSUERHOST: "localhost"
+    volumes:
+      - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
+    healthcheck:
+      <<: *healthcheck-defaults
     links:
       - registry
+      - identity
 
   identity:
     image: repo.backbase.com/backbase-docker-releases/backbase-identity:${BB_VERSION}
     ports:
       - '8180:8080'
-      - '10090:10090'
     environment:
       QUARKUS_DATASOURCE_URL: "jdbc:mysql://mysql:3306/backbase_identity?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true"
       QUARKUS_DATASOURCE_USERNAME: "root"
@@ -102,9 +114,13 @@ services:
       JAVA_TOOL_OPTIONS: "-Dkeycloak.migration.strategy=IGNORE_EXISTING -Dkeycloak.migration.action=import -Dkeycloak.profile.feature.upload_scripts=enabled -Dquarkus.log.category.'\"com.backbase\"'.level=DEBUG -Dquarkus.log.category.'\"org.keycloak.protocol.oidc\"'.level=TRACE"
     volumes:
       - ../config/identity:/tmp/keycloak-export
-    links:
-      - mysql
-      - token-converter
+      - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
+    healthcheck:
+      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://localhost:8080/auth/q/health/ready" ]
+      start_period: 45s
+      interval: 10s
+      timeout: 5s
+      retries: 8
     depends_on:
       mysql:
         condition: service_healthy
@@ -118,13 +134,16 @@ services:
       <<: *message-broker-variables
       <<: *database-variables
       spring.datasource.url: jdbc:mysql://mysql:3306/access-control?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
-    links:
-      - mysql
-      - message-broker
-      - registry
+    volumes:
+      - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
+    healthcheck:
+      <<: *healthcheck-defaults
     depends_on:
       mysql:
         condition: service_healthy
+    links:
+      - message-broker
+      - registry
 
   arrangement-manager:
     image: repo.backbase.com/backbase-docker-releases/arrangement-manager:${BB_VERSION}
@@ -135,13 +154,16 @@ services:
       <<: *message-broker-variables
       <<: *database-variables
       spring.datasource.url: jdbc:mysql://mysql:3306/arrangement-manager?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
-    links:
-      - mysql
-      - message-broker
-      - registry
+    volumes:
+      - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
+    healthcheck:
+      <<: *healthcheck-defaults
     depends_on:
       mysql:
         condition: service_healthy
+    links:
+      - message-broker
+      - registry
 
   user-manager:
     image: repo.backbase.com/backbase-docker-releases/user-manager:${BB_VERSION}
@@ -154,13 +176,16 @@ services:
       spring.datasource.url: jdbc:mysql://mysql:3306/user-manager?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
       BACKBASE_USERS_IDENTITYENDPOINTSENABLED: "true"
       BACKBASE_USERS_IDENTITYINTEGRATIONENABLED: "true"
-    links:
-      - mysql
-      - message-broker
-      - registry
+    volumes:
+      - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
+    healthcheck:
+      <<: *healthcheck-defaults
     depends_on:
       mysql:
         condition: service_healthy
+    links:
+      - message-broker
+      - registry
 
   identity-integration-service:
     image: repo.backbase.com/backbase-docker-releases/identity-integration-service:${BB_VERSION}
@@ -176,9 +201,13 @@ services:
       IDENTITY_MASTERADMIN_CLIENTID: admin-cli
       IDENTITY_REALMCONFIGURATION_FALLBACKOPTIONS_ENABLEUSER: "true"
       IDENTITY_REALMCONFIGURATION_FALLBACKOPTIONS_USETEMPORARYPASSWORD: "true"
+    volumes:
+      - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
+    healthcheck:
+      <<: *healthcheck-defaults
     links:
-      - registry
       - message-broker
+      - registry
 
   employee-app:
     image: harbor.backbase.eu/development/employee-web-app-essentials:2022.07
@@ -190,35 +219,30 @@ services:
     volumes:
       - ./nginx/api.conf:/nginx-config/server/15-api.conf
     links:
-      - identity
       - edge
-
-  legal-entity-bootstrap-task-checks:
-    image: alpine/curl
-    profiles:
-      - boostrap
-    entrypoint:
-      - sh
-      - -c
-      - |
-        until curl -s 'http://token-converter:8080/actuator/health/readiness' | grep UP; do echo 'Waiting for token converter...'; sleep 3; done &&
-        until curl -s 'http://access-control:8080/actuator/health/readiness' | grep UP; do echo 'Waiting for access control...'; sleep 3; done &&
-        until curl -s 'http://arrangement-manager:8080/actuator/health/readiness' | grep UP; do echo 'Waiting for arrangement manager...'; sleep 3; done &&
-        until curl -s 'http://user-manager:8080/actuator/health/readiness' | grep UP; do echo 'Waiting for user manager...'; sleep 3; done &&
-        until curl -s 'http://identity-integration-service:8080/actuator/health/readiness' | grep UP; do echo 'Waiting for identity integration...'; sleep 3; done &&
-        until curl -s 'http://identity:8080/auth/q/health/ready' | grep UP; do echo 'Waiting for identity...'; sleep 3; done
+      - identity
 
   legal-entity-bootstrap-task:
     image: repo.backbase.com/backbase-stream-images/legal-entity-bootstrap-task:2.85.0
     profiles:
-      - boostrap
+      - bootstrap
     environment:
       <<: *common-variables
       JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=70.0 -Dlogging.level.com.backbase.stream=DEBUG"
       SPRING_PROFILES_INCLUDE: "moustache-bank"
     depends_on:
-      legal-entity-bootstrap-task-checks:
-        condition: service_completed_successfully
+      token-converter:
+        condition: service_healthy
+      access-control:
+        condition: service_healthy
+      arrangement-manager:
+        condition: service_healthy
+      user-manager:
+        condition: service_healthy
+      identity-integration-service:
+        condition: service_healthy
+      identity:
+        condition: service_healthy
 
 volumes:
   backbase_mysql_data:
