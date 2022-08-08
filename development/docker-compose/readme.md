@@ -37,9 +37,12 @@ $ docker-componse --profile boostrap up -d
 
 
 ### Useful commands
-- Kill all runing containers
 ```sh
+# Kill all runing containers
 $ docker kill $(docker ps -q)
+
+# Remove database volume to clean up the environment
+$ docker volume rm docker-compose_dev_mysql_data
 ```
 
 ### Backbase Services
