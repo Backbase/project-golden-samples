@@ -231,7 +231,28 @@ For this sample-app, second option through a custom HTTP header called **'X-TID'
 After the trace api client is created, the custom **HTTP request header** (**X-TID**) is added. 
 
 ## Tests
+We have basic tests for Factory classes, TodoApiConfig and Provider class to ensure that our ApiClient and ApiConfig are initialized correctly.
 
+**TodoApiConfigTest**
+```java
+   @ExtendWith(MockitoExtension.class)
+    class TodoApiConfigTest {
+
+    @Mock
+    private TodosApi todosApi;
+
+    @InjectMocks
+    private TodoApiConfig todoApiConfig;
+
+    @Test
+    void shouldReturnAllApis() {
+        assertNotNull(todoApiConfig.getTodosApi());
+    }
+}
+```
+For factory class tests: there are different methods to verify the **ApiClient** is created correctly. 
+
+Detailed test can be found (creating **ApiConfig** with the tenant/without tenant) on [TodoApiConfigFactoryTest](src/test/java/org/quarkus/openapi/generator/config/TodoApiConfigFactoryTest.java) class.
 
 ## Running the application in dev mode
 
