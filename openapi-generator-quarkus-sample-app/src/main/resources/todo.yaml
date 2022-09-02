@@ -1,0 +1,205 @@
+---
+openapi: 3.0.2
+info:
+  title: Todo
+  version: 1.0.0
+  description: My Todo list API
+  contact:
+    url: "http://localhost:8080/api/v1"
+    email: deven.phillips@redhat.com
+  license:
+    name: Apache 2.0
+    url: "https://www.apache.org/licenses/LICENSE-2.0"
+servers:
+  - url: "http://{domain}:{port}/api/v1"
+    description: "Local Dev"
+    variables:
+      domain:
+        default: keycloak
+      port:
+        default: 4180
+tags:
+  - name: todos
+  - name: user
+paths:
+  /todos:
+    summary: Path used to manage the list of todos.
+    description: >-
+      The REST endpoint/path used to list and create zero or more `Todo` entities.  This path contains a
+      `GET` and `POST` operation to perform the list and create tasks, respectively.
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Todo"
+          description: Successful response - returns an array of `Todo` entities.
+      operationId: gettodos
+      tags:
+        - todos
+      summary: List All todos
+      description: Gets a list of all `Todo` entities.
+    post:
+      requestBody:
+        description: A new `Todo` to be created.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Todo"
+        required: true
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+      operationId: createTodo
+      tags:
+        - todos
+      summary: Create a Todo
+      description: Creates a new instance of a `Todo`.
+  "/todos/{todoId}":
+    summary: Path used to manage a single Todo.
+    description: >-
+      The REST endpoint/path used to get, update, and delete single instances of an `Todo`.  This path
+      contains `GET`, `PUT`, and `DELETE` operations used to perform the get, update, and delete tasks,
+      respectively.
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+          description: Successful response - returns a single `Todo`.
+      security:
+        - KeyCloak: []
+      operationId: getTodo
+      tags:
+        - todos
+      summary: Get a Todo
+      description: Gets the details of a single instance of a `Todo`.
+    put:
+      requestBody:
+        description: Updated `Todo` information.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Todo"
+        required: true
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+      operationId: updateTodo
+      tags:
+        - todos
+      summary: Update a Todo
+      description: Updates an existing `Todo`.
+    delete:
+      responses:
+        "204":
+          description: Successful response.
+      operationId: deleteTodo
+      tags:
+        - todos
+      summary: Delete a Todo
+      description: Deletes an existing `Todo`.
+    parameters:
+      - name: todoId
+        description: A unique identifier for a `Todo`.
+        schema:
+          format: uuid
+          type: string
+        in: path
+        required: true
+  /user:
+    summary: Get the currently logged on user's profile data
+    description: Return user profile based on authenticated user's OAuth2 Access Token
+    get:
+      responses:
+        "200":
+          description: The user profile information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+      operationId: getUserProfile
+      description: Return the current user profile
+      tags:
+        - user
+components:
+  schemas:
+    User:
+      title: User
+      description: User information
+      properties:
+        family_name:
+          type: string
+        given_name:
+          type: string
+        name:
+          type: string
+        preferred_username:
+          type: string
+    Todo:
+      title: Todo
+      description: A Todo list item
+      required:
+        - title
+      type: object
+      properties:
+        id:
+          format: uuid
+          type: string
+          x-java-field-annotations:
+            - '@javax.persistence.Id'
+            - '@javax.persistence.GeneratedValue(generator = "UUID")'
+            - '@org.hibernate.annotations.GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")'
+            - '@javax.persistence.Column(name = "id", updatable = false, nullable = false)'
+        title:
+          type: string
+        description:
+          type: string
+          x-java-field-annotations:
+            - '@javax.persistence.Column(columnDefinition = "TEXT")'
+        created:
+          format: date-time
+          type: string
+          readOnly: true
+          x-java-field-annotations:
+            - '@org.hibernate.annotations.CreationTimestamp'
+            - '@javax.persistence.Column(name = "created", updatable = false, nullable = false)'
+        dueDate:
+          format: date-time
+          type: string
+        complete:
+          type: boolean
+        author:
+          type: string
+          readOnly: true
+      example:
+        id: ec3b48dc-938d-11ea-8877-c7ea413b00cb
+        title: Example Todo
+        description: This is a Todo entity with a description
+        created: "2020-05-14T09:00:00.000Z"
+        dueDate: "2020-05-20T09:00:00.000Z"
+        complete: false
+      x-java-class-annotations:
+        - "@javax.persistence.Entity"
+        - '@javax.persistence.Table(name = "todos")'
+  securitySchemes:
+    KeyCloak:
+      openIdConnectUrl: "http://todo:8080/auth/realms/todo/.well-known/openid-configuration"
+      type: openIdConnect
+security:
+  - KeyCloak:
+      - user
+      - admin
