@@ -26,7 +26,7 @@ docker ps
 ```
 - Check backbase docker registry
 ```shell
-docker pull repo.backbase.com/backbase-docker-releases/edge:2022.07
+docker pull repo.backbase.com/backbase-docker-releases/edge:2022.09.1
 ```
 - Inside docker-compose directory run to the following to start up the env.
 ```shell

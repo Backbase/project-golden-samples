@@ -323,7 +323,7 @@ releases:
     values:
       - image:
           repository: harbor.backbase.eu/development/moustache-bootstrap-task
-          tag: "2.85.0"
+          tag: "3.2.0"
           pullPolicy: IfNotPresent
         priorityClassName: ''
         env: # All Envs that need external secrets are overridden here.
@@ -353,7 +353,7 @@ releases:
     values:
       - image:
           repository: harbor.backbase.eu/development/employee-web-app-essentials
-          tag: "2022.07"
+          tag: "2022.08.1-LTS"
           pullPolicy: IfNotPresent
         priorityClassName: ''
         replicaCount: 1

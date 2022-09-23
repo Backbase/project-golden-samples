@@ -4,7 +4,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-VERSION="${1:-2.85.0}"
+VERSION="${1:-3.2.0}"
 
 mkdir -p target
 mvn dependency:get -DgroupId=com.backbase.stream -DartifactId=product-catalog-task -Dversion="${VERSION}" -Dtransitive=false -Ddest=./target/product-catalog-task.jar

@@ -11,7 +11,7 @@ After connecting to Backbase VPN you can run:
 
 ```shell
 docker login harbor.backbase.eu
-docker pull harbor.backbase.eu/development/moustache-bootstrap-task:2.85.0
+docker pull harbor.backbase.eu/development/moustache-bootstrap-task:3.2.0
 ```
 
 ## Building the image locally

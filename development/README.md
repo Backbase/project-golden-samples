@@ -4,8 +4,6 @@ In this guide we'll create a lightweight Backbase setup configuring a [k3s](http
 
 ## Pre-requisites
 
-- Intel Chip - **AMD64 Arch** (Apple Silicon support will come when the entire product adopts SSDK 15 with muiltiarch
-  images).
 - Colima with Kubernetes (k3s embedded by default) configured with at least **16GB of RAM** and **4 CPUs** - Or any local Kubernetes cluster you are comfortable with.
     * [Set up on MacOS](https://backbase.atlassian.net/wiki/spaces/CE/pages/3584589953/How+to+replace+Docker+Desktop+with+Colima)
     * `colima start --cpu 4 --memory 16 --kubernetes`
