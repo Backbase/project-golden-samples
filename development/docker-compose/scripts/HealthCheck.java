@@ -9,6 +9,7 @@ public class HealthCheck {
 
     private final static String DEFAULT_URI = "http://localhost:8080/actuator/health/readiness";
     private final static String DEFAULT_HEALTH_INDICATOR = "UP";
+    private final static long DEFAULT_TIMEOUT = 10;
 
     public static void main(String[] args) {
         var uri = DEFAULT_URI;
@@ -30,7 +31,7 @@ public class HealthCheck {
 
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(uri))
-                .timeout(Duration.of(10, ChronoUnit.SECONDS))
+                .timeout(Duration.of(DEFAULT_TIMEOUT, ChronoUnit.SECONDS))
                 .GET()
                 .build();
 
