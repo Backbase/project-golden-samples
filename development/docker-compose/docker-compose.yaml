@@ -235,7 +235,7 @@ services:
 
   legal-entity-bootstrap-task:
     container_name: legal_entity_bootstrap_task
-    image: repo.backbase.com/backbase-stream-images/legal-entity-bootstrap-task:3.2.0
+    image: repo.backbase.com/backbase-stream-images/legal-entity-bootstrap-task:3.4.0
     profiles:
       - bootstrap
     environment:
