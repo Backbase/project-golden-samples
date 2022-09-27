@@ -122,7 +122,7 @@ services:
       - ../config/identity:/tmp/keycloak-export
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
-      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://localhost:8080/auth/q/health/ready" ]
+      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://localhost:8080/auth/realms/backbase/.well-known/openid-configuration", "issuer" ]
       start_period: 60s
       interval: 30s
       timeout: 5s

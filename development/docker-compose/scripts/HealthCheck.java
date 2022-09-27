@@ -42,7 +42,7 @@ public class HealthCheck {
                 System.exit(6);
             }
 
-            if (!response.body().toUpperCase().contains(healthIndicator)) {
+            if (!response.body().toUpperCase().contains(healthIndicator.toUpperCase())) {
                 System.out.println("Service unhealthy: " + response.body());
                 System.exit(11);
             }

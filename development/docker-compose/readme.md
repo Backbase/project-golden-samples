@@ -12,9 +12,9 @@ brew install colima docker docker-compose docker-credential-helper
 colima start --cpu 4 --memory 16
 ```
 
-- Backbase Repository Credentials, use your backbase credentials to login to backbase repo:
+- Backbase Repository Credentials, use your Backbase credentials to login to the Backbase repo:
 ```shell
-docker login repo.backbase.com/backbase-docker-releases
+docker login repo.backbase.com
 ```
 
 ## Steps
