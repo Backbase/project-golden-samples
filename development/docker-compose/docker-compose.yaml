@@ -71,8 +71,7 @@ services:
       - "8280:8080"
     environment:
       <<: *common-variables
-      gateway.actuator.user: "admin"
-      gateway.actuator.password: "admin"
+      gateway.actuator.security.enabled: "false"
       gateway.csrf.enabled: "false"
       spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedOrigins: "*"
       spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedHeaders: "*"
