@@ -7,6 +7,7 @@ x-common-variables: &common-variables
   USERCTX_KEY: JWTSecretKeyDontUseInProduction!
   eureka.client.serviceUrl.defaultZone: http://registry:8080/eureka
   eureka.instance.non-secure-port: 8080
+  eureka.instance.initialStatus: STARTING
   management.endpoints.web.exposure.include: '*'
   management.endpoints.enabled-by-default: true
   management.security.roles: ANONYMOUS,ACTUATOR,USER
@@ -94,7 +95,7 @@ services:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
       <<: *healthcheck-defaults
-      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/token-converter" ]
+      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/token-converter", "<status>UP</status>" ]
     links:
       - registry
       - identity
@@ -145,7 +146,7 @@ services:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
       <<: *healthcheck-defaults
-      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/access-control" ]
+      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/access-control", "<status>UP</status>" ]
     depends_on:
       mysql:
         condition: service_healthy
@@ -167,7 +168,7 @@ services:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
       <<: *healthcheck-defaults
-      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/arrangement-manager" ]
+      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/arrangement-manager", "<status>UP</status>" ]
     depends_on:
       mysql:
         condition: service_healthy
@@ -191,7 +192,7 @@ services:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
       <<: *healthcheck-defaults
-      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/user-manager" ]
+      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/user-manager", "<status>UP</status>" ]
     depends_on:
       mysql:
         condition: service_healthy
@@ -218,7 +219,7 @@ services:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
       <<: *healthcheck-defaults
-      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/identity-integration-service" ]
+      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/identity-integration-service", "<status>UP</status>" ]
     links:
       - message-broker
       - registry

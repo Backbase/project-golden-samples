@@ -35,7 +35,7 @@ docker compose up -d
 
 > The profile `boostrap` is required for the first execution (to ingest de data into DBS):
 ```shell
-docker compose --profile bootstrap up -d
+docker compose --profile=bootstrap up -d
 ```
 
 ### Useful commands
