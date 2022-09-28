@@ -12,6 +12,7 @@ x-common-variables: &common-variables
   management.endpoints.enabled-by-default: true
   management.security.roles: ANONYMOUS,ACTUATOR,USER
   spring.main.banner-mode: off
+  spring.cloud.config.enabled: "false"
 
 x-database-variables: &database-variables
   spring.liquibase.enabled: 'true'
