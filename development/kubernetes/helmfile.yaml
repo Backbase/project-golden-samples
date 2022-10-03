@@ -56,7 +56,7 @@ releases:
               paths:
                 - {{ $adminServerPath }}
 
-                # Environment Initial Setup
+  # Environment Initial Setup
   - name: backbase-env
     chart: backbase-charts/backbase-env
     version: 0.5.62
@@ -68,7 +68,7 @@ releases:
           enabled: true
           image:
             repository: symptoma/activemq
-            tag: 5.17.0
+            tag: 5.17.2
         mysql:
           enabled: true
           image: mysql
@@ -82,7 +82,6 @@ releases:
           externalEncSecretKey: "JWTEncKeyDontUseInProduction666!"
           userctxKey: "JWTSecretKeyDontUseInProduction!"
 
-  # Foundation
   # Edge
   - name: foundation-edge
     chart: backbase-charts/edge
@@ -123,7 +122,6 @@ releases:
                 paths:
                   - /api
 
-  # Identity
   # Identity Authorization Server
   - name: identity-server
     chart: backbase-charts/backbase-identity
@@ -135,6 +133,9 @@ releases:
     values:
       - global.yaml.gotmpl
       - backbaseidentity:
+          app:
+            image:
+              registry: harbor.backbase.eu/development
           liquibase:
             enabled: true
           database:
@@ -159,7 +160,7 @@ releases:
               - "-Dkeycloak.import=/home/nonroot/conf/backbase-realm.json"
           customFiles:
             backbase-realm.json: |-
-              {{- readFile "config/identity/backbase-realm.json" | nindent 14 }}
+              {{- readFile "../config/identity/backbase-realm.json" | nindent 14 }}
           ingress:
             enabled: true
             annotations:
@@ -228,7 +229,6 @@ releases:
                 paths:
                   - /internal/identity-integration-service/(.*)
 
-  # DBS
   # Access Control
   - name: dbs-access-control
     chart: backbase-charts/access-control
