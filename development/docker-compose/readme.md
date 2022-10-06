@@ -68,6 +68,7 @@ docker kill $(docker ps -q)
 
 ### Jobs
 
+- Product Catalog Task
 - Legal Entity Bootstrap Task
 
 ### Web Applications

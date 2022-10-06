@@ -6,6 +6,7 @@ x-common-variables: &common-variables
   SIG_SECRET_KEY: JWTSecretKeyDontUseInProduction!
   USERCTX_KEY: JWTSecretKeyDontUseInProduction!
   eureka.client.serviceUrl.defaultZone: http://registry:8080/eureka
+  eureka.client.healthcheck.enabled: "true"
   eureka.instance.non-secure-port: 8080
   eureka.instance.initialStatus: STARTING
   management.endpoints.web.exposure.include: '*'
@@ -49,7 +50,7 @@ services:
 
   message-broker:
     container_name: activemq
-    image: symptoma/activemq:5.17.1
+    image: symptoma/activemq:5.17.2
     privileged: true
     ports:
       - "61616:61616"
@@ -74,7 +75,6 @@ services:
       <<: *common-variables
       gateway.actuator.security.enabled: "false"
       gateway.csrf.enabled: "false"
-      eureka.client.healthcheck.enabled: "true"
       spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedOrigins: "*"
       spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedHeaders: "*"
       spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedMethods: "*"
@@ -124,11 +124,8 @@ services:
       - ../config/identity:/tmp/keycloak-export
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
-      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://localhost:8080/auth/realms/backbase/.well-known/openid-configuration", "issuer" ]
-      start_period: 60s
-      interval: 30s
-      timeout: 5s
-      retries: 10
+      <<: *healthcheck-defaults
+      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://localhost:8080/auth/realms/backbase/.well-known/openid-configuration", "backbase" ]
     depends_on:
       mysql:
         condition: service_healthy
@@ -239,15 +236,30 @@ services:
       - edge
       - identity
 
-  legal-entity-bootstrap-task:
-    container_name: legal_entity_bootstrap_task
-    image: repo.backbase.com/backbase-stream-images/legal-entity-bootstrap-task:3.4.0
+  product-catalog-task:
+    container_name: product_catalog_task
+    image: repo.backbase.com/backbase-stream-images/product-catalog-task:${STREAM_VERSION}
     profiles:
       - bootstrap
     environment:
       <<: *common-variables
       JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=70.0 -Dlogging.level.com.backbase.stream=DEBUG"
       SPRING_PROFILES_INCLUDE: "moustache-bank"
+    depends_on:
+      token-converter:
+        condition: service_healthy
+      arrangement-manager:
+        condition: service_healthy
+
+  legal-entity-bootstrap-task:
+    container_name: legal_entity_bootstrap_task
+    image: repo.backbase.com/backbase-stream-images/legal-entity-bootstrap-task:${STREAM_VERSION}
+    profiles:
+      - bootstrap
+    environment:
+      <<: *common-variables
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=70.0 -Dlogging.level.com.backbase.stream=DEBUG"
+      SPRING_PROFILES_INCLUDE: "moustache-bank,moustache-bank-subsidiaries"
     depends_on:
       token-converter:
         condition: service_healthy
@@ -261,6 +273,8 @@ services:
         condition: service_healthy
       identity:
         condition: service_healthy
+      product-catalog-task:
+        condition: service_completed_successfully
 
 volumes:
   backbase_mysql_data:
