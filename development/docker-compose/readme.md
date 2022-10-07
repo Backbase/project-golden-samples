@@ -70,6 +70,7 @@ docker kill $(docker ps -q)
 
 - Product Catalog Task
 - Legal Entity Bootstrap Task
+> With `moustache-bank` and `moustache-bank-subsidiaries` profiles enabled. They are [pre-configured]((https://github.com/Backbase/stream-services/blob/master/stream-legal-entity/legal-entity-bootstrap-task/src/main/resources/application.yml#L24)) in the Stream services for demonstration purposes.
 
 ### Web Applications
 

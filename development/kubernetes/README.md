@@ -23,21 +23,20 @@ Once everything is installed and the cluster is up and running you can execute t
 * Run `echo '127.0.0.1 kubernetes.docker.internal' | sudo tee -a /etc/hosts` to enable the ingress to expose the internal endpoints.
 * Obtain the [employee-web-app-essentials](../images/employee-web-app-essentials/README.md) image as it is not yet public
   available.
-* Obtain the [moustache-bootstrap-task](../images/moustache-bootstrap-task/README.md) image as it is not public available.
 * Run: `helmfile sync`.
 
 > Grab a coffee and wait for a few minutes, so everything can start. I recommend installing [k9s](https://k9scli.io/) to
 > monitor the status
 > of the pods.
 
-**Hint**: You can test if the entire environment is up once the Job `job-moustache-bootstrap-task-retail-bootstrap-task`
+**Hint**: You can test if the entire environment is up once the Job `stream-legal-entity-boostrap-stream-bootstrap-task`
 is completed:
 
 ```shell
-$ kubectl get job job-moustache-bootstrap-task-retail-bootstrap-task
+$ kubectl get job stream-legal-entity-boostrap-stream-bootstrap-task
 
 NAME                                                 COMPLETIONS   DURATION   AGE
-job-moustache-bootstrap-task-retail-bootstrap-task   1/1           56s        138m
+stream-legal-entity-boostrap-stream-bootstrap-task   1/1           56s        138m
 ```
 
 ## Components Installed
@@ -62,7 +61,8 @@ job-moustache-bootstrap-task-retail-bootstrap-task   1/1           56s        13
 
 ### Jobs
 
-- Moustache Bootstrap Task
+- Stream Legal Entity Bootstrap
+  * With `moustache-bank` and `moustache-bank-subsidiaries` profiles enabled. They are [pre-configured]((https://github.com/Backbase/stream-services/blob/master/stream-legal-entity/legal-entity-bootstrap-task/src/main/resources/application.yml#L24)) in the Stream services for demonstration purposes.
 
 ### Web Applications
 

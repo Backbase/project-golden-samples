@@ -133,9 +133,6 @@ releases:
     values:
       - global.yaml.gotmpl
       - backbaseidentity:
-          app:
-            image:
-              registry: harbor.backbase.eu/development
           liquibase:
             enabled: true
           database:
@@ -314,33 +311,35 @@ releases:
                   - /internal/user-manager/(.*)
 
   # Bootstrap Task
-  - name: job-moustache-bootstrap-task
-    chart: oci://repo.backbase.com/docker-test/retail-bootstrap-task
-    version: 2022.05.6
+  - name: stream-legal-entity-boostrap
+    chart: oci://repo.backbase.com/backbase-stream-images/stream-bootstrap-task
+    version: 1.0.0
     labels:
       tier: job
       component: bootstrap-task
     values:
       - image:
-          repository: harbor.backbase.eu/development/moustache-bootstrap-task
-          tag: "3.4.0"
+          repository: legal-entity-bootstrap-task
+          tag: 3.8.0
           pullPolicy: IfNotPresent
-        priorityClassName: ''
-        env: # All Envs that need external secrets are overridden here.
-          admin.username: ''
-          admin.password: ''
-          admin.defaultUserPassword: ''
-          mambu.username: ''
-          mambu.password: ''
-          mambu.basePath: ''
-          mambu.branchKey: ''
-          mambu.currentAccountProductKey: ''
-          mambu.savingsAccountProductKey: ''
-          mambu.transactionsBeneficiaryAccountKey: ''
-          marqeta.username: ''
-          marqeta.password: ''
-          marqeta.basePath: ''
-          SPRING_PROFILES_INCLUDE: ''
+        dependencies:
+          - serviceName: token-converter
+          - serviceName: access-control
+          - serviceName: user-manager
+          - serviceName: arrangement-manager
+          - serviceName: identity-integration-service
+          - serviceName: backbase-identity
+            path: /auth/realms/backbase/.well-known/openid-configuration
+            healthIndicator: backbase
+        initContainers:
+          - name: init-product-catalog
+            image: repo.backbase.com/backbase-stream-images/product-catalog-task:3.8.0
+            env:
+              - name: SPRING_PROFILES_INCLUDE
+                value: moustache-bank
+        env:
+          JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70.0 -Dspring.cloud.config.enabled=false -Dlogging.level.com.backbase.stream=DEBUG
+          SPRING_PROFILES_INCLUDE: moustache-bank,moustache-bank-subsidiaries
 
   # Web
   # Employee Web Portal
