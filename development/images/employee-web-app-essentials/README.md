@@ -31,3 +31,11 @@ docker build --secret id=npm,src=$(echo $HOME)/.npmrc -t harbor.backbase.eu/deve
 ```
 
 > Mounting the secret as a `.npmrc` file is necessary to fetch the NPM dependencies on Backbase private registry.
+
+### Multi-arch Builds
+
+```shell
+docker buildx build --push --platform linux/arm64,linux/amd64 \
+  --secret id=npm,src=$(pwd)/.npmrc \
+  --tag harbor.backbase.eu/development/employee-web-app-essentials:2022.08.1-LTS .
+```

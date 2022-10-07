@@ -359,6 +359,10 @@ releases:
         env:
           API_ROOT: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/api"
           AUTH_URL: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/auth"
+          BASE_DOMAIN: {{ .Values.ingress.host }}
+          PROTOCOL: {{ .Values.ingress.proto }}
+        livenessProbe:
+          initialDelaySeconds: 15
         ingress:
           enabled: true
           annotations:
