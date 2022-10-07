@@ -62,7 +62,7 @@ stream-legal-entity-boostrap-stream-bootstrap-task   1/1           56s        13
 ### Jobs
 
 - Stream Legal Entity Bootstrap
-  * With `moustache-bank` and `moustache-bank-subsidiaries` profiles enabled. They are [pre-configured]((https://github.com/Backbase/stream-services/blob/master/stream-legal-entity/legal-entity-bootstrap-task/src/main/resources/application.yml#L24)) in the Stream services for demonstration purposes.
+  * With `moustache-bank` and `moustache-bank-subsidiaries` profiles enabled. They are [pre-configured](https://github.com/Backbase/stream-services/blob/master/stream-legal-entity/legal-entity-bootstrap-task/src/main/resources/application.yml#L24) in the Stream services for demonstration purposes.
 
 ### Web Applications
 
