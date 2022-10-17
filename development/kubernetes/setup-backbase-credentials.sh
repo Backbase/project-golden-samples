@@ -22,10 +22,9 @@ helm repo update
 # Clean if existent
 kubectl delete secret backbase-registry --ignore-not-found=true
 # Create key used to pull Backbase images
-kubectl create secret docker-registry backbase-registry --docker-server=repo.backbase.com/backbase-docker-releases --docker-username="$username" --docker-password="$password" --docker-email="$username"@backbase.com
+kubectl create secret docker-registry backbase-registry --docker-server=repo.backbase.com --docker-username="$username" --docker-password="$password" --docker-email="$username"@backbase.com
 
-: ${ENABLE_INTERNAL:=false}
-if $ENABLE_INTERNAL; then
+if ping webproxy.infra.backbase.cloud -c 1 -t 1; then
   # Clean if existent
   kubectl delete secret harbor-registry --ignore-not-found=true
   # Create key used to pull Backbase images

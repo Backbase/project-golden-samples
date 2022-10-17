@@ -224,9 +224,9 @@ services:
 
   employee-app:
     container_name: employee_app
-    image: harbor.backbase.eu/development/employee-web-app-essentials:2022.08.1-LTS
+    image: harbor.backbase.eu/development/employee-web-app-essentials:2022.09.1
     environment:
-      AUTH_URL: "http://localhost:8180/auth"
+      AUTH_URL: "http://localhost:8180/auth/"
       API_ROOT: "http://localhost:8080/api"
     ports:
       - "8080:8080"

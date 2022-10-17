@@ -1,6 +1,6 @@
 FROM node:14 AS builder
 
-RUN curl -s "https://start.backbase.com/productised/product-employee-essentials-web?version=2022.08.1-LTS" -o employee-essentials-package.zip
+RUN curl -s "https://start.backbase.com/productised/product-employee-essentials-web?version=2022.09.1" -o employee-essentials-package.zip
 RUN unzip employee-essentials-package.zip -d /tmp/employee-essentials-package
 
 WORKDIR /tmp/employee-essentials-package/web/employee-essentials

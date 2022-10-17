@@ -320,8 +320,10 @@ releases:
     values:
       - image:
           repository: legal-entity-bootstrap-task
-          tag: 3.8.0
+          tag: 3.9.0
           pullPolicy: IfNotPresent
+        imagePullSecrets:
+          - name: backbase-registry
         dependencies:
           - serviceName: token-converter
           - serviceName: access-control
@@ -333,13 +335,21 @@ releases:
             healthIndicator: backbase
         initContainers:
           - name: init-product-catalog
-            image: repo.backbase.com/backbase-stream-images/product-catalog-task:3.8.0
+            image: repo.backbase.com/backbase-stream-images/product-catalog-task:3.9.0
+            imagePullSecrets:
+              - name: backbase-registry
             env:
               - name: SPRING_PROFILES_INCLUDE
-                value: moustache-bank
+                value: "moustache-bank"
+              - name: EUREKA_CLIENT_ENABLED
+                value: "false"
+              - name: SPRING_CLOUD_KUBERNETES_ENABLED
+                value: "true"
         env:
           JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70.0 -Dspring.cloud.config.enabled=false -Dlogging.level.com.backbase.stream=DEBUG
           SPRING_PROFILES_INCLUDE: moustache-bank,moustache-bank-subsidiaries
+          EUREKA_CLIENT_ENABLED: "false"
+          SPRING_CLOUD_KUBERNETES_ENABLED: "true"
 
   # Web
   # Employee Web Portal
@@ -352,13 +362,13 @@ releases:
     values:
       - image:
           repository: harbor.backbase.eu/development/employee-web-app-essentials
-          tag: "2022.08.1-LTS"
+          tag: "2022.09.1"
           pullPolicy: IfNotPresent
         priorityClassName: ''
         replicaCount: 1
         env:
           API_ROOT: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/api"
-          AUTH_URL: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/auth"
+          AUTH_URL: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/auth/"
           BASE_DOMAIN: {{ .Values.ingress.host }}
           PROTOCOL: {{ .Values.ingress.proto }}
         livenessProbe:
