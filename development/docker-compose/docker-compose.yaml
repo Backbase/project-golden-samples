@@ -2,21 +2,22 @@ version: "3.9"
 # https://docs.docker.com/compose/compose-file/
 
 x-common-variables: &common-variables
-  JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=60.0
+  JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=60.0 -Dlogging.level.com.backbase=DEBUG
   SIG_SECRET_KEY: JWTSecretKeyDontUseInProduction!
   USERCTX_KEY: JWTSecretKeyDontUseInProduction!
   eureka.client.serviceUrl.defaultZone: http://registry:8080/eureka
-  eureka.client.healthcheck.enabled: "true"
+  eureka.client.healthcheck.enabled: true
   eureka.instance.non-secure-port: 8080
   eureka.instance.initialStatus: STARTING
   management.endpoints.web.exposure.include: '*'
   management.endpoints.enabled-by-default: true
   management.security.roles: ANONYMOUS,ACTUATOR,USER
   spring.main.banner-mode: off
-  spring.cloud.config.enabled: "false"
+  spring.zipkin.enabled: false
+  spring.cloud.config.enabled: false
 
 x-database-variables: &database-variables
-  spring.liquibase.enabled: 'true'
+  spring.liquibase.enabled: true
   spring.datasource.username: root
   spring.datasource.password: root
   spring.datasource.driver-class-name: com.mysql.cj.jdbc.Driver
@@ -39,7 +40,7 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_ROOT_PASSWORD: root
     volumes:
       - backbase_mysql_data:/var/lib/mysql
     healthcheck:
@@ -73,8 +74,8 @@ services:
       - "8280:8080"
     environment:
       <<: *common-variables
-      gateway.actuator.security.enabled: "false"
-      gateway.csrf.enabled: "false"
+      gateway.actuator.security.enabled: false
+      gateway.csrf.enabled: false
       spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedOrigins: "*"
       spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedHeaders: "*"
       spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedMethods: "*"
@@ -89,9 +90,9 @@ services:
       - "7779:8080"
     environment:
       <<: *common-variables
-      BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOSTSCHEME: "http"
-      BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOST: "identity:8080"
-      BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_ISSUERHOST: "localhost"
+      BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOSTSCHEME: http
+      BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOST: identity:8080
+      BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_ISSUERHOST: localhost
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
@@ -119,7 +120,7 @@ services:
       KEYCLOAK_CONNECTIONSJPA_QUARKUS_MIGRATIONSTRATEGY: "update"
       KEYCLOAK_BACKBASE_OIDC_TOKEN_CONVERTER_URL: "http://token-converter:8080"
       keycloak.hostname.default.frontendUrl: "http://localhost:8180/auth"
-      JAVA_TOOL_OPTIONS: "-Dkeycloak.migration.strategy=IGNORE_EXISTING -Dkeycloak.migration.action=import -Dkeycloak.profile.feature.upload_scripts=enabled -Dquarkus.log.category.'\"com.backbase\"'.level=DEBUG -Dquarkus.log.category.'\"org.keycloak.protocol.oidc\"'.level=TRACE"
+      JAVA_TOOL_OPTIONS: "-Dkeycloak.migration.strategy=IGNORE_EXISTING -Dkeycloak.migration.action=import -Dkeycloak.profile.feature.upload_scripts=enabled -Dquarkus.log.category.'\"com.backbase\"'.level=DEBUG"
     volumes:
       - ../config/identity:/tmp/keycloak-export
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
@@ -184,8 +185,8 @@ services:
       <<: *message-broker-variables
       <<: *database-variables
       spring.datasource.url: jdbc:mysql://mysql:3306/user-manager?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
-      BACKBASE_USERS_IDENTITYENDPOINTSENABLED: "true"
-      BACKBASE_USERS_IDENTITYINTEGRATIONENABLED: "true"
+      BACKBASE_USERS_IDENTITYENDPOINTSENABLED: true
+      BACKBASE_USERS_IDENTITYINTEGRATIONENABLED: true
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
@@ -209,10 +210,8 @@ services:
       IDENTITY_SERVERURL: http://identity:8080/auth
       IDENTITY_MASTERADMIN_USERNAME: admin
       IDENTITY_MASTERADMIN_PASSWORD: admin
-      IDENTITY_MASTERADMIN_REALMNAME: master
-      IDENTITY_MASTERADMIN_CLIENTID: admin-cli
-      IDENTITY_REALMCONFIGURATION_FALLBACKOPTIONS_ENABLEUSER: "true"
-      IDENTITY_REALMCONFIGURATION_FALLBACKOPTIONS_USETEMPORARYPASSWORD: "true"
+      IDENTITY_REALMCONFIGURATION_FALLBACKOPTIONS_ENABLEUSER: true
+      IDENTITY_REALMCONFIGURATION_FALLBACKOPTIONS_USETEMPORARYPASSWORD: true
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
@@ -226,8 +225,8 @@ services:
     container_name: employee_app
     image: harbor.backbase.eu/development/employee-web-app-essentials:2022.09.1
     environment:
-      AUTH_URL: "http://localhost:8180/auth/"
-      API_ROOT: "http://localhost:8080/api"
+      AUTH_URL: http://localhost:8180/auth/
+      API_ROOT: http://localhost:8080/api
     ports:
       - "8080:8080"
     volumes:
@@ -243,7 +242,6 @@ services:
       - bootstrap
     environment:
       <<: *common-variables
-      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=70.0 -Dlogging.level.com.backbase.stream=DEBUG"
       SPRING_PROFILES_INCLUDE: "moustache-bank"
     depends_on:
       token-converter:
@@ -258,7 +256,6 @@ services:
       - bootstrap
     environment:
       <<: *common-variables
-      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=70.0 -Dlogging.level.com.backbase.stream=DEBUG"
       SPRING_PROFILES_INCLUDE: "moustache-bank,moustache-bank-subsidiaries"
     depends_on:
       token-converter:

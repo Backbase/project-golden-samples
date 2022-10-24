@@ -19,9 +19,9 @@ In this guide we'll create a lightweight Backbase setup configuring a [k3s](http
 
 Once everything is installed and the cluster is up and running you can execute the following steps:
 
-* Run `setup-backbase-credentials.sh` to set up helm and container repositories.
+* Run `setup-backbase-credentials.sh` to set up helm and images repositories.
 * Run `echo '127.0.0.1 kubernetes.docker.internal' | sudo tee -a /etc/hosts` to enable the ingress to expose the internal endpoints.
-* Obtain the [employee-web-app-essentials](../images/employee-web-app-essentials/README.md) image as it is not yet public
+* Obtain the [harbor.backbase.eu/development/employee-web-app-essentials](../images/employee-web-app-essentials/README.md) image as it is not yet public
   available.
 * Run: `helmfile sync`.
 

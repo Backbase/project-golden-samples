@@ -16,6 +16,7 @@ colima start --cpu 4 --memory 16
 ```shell
 docker login repo.backbase.com
 ```
+> If connected to the VPN you can also login to harbor: `docker login harbor.backbase.eu`
 
 ## Steps
 
@@ -37,6 +38,8 @@ docker compose up -d
 ```shell
 docker compose --profile=bootstrap up -d
 ```
+
+> **Heads up**: The image `harbor.backbase.eu/development/employee-web-app-essentials` is not publicly available, you can [build it](../images/employee-web-app-essentials/README.md) or pull it from Harbor.
 
 ### Useful commands
 - Check logs:
