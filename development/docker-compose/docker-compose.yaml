@@ -187,6 +187,8 @@ services:
       spring.datasource.url: jdbc:mysql://mysql:3306/user-manager?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
       BACKBASE_USERS_IDENTITYENDPOINTSENABLED: true
       BACKBASE_USERS_IDENTITYINTEGRATIONENABLED: true
+      BACKBASE_USERS_SYNCPRIMARYTOIDENTITYENABLED: true
+      spring.cloud.discovery.client.simple.instances.user-integration-outbound-service[0].uri: http://wiremock:8080
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
@@ -206,7 +208,6 @@ services:
       - "8070:8080"
     environment:
       <<: *common-variables
-      <<: *message-broker-variables
       IDENTITY_SERVERURL: http://identity:8080/auth
       IDENTITY_MASTERADMIN_USERNAME: admin
       IDENTITY_MASTERADMIN_PASSWORD: admin
@@ -218,8 +219,8 @@ services:
       <<: *healthcheck-defaults
       test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/identity-integration-service", "<status>UP</status>" ]
     links:
-      - message-broker
       - registry
+      - identity
 
   employee-app:
     container_name: employee_app
@@ -272,6 +273,17 @@ services:
         condition: service_healthy
       product-catalog-task:
         condition: service_completed_successfully
+
+  wiremock:
+    profiles:
+      - with-mocks
+    container_name: wiremock
+    image: wiremock/wiremock
+    command:
+      - --global-response-templating
+      - --verbose
+    volumes:
+      - ./stubs:/home/wiremock
 
 volumes:
   backbase_mysql_data:
