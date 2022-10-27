@@ -89,6 +89,39 @@ Internal endpoints are made available via ingress in case you want to access int
 - Arrangement Manager: http://kubernetes.docker.internal/internal/arrangement-manager
 - User Manager: http://kubernetes.docker.internal/internal/user-manager
 
+## Adding a Custom Service
+
+You can add your custom integration service to the cluster by adding a new `backbase-app` chart deployment in the helmfile. e.g.
+```yaml
+  - name: dis-custom-integration-service
+    chart: backbase-charts/backbase-app
+    version: 0.24.1
+    labels:
+      tier: dis
+      component: custom-integration-service
+    values:
+      - global.yaml.gotmpl
+      - global-ssdk.yaml.gotmpl
+      - app:
+          name: custom-integration-service
+          image:
+            registry: harbor.backbase.eu/development
+            repository: custom-integration-service
+            tag: latest
+        service:
+          nameOverride: custom-integration-service
+        ingress:
+          enabled: true
+          annotations:
+            "kubernetes.io/ingress.class": "nginx"
+            "nginx.ingress.kubernetes.io/rewrite-target": /$1
+            "nginx.ingress.kubernetes.io/x-forwarded-prefix": "/internal/custom-integration-service"
+          hosts:
+            - host: {{ .Values.ingress.host }}
+              paths:
+                - /internal/custom-integration-service/(.*)
+```
+
 ## Future Improvements
 
 1. Use all helm charts

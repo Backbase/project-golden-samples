@@ -76,9 +76,6 @@ services:
       <<: *common-variables
       gateway.actuator.security.enabled: false
       gateway.csrf.enabled: false
-      spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedOrigins: "*"
-      spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedHeaders: "*"
-      spring.cloud.gateway.globalcors.corsConfigurations.'[/**]'.allowedMethods: "*"
     links:
       - registry
       - token-converter
@@ -275,10 +272,10 @@ services:
         condition: service_completed_successfully
 
   wiremock:
+    container_name: wiremock
+    image: wiremock/wiremock:2.32.0
     profiles:
       - with-mocks
-    container_name: wiremock
-    image: wiremock/wiremock
     command:
       - --global-response-templating
       - --verbose

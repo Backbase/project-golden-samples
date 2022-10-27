@@ -24,7 +24,7 @@ releases:
   {{- $adminServerPath := "/admin" }}
   - name: spring-boot-admin
     chart: backbase-charts/backbase-app
-    version: 0.23.12
+    version: 0.24.1
     labels:
       tier: infrastructure
       component: sba-server
@@ -96,18 +96,6 @@ releases:
           env:
             GATEWAY_ACTUATOR_SECURITY_ENABLED: "false"
             GATEWAY_CSRF_ENABLED: "false"
-            SPRING_CONFIG_ADDITIONAL_LOCATION: "file:/customfiles/application.yaml"
-          customFiles:
-            application.yaml: |-
-              spring:
-                cloud:
-                  gateway:
-                    globalcors:
-                      corsConfigurations:
-                        '[/**]':
-                          allowedOrigins: "*"
-                          allowedHeaders: "*"
-                          allowedMethods: "*"
           javaOpts:
             extra:
               - "-Dreactor.netty.http.server.accessLogEnabled=true"
@@ -125,7 +113,7 @@ releases:
   # Identity Authorization Server
   - name: identity-server
     chart: backbase-charts/backbase-identity
-    version: 0.3.2
+    version: 0.3.5
     labels:
       tier: identity
       component: identity-server
@@ -173,7 +161,7 @@ releases:
   # Token Converter
   - name: identity-token-converter
     chart: backbase-charts/oidc-token-converter
-    version: 0.2.1
+    version: 0.3.2
     labels:
       tier: identity
       component: token-converter
@@ -199,7 +187,7 @@ releases:
   # Identity Integration Service
   - name: identity-integration
     chart: backbase-charts/identity-integration
-    version: 0.1.8
+    version: 0.1.9
     labels:
       tier: identity
       component: identity-integration
@@ -211,8 +199,6 @@ releases:
             IDENTITY_SERVERURL: http://{{ $identityHost }}/auth
             IDENTITY_MASTERADMIN_USERNAME: admin
             IDENTITY_MASTERADMIN_PASSWORD: admin
-            IDENTITY_MASTERADMIN_REALMNAME: master
-            IDENTITY_MASTERADMIN_CLIENTID: admin-cli
             IDENTITY_REALMCONFIGURATION_FALLBACKOPTIONS_ENABLEUSER: "true"
             IDENTITY_REALMCONFIGURATION_FALLBACKOPTIONS_USETEMPORARYPASSWORD: "true"
           ingress:
@@ -229,7 +215,7 @@ releases:
   # Access Control
   - name: dbs-access-control
     chart: backbase-charts/access-control
-    version: 0.1.9
+    version: 0.2.0
     labels:
       tier: dbs
       capability: access-control
@@ -283,7 +269,7 @@ releases:
   # User Manager
   - name: dbs-user-manager
     chart: backbase-charts/user-manager
-    version: 0.1.9
+    version: 0.2.0
     labels:
       tier: dbs
       capability: user-manager
@@ -299,6 +285,7 @@ releases:
           env:
             BACKBASE_USERS_IDENTITYENDPOINTSENABLED: "true"
             BACKBASE_USERS_IDENTITYINTEGRATIONENABLED: "true"
+            BACKBASE_USERS_SYNCPRIMARYTOIDENTITYENABLED: "true"
           ingress:
             enabled: true
             annotations:
@@ -320,7 +307,7 @@ releases:
     values:
       - image:
           repository: legal-entity-bootstrap-task
-          tag: 3.9.0
+          tag: 3.9.1
           pullPolicy: IfNotPresent
         imagePullSecrets:
           - name: backbase-registry
@@ -335,7 +322,7 @@ releases:
             healthIndicator: backbase
         initContainers:
           - name: init-product-catalog
-            image: repo.backbase.com/backbase-stream-images/product-catalog-task:3.9.0
+            image: repo.backbase.com/backbase-stream-images/product-catalog-task:3.9.1
             imagePullSecrets:
               - name: backbase-registry
             env:
@@ -345,11 +332,14 @@ releases:
                 value: "false"
               - name: SPRING_CLOUD_KUBERNETES_ENABLED
                 value: "true"
+              - name: SPRING_ZIPKIN_ENABLED
+                value: "false"
         env:
           JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70.0 -Dspring.cloud.config.enabled=false -Dlogging.level.com.backbase.stream=DEBUG
           SPRING_PROFILES_INCLUDE: moustache-bank,moustache-bank-subsidiaries
           EUREKA_CLIENT_ENABLED: "false"
           SPRING_CLOUD_KUBERNETES_ENABLED: "true"
+          SPRING_ZIPKIN_ENABLED: "false"
 
   # Web
   # Employee Web Portal
