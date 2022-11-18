@@ -39,7 +39,7 @@ docker compose up -d
 docker compose --profile=bootstrap up -d
 ```
 
-> **Heads up**: The image `harbor.backbase.eu/development/employee-web-app-essentials` is not publicly available, you can [build it](../images/employee-web-app-essentials/README.md) or pull it from Harbor.
+> **Heads up**: The image `harbor.backbase.eu/development/employee-web-app-essentials` is not publicly available, you can [build it](../images/employee-web-app-essentials/README.md) or pull it from Harbor using the VPN.
 
 ### Useful commands
 - Check logs:
@@ -57,7 +57,7 @@ docker compose down
 docker kill $(docker ps -q)
 ```
 
-### Backbase Services
+## Backbase Services
 
 - Edge
 - Registry
@@ -69,13 +69,13 @@ docker kill $(docker ps -q)
 - Arrangement Manager
 - User Manager
 
-### Jobs
+## Jobs
 
 - Product Catalog Task
 - Legal Entity Bootstrap Task
 > With `moustache-bank` and `moustache-bank-subsidiaries` profiles enabled. They are [pre-configured]((https://github.com/Backbase/stream-services/blob/master/stream-legal-entity/legal-entity-bootstrap-task/src/main/resources/application.yml#L24)) in the Stream services for demonstration purposes.
 
-### Web Applications
+## Web Applications
 
 - [Employee Web App Essentials](https://community.backbase.com/documentation/employee_web_app/latest/deploy_web_app)
 

@@ -60,6 +60,11 @@ services:
       - "61613:61613"
       - "1883:1883"
       - "61614:61614"
+    healthcheck:
+      test: /opt/activemq/bin/activemq query --objname type=Broker,brokerName=*,service=Health | grep Good
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   registry:
     container_name: registry
