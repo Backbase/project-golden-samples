@@ -12,3 +12,7 @@ buildNumber.properties
 .idea
 *.iml
 *.DS_Store
+**/.terraform
+*.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
