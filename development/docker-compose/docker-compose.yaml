@@ -56,10 +56,6 @@ services:
     ports:
       - "61616:61616"
       - "8161:8161"
-      - "5672:5672"
-      - "61613:61613"
-      - "1883:1883"
-      - "61614:61614"
     healthcheck:
       test: /opt/activemq/bin/activemq query --objname type=Broker,brokerName=*,service=Health | grep Good
       interval: 10s
@@ -226,7 +222,7 @@ services:
 
   employee-app:
     container_name: employee_app
-    image: harbor.backbase.eu/development/employee-web-app-essentials:2022.09.1
+    image: harbor.backbase.eu/development/employee-web-app-essentials:2022.11
     environment:
       AUTH_URL: http://localhost:8180/auth/
       API_ROOT: http://localhost:8080/api

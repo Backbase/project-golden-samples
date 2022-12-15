@@ -352,7 +352,7 @@ releases:
     values:
       - image:
           repository: harbor.backbase.eu/development/employee-web-app-essentials
-          tag: "2022.09.1"
+          tag: "2022.11"
           pullPolicy: IfNotPresent
         imagePullSecrets:
           - name: harbor-registry
