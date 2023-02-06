@@ -307,7 +307,7 @@ releases:
     values:
       - image:
           repository: legal-entity-bootstrap-task
-          tag: 3.12.0
+          tag: 3.30.0
           pullPolicy: IfNotPresent
         imagePullSecrets:
           - name: backbase-registry
@@ -322,7 +322,7 @@ releases:
             healthIndicator: backbase
         initContainers:
           - name: init-product-catalog
-            image: repo.backbase.com/backbase-stream-images/product-catalog-task:3.12.0
+            image: repo.backbase.com/backbase-stream-images/product-catalog-task:3.30.0
             imagePullSecrets:
               - name: backbase-registry
             env:
@@ -352,7 +352,7 @@ releases:
     values:
       - image:
           repository: harbor.backbase.eu/development/employee-web-app-essentials
-          tag: "2022.11"
+          tag: "2023.01"
           pullPolicy: IfNotPresent
         imagePullSecrets:
           - name: harbor-registry

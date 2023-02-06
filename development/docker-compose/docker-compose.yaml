@@ -15,15 +15,18 @@ x-common-variables: &common-variables
   spring.main.banner-mode: off
   spring.zipkin.enabled: false
   spring.cloud.config.enabled: false
+  backbase.audit.enabled: false
 
 x-database-variables: &database-variables
+  logging.level.liquibase: INFO
   spring.liquibase.enabled: true
   spring.datasource.username: root
   spring.datasource.password: root
   spring.datasource.driver-class-name: com.mysql.cj.jdbc.Driver
+  spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
 
 x-message-broker-variables: &message-broker-variables
-  spring.activemq.broker-url: tcp://message-broker:61616
+  spring.activemq.broker-url: tcp://activemq:61616
   spring.activemq.user: admin
   spring.activemq.password: admin
 
@@ -36,7 +39,7 @@ x-healthcheck-defaults: &healthcheck-defaults
 services:
   mysql:
     container_name: mysql
-    image: mysql:8.0.30
+    image: mysql:8.0.31
     ports:
       - "3306:3306"
     environment:
@@ -49,9 +52,9 @@ services:
       timeout: 5s
       retries: 5
 
-  message-broker:
+  activemq:
     container_name: activemq
-    image: symptoma/activemq:5.17.2
+    image: symptoma/activemq:5.17.3
     privileged: true
     ports:
       - "61616:61616"
@@ -67,6 +70,11 @@ services:
     image: repo.backbase.com/backbase-docker-releases/registry:${BB_VERSION}
     ports:
       - "8761:8080"
+    volumes:
+      - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: [ "CMD", "java", "/tmp/HealthCheck.java" ]
 
   edge:
     container_name: edge
@@ -77,6 +85,11 @@ services:
       <<: *common-variables
       gateway.actuator.security.enabled: false
       gateway.csrf.enabled: false
+    volumes:
+      - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/edge", "<status>UP</status>" ]
     links:
       - registry
       - token-converter
@@ -88,9 +101,9 @@ services:
       - "7779:8080"
     environment:
       <<: *common-variables
-      BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOSTSCHEME: http
-      BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_INTERNALHOST: identity:8080
-      BACKBASE_OIDCTOKENCONVERTER_WHITELISTEDDOMAINS_0_ISSUERHOST: localhost
+      backbase.oidc-token-converter.whitelistedDomains[0].internalHostScheme: http
+      backbase.oidc-token-converter.whitelistedDomains[0].internalHost: backbase-identity:8080
+      backbase.oidc-token-converter.whitelistedDomains[0].issuerHost: localhost
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
@@ -98,10 +111,10 @@ services:
       test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/token-converter", "<status>UP</status>" ]
     links:
       - registry
-      - identity
+      - backbase-identity
 
-  identity:
-    container_name: identity
+  backbase-identity:
+    container_name: backbase_identity
     image: repo.backbase.com/backbase-docker-releases/backbase-identity:${BB_VERSION}
     ports:
       - '8180:8080'
@@ -148,7 +161,7 @@ services:
       mysql:
         condition: service_healthy
     links:
-      - message-broker
+      - activemq
       - registry
 
   arrangement-manager:
@@ -170,7 +183,7 @@ services:
       mysql:
         condition: service_healthy
     links:
-      - message-broker
+      - activemq
       - registry
 
   user-manager:
@@ -183,9 +196,9 @@ services:
       <<: *message-broker-variables
       <<: *database-variables
       spring.datasource.url: jdbc:mysql://mysql:3306/user-manager?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
-      BACKBASE_USERS_IDENTITYENDPOINTSENABLED: true
-      BACKBASE_USERS_IDENTITYINTEGRATIONENABLED: true
-      BACKBASE_USERS_SYNCPRIMARYTOIDENTITYENABLED: true
+      backbase.users.identity-endpoints-enabled: true
+      backbase.users.identity-integration-enabled: true
+      backbase.users.sync-primary-to-identity-enabled: true
       spring.cloud.discovery.client.simple.instances.user-integration-outbound-service[0].uri: http://wiremock:8080
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
@@ -196,7 +209,7 @@ services:
       mysql:
         condition: service_healthy
     links:
-      - message-broker
+      - activemq
       - registry
 
   identity-integration-service:
@@ -206,11 +219,11 @@ services:
       - "8070:8080"
     environment:
       <<: *common-variables
-      IDENTITY_SERVERURL: http://identity:8080/auth
-      IDENTITY_MASTERADMIN_USERNAME: admin
-      IDENTITY_MASTERADMIN_PASSWORD: admin
-      IDENTITY_REALMCONFIGURATION_FALLBACKOPTIONS_ENABLEUSER: true
-      IDENTITY_REALMCONFIGURATION_FALLBACKOPTIONS_USETEMPORARYPASSWORD: true
+      identity.serverUrl: http://backbase-identity:8080/auth
+      identity.masterAdmin.username: admin
+      identity.masterAdmin.password: admin
+      identity.realmConfiguration.fallbackOptions.enableUser: true
+      identity.realmConfiguration.fallbackOptions.useTemporaryPassword: true
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
@@ -218,11 +231,11 @@ services:
       test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/identity-integration-service", "<status>UP</status>" ]
     links:
       - registry
-      - identity
+      - backbase-identity
 
   employee-app:
     container_name: employee_app
-    image: harbor.backbase.eu/development/employee-web-app-essentials:2022.11
+    image: harbor.backbase.eu/development/employee-web-app-essentials:2023.01
     environment:
       AUTH_URL: http://localhost:8180/auth/
       API_ROOT: http://localhost:8080/api
@@ -230,9 +243,11 @@ services:
       - "8080:8080"
     volumes:
       - ./nginx/api.conf:/nginx-config/server/15-api.conf
+    healthcheck:
+      disable: true
     links:
       - edge
-      - identity
+      - backbase-identity
 
   product-catalog-task:
     container_name: product_catalog_task
@@ -241,7 +256,7 @@ services:
       - bootstrap
     environment:
       <<: *common-variables
-      SPRING_PROFILES_INCLUDE: "moustache-bank"
+      spring.profiles.include: "moustache-bank"
     depends_on:
       token-converter:
         condition: service_healthy
@@ -255,7 +270,7 @@ services:
       - bootstrap
     environment:
       <<: *common-variables
-      SPRING_PROFILES_INCLUDE: "moustache-bank,moustache-bank-subsidiaries"
+      spring.profiles.include: "moustache-bank,moustache-bank-subsidiaries"
     depends_on:
       token-converter:
         condition: service_healthy
@@ -267,7 +282,7 @@ services:
         condition: service_healthy
       identity-integration-service:
         condition: service_healthy
-      identity:
+      backbase-identity:
         condition: service_healthy
       product-catalog-task:
         condition: service_completed_successfully

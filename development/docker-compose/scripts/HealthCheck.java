@@ -7,7 +7,7 @@ import java.time.temporal.ChronoUnit;
 
 public class HealthCheck {
 
-    private final static String DEFAULT_URI = "http://localhost:8080/actuator/health/readiness";
+    private final static String DEFAULT_URI = "http://localhost:8080/actuator/health";
     private final static String DEFAULT_HEALTH_INDICATOR = "UP";
     private final static long DEFAULT_TIMEOUT = 10;
 
