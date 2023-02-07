@@ -79,16 +79,6 @@ Once your environment is up and running you can access it using the following UR
 - Edge Gateway: http://kubernetes.docker.internal/api
 - Spring Boot Admin: http://kubernetes.docker.internal/admin
 
-### Internal Endpoints
-
-Internal endpoints are made available via ingress in case you want to access internal APIs outside the cluster:
-
-- Identity Integration: http://kubernetes.docker.internal/internal/identity-integration-service
-- Token Converter: http://kubernetes.docker.internal/internal/token-converter
-- Access Control: http://kubernetes.docker.internal/internal/access-control
-- Arrangement Manager: http://kubernetes.docker.internal/internal/arrangement-manager
-- User Manager: http://kubernetes.docker.internal/internal/user-manager
-
 ## Adding a Custom Service
 
 You can add your custom integration service to the cluster by adding a new `backbase-app` chart deployment in the helmfile. e.g.

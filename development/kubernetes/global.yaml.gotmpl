@@ -16,3 +16,7 @@ global:
     enabled: false
   debug:
     enabled: false
+  podExtraLabels:
+    sidecar.istio.io/inject: "true"
+  strategy:
+    type: Recreate
