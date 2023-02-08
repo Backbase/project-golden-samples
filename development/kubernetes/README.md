@@ -78,6 +78,7 @@ Once your environment is up and running you can access it using the following UR
     * Realm Admin Credentials: `admin` / `admin`
 - Edge Gateway: http://kubernetes.docker.internal/api
 - Spring Boot Admin: http://kubernetes.docker.internal/admin
+- Jaeger: http://kubernetes.docker.internal/jaeger
 
 ## Adding a Custom Service
 

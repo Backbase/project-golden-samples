@@ -9,10 +9,12 @@ environments:
 repositories:
   - name: istio
     url: https://istio-release.storage.googleapis.com/charts
+  - name: ueslei
+    url: https://ueslei.dev/helm-charts/
 
 {{- $identityHost := "backbase-identity:8080" }}
 releases:
-
+  # Istio
   - name: istiod
     chart: istio/istiod
     version: 1.16.2
@@ -36,6 +38,24 @@ releases:
     namespace: istio-system
     labels:
       tier: istio
+      component: gateway
+
+  # Jaeger for Tracing
+  - name: jaeger
+    chart: ueslei/jaeger
+    version: 0.5.0
+    namespace: istio-system
+    labels:
+      tier: monitoring
+      component: jaeger
+    values:
+      - ingress:
+          enabled: true
+          path: /jaeger
+          pathType: Prefix
+          host: {{ .Values.ingress.host }}
+          annotations:
+            kubernetes.io/ingress.class: "istio"
 
   # Spring Boot Admin for Monitoring
   {{- $adminServerPath := "/admin" }}
@@ -43,7 +63,7 @@ releases:
     chart: backbase-charts/backbase-app
     version: 0.24.2
     labels:
-      tier: infrastructure
+      tier: monitoring
       component: sba-server
     values:
       - app:
