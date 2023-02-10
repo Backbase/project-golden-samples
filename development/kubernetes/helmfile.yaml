@@ -310,7 +310,7 @@ releases:
     values:
       - image:
           repository: legal-entity-bootstrap-task
-          tag: 3.30.0
+          tag: 3.30.1
           pullPolicy: IfNotPresent
         imagePullSecrets:
           - name: backbase-registry
@@ -325,10 +325,12 @@ releases:
             healthIndicator: backbase
         initContainers:
           - name: init-product-catalog
-            image: repo.backbase.com/backbase-stream-images/product-catalog-task:3.30.0
+            image: repo.backbase.com/backbase-stream-images/product-catalog-task:3.30.1
             imagePullSecrets:
               - name: backbase-registry
             env:
+              - name: JAVA_TOOL_OPTIONS
+                value: "-XX:MaxRAMPercentage=50.0 -Dspring.cloud.config.enabled=false -Dlogging.level.com.backbase.stream=DEBUG"
               - name: SPRING_PROFILES_INCLUDE
                 value: "moustache-bank"
               - name: EUREKA_CLIENT_ENABLED
@@ -338,11 +340,13 @@ releases:
               - name: SPRING_ZIPKIN_ENABLED
                 value: "false"
         env:
-          JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70.0 -Dspring.cloud.config.enabled=false -Dlogging.level.com.backbase.stream=DEBUG
+          JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=50.0 -Dspring.cloud.config.enabled=false -Dlogging.level.com.backbase.stream=DEBUG
           SPRING_PROFILES_INCLUDE: moustache-bank,moustache-bank-subsidiaries
           EUREKA_CLIENT_ENABLED: "false"
           SPRING_CLOUD_KUBERNETES_ENABLED: "true"
-          SPRING_ZIPKIN_ENABLED: "false"
+          SPRING_ZIPKIN_ENABLED: "true"
+          SPRING_ZIPKIN_BASE_URL: "http://zipkin.istio-system:9411/"
+          SPRING_SLEUTH_SAMPLER_PROBABILITY: "1.0"
 
   # Web
   # Employee Web Portal
