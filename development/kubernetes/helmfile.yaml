@@ -143,6 +143,8 @@ releases:
             extra:
               - "-Dreactor.netty.http.server.accessLogEnabled=true"
               - "-Dlogging.level.reactor.netty.http.server.AccessLog=DEBUG"
+          readinessProbe:
+            enabled: false
           ingress:
             enabled: true
             annotations:
@@ -182,6 +184,7 @@ releases:
             QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING: "true"
             QUARKUS_JAEGER_PROPAGATION: b3
             QUARKUS_JAEGER_SERVICE_NAME: backbase-identity
+            QUARKUS_JAEGER_ENDPOINT: "http://jaeger-collector.istio-system:14268/api/traces"
             QUARKUS_JAEGER_SAMPLER_TYPE: const
             QUARKUS_JAEGER_SAMPLER_PARAM: "1.0"
             QUARKUS_LOG_LEVEL: INFO
@@ -196,6 +199,8 @@ releases:
           customFiles:
             backbase-realm.json: |-
               {{- readFile "../config/identity/backbase-realm.json" | nindent 14 }}
+          readinessProbe:
+            enabled: false
           ingress:
             enabled: true
             annotations:
@@ -338,7 +343,11 @@ releases:
               - name: SPRING_CLOUD_KUBERNETES_ENABLED
                 value: "true"
               - name: SPRING_ZIPKIN_ENABLED
-                value: "false"
+                value: "true"
+              - name: SPRING_ZIPKIN_BASE_URL
+                value: "http://zipkin.istio-system:9411/"
+              - name: SPRING_SLEUTH_SAMPLER_PROBABILITY
+                value: "1.0"
         env:
           JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=50.0 -Dspring.cloud.config.enabled=false -Dlogging.level.com.backbase.stream=DEBUG
           SPRING_PROFILES_INCLUDE: moustache-bank,moustache-bank-subsidiaries
