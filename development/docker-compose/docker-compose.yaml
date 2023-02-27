@@ -249,7 +249,9 @@ services:
       - bootstrap
     environment:
       <<: *common-variables
-      spring.profiles.include: "moustache-bank"
+      spring.config.additional-location: file:/tmp/ingestion.yml
+    volumes:
+      - ../config/stream/ingestion.yml:/tmp/ingestion.yml
     depends_on:
       token-converter:
         condition: service_healthy
@@ -263,7 +265,10 @@ services:
       - bootstrap
     environment:
       <<: *common-variables
-      spring.profiles.include: "moustache-bank,moustache-bank-subsidiaries"
+      backbase.stream.legalentity.sink.useIdentityIntegration: true
+      spring.config.additional-location: file:/tmp/ingestion.yml
+    volumes:
+      - ../config/stream/ingestion.yml:/tmp/ingestion.yml
     depends_on:
       token-converter:
         condition: service_healthy
