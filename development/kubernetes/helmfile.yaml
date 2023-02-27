@@ -315,7 +315,7 @@ releases:
     values:
       - image:
           repository: legal-entity-bootstrap-task
-          tag: 3.31.2
+          tag: 3.32.0
           pullPolicy: IfNotPresent
         imagePullSecrets:
           - name: backbase-registry
@@ -330,7 +330,7 @@ releases:
             healthIndicator: backbase
         initContainers:
           - name: init-product-catalog
-            image: repo.backbase.com/backbase-stream-images/product-catalog-task:3.31.2
+            image: repo.backbase.com/backbase-stream-images/product-catalog-task:3.32.0
             imagePullSecrets:
               - name: backbase-registry
             env:

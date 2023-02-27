@@ -2,11 +2,15 @@ version: "3.9"
 # https://docs.docker.com/compose/compose-file/
 
 x-common-variables: &common-variables
-  JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=60.0 -Dlogging.level.com.backbase=DEBUG
+  JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=60.0
   SIG_SECRET_KEY: JWTSecretKeyDontUseInProduction!
   USERCTX_KEY: JWTSecretKeyDontUseInProduction!
+  logging.level.com.backbase: DEBUG
+  logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
   eureka.client.serviceUrl.defaultZone: http://registry:8080/eureka
   eureka.client.healthcheck.enabled: true
+  eureka.client.registry-fetch-interval-seconds: 15
+  eureka.client.instance-info-replication-interval-seconds: 15
   eureka.instance.non-secure-port: 8080
   eureka.instance.initialStatus: STARTING
   management.endpoints.web.exposure.include: '*'
@@ -16,6 +20,8 @@ x-common-variables: &common-variables
   spring.zipkin.enabled: false
   spring.cloud.config.enabled: false
   backbase.audit.enabled: false
+  backbase.security.public.paths: /integration-api/**
+  backbase.security.mtls.enabled: false
 
 x-database-variables: &database-variables
   logging.level.liquibase: INFO
@@ -32,7 +38,7 @@ x-message-broker-variables: &message-broker-variables
 
 x-healthcheck-defaults: &healthcheck-defaults
   start_period: 60s
-  interval: 30s
+  interval: 15s
   timeout: 5s
   retries: 10
 
@@ -124,6 +130,9 @@ services:
       QUARKUS_DATASOURCE_PASSWORD: "root"
       QUARKUS_DATASOURCE_DRIVER: "com.mysql.cj.jdbc.Driver"
       QUARKUS_LOG_FILE_ENABLE: "false"
+      QUARKUS_LOG_LEVEL: "INFO"
+      QUARKUS_LOG_CONSOLE_FORMAT: "%d{yyy:MM:dd HH:mm:ss.SSS} %-5p [%X{traceId},%X{spanId},%X{sampled}] %i --- [%t] %c{2.} : %m%n"
+      QUARKUS_JAEGER_PROPAGATION: "b3"
       KEYCLOAK_ADMIN: "admin"
       KEYCLOAK_ADMIN_PASSWORD: "admin"
       KEYCLOAK_HOME_DIR: "/"
@@ -233,22 +242,6 @@ services:
       - registry
       - backbase-identity
 
-  employee-app:
-    container_name: employee_app
-    image: harbor.backbase.eu/development/employee-web-app-essentials:2023.01
-    environment:
-      AUTH_URL: http://localhost:8180/auth/
-      API_ROOT: http://localhost:8080/api
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./nginx/api.conf:/nginx-config/server/15-api.conf
-    healthcheck:
-      disable: true
-    links:
-      - edge
-      - backbase-identity
-
   product-catalog-task:
     container_name: product_catalog_task
     image: repo.backbase.com/backbase-stream-images/product-catalog-task:${STREAM_VERSION}
@@ -297,6 +290,41 @@ services:
       - --verbose
     volumes:
       - ./stubs:/home/wiremock
+
+  employee-app:
+    container_name: employee_app
+    image: harbor.backbase.eu/development/employee-web-app-essentials:2023.01
+    platform: linux/amd64
+    environment:
+      AUTH_URL: http://localhost:8180/auth/
+      API_ROOT: http://localhost:9090/api/
+      PORT: 9090
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./nginx/api.conf:/nginx-config/server/15-api.conf
+    healthcheck:
+      disable: true
+    links:
+      - edge
+      - backbase-identity
+
+  retail-app:
+    container_name: retail_app
+    image: harbor.backbase.eu/development/retail-banking-app-usa:2023.02-LTS
+    platform: linux/amd64
+    environment:
+      AUTH_URL: http://localhost:8180/auth/
+      API_ROOT: http://localhost:8080/api/
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./nginx/api.conf:/nginx-config/server/15-api.conf
+    healthcheck:
+      disable: true
+    links:
+      - edge
+      - backbase-identity
 
 volumes:
   backbase_mysql_data:

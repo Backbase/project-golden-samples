@@ -39,7 +39,7 @@ docker compose up -d
 docker compose --profile=bootstrap up -d
 ```
 
-> **Heads up**: The image `harbor.backbase.eu/development/employee-web-app-essentials` is not publicly available, you can [build it](../images/employee-web-app-essentials/README.md) or pull it from Harbor using the VPN.
+> **Heads up**: The images `harbor.backbase.eu/development/employee-web-app-essentials` and `harbor.backbase.eu/development/retail-banking-app-usa` are not publicly available, you can [build them](../images/README.md) or pull them from Harbor using the VPN.
 
 ### Useful commands
 - Check logs:
@@ -77,16 +77,18 @@ docker kill $(docker ps -q)
 
 ## Web Applications
 
+- [Retail Banking App](https://community.backbase.com/documentation/Retail-Apps-USA/latest/deploy_web_app)
 - [Employee Web App Essentials](https://community.backbase.com/documentation/employee_web_app/latest/deploy_web_app)
-
 
 ## Endpoints
 
 Once your environment is up and running you can access it using the following URLs:
 
-- Employee Web App: http://localhost:8080
+- Retail Web App: http://localhost:8080
+    * Retail User Credentials: `sara` / `sara`
+- Employee Web App: http://localhost:9090
     * Employee Admin Credentials: `admin` / `admin`
 - Identity: http://localhost:8180/auth
     * Realm Admin Credentials: `admin` / `admin`
-- Edge Gateway: http://localhost:8080/api
+- Edge Gateway: http://localhost:8280/api
 - Registry: http://localhost:8761
