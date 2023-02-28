@@ -14,9 +14,9 @@ bootstrap:
         externalProductId: "savings-account"
   # Used by legal-entity-bootstrap-task
   legalEntity:
-    name: "Moustache Bank"
+    name: "Backbase Bank"
     realmName: "backbase"
-    externalId: "moustache-bank"
+    externalId: "backbase-bank"
     legalEntityType: "BANK"
     referenceJobRoles:
       - name: "Entitlements - Manager"
@@ -99,8 +99,8 @@ bootstrap:
                 name: "Revoke access"
                 privileges:
                   - privilege: "create"
-      - name: "Retail User - USA"
-        description: "Retail User Permissions for USA"
+      - name: "Retail User"
+        description: "Retail User Permissions"
         functionGroups:
           - name: "Products"
             functions:
@@ -110,14 +110,6 @@ bootstrap:
                 privileges:
                   - privilege: "view"
                   - privilege: "edit"
-    administrators:
-      - externalId: "admin"
-        fullName: "Backbase Root Admin"
-        identityLinkStrategy: "CREATE_IN_IDENTITY"
-        emailAddress:
-          address: "bbadmin@email.com"
-        mobileNumber:
-          number: "1234567890"
     users:
       - user:
           externalId: "admin"
@@ -130,13 +122,13 @@ bootstrap:
         referenceJobRoleNames:
           - "Entitlements - Manager"
     subsidiaries:
-      - name: "Moustache Bank USA"
-        realmName: "backbase"
-        externalId: "moustache-bank-usa"
+      - name: "Mastercard"
+        realmName: "mastercard"
+        externalId: "mastercard-bank"
         legalEntityType: "BANK"
         subsidiaries:
           - name: "Sara"
-            realmName: "backbase"
+            realmName: "mastercard"
             externalId: "sara"
             legalEntityType: "CUSTOMER"
             users:
@@ -149,49 +141,34 @@ bootstrap:
                   mobileNumber:
                     number: "1234567890"
                 referenceJobRoleNames:
-                  - "Retail User - USA"
+                  - "Retail User"
             productGroups:
               - name: "sara-arrangements"
                 description: "Product group containing user arrangements"
                 currentAccounts:
-                  - externalId: "021000021"
-                    BBAN: "021000021"
-                    name: "Sara's Current Account 1"
+                  - externalId: "aa:q648383844dhhfHhTV"
+                    BBAN: "59792642576387"
+                    name: "SandboxASPSP1 Account 1"
+                    accountHolderName: "Holder Name 1 Personal Inc"
                     productTypeExternalId: "current-account"
-                    currency: "USD"
-                    externalTransferAllowed: "true"
-                    availableBalance:
-                      currencyCode: "USD"
-                      amount: "1055.5"
-                    bookedBalance:
-                      currencyCode: "USD"
-                      amount: "1055.5"
-                savingAccounts:
-                  - externalId: "021000022"
-                    BBAN: "021000022"
-                    name: "Sara's Savings Account 1"
-                    productTypeExternalId: "savings-account"
-                    currency: "USD"
+                    currency: "GBP"
                     externalTransferAllowed: "false"
-                    availableBalance:
-                      currencyCode: "USD"
-                      amount: "3820.2"
-                    bookedBalance:
-                      currencyCode: "USD"
-                      amount: "3820.2"
+                savingAccounts:
+                  - externalId: "aFR41134ds844a:45dfF43"
+                    BBAN: "60792642576387"
+                    name: "SandboxASPSP1 Account 2"
+                    accountHolderName: "Holder Name 2 Business Inc"
+                    productTypeExternalId: "savings-account"
+                    currency: "GBP"
+                    externalTransferAllowed: "false"
                     accountInterestRate: "0.05"
                     termUnit: "Quarterly"
-                  - externalId: "021000023"
-                    BBAN: "021000023"
-                    name: "Sara's Savings Account 2"
+                  - externalId: "7y56s5:22Aa:6asdhTVC"
+                    BBAN: "61792642576387"
+                    name: "SandboxASPSP1 Account 3"
+                    accountHolderName: "Holder Name 3 Personal Inc"
                     productTypeExternalId: "savings-account"
-                    currency: "USD"
+                    currency: "GBP"
                     externalTransferAllowed: "false"
-                    availableBalance:
-                      currencyCode: "USD"
-                      amount: "155.5"
-                    bookedBalance:
-                      currencyCode: "USD"
-                      amount: "155.5"
                     accountInterestRate: "0.05"
                     termUnit: "Quarterly"

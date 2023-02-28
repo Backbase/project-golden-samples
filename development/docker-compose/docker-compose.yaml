@@ -183,6 +183,8 @@ services:
       <<: *message-broker-variables
       <<: *database-variables
       spring.datasource.url: jdbc:mysql://mysql:3306/arrangement-manager?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
+      backbase.communication.services.account.integration.service-id: mastercard-integration-service
+      backbase.arrangement.pull-latest-balance: true
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
@@ -194,6 +196,25 @@ services:
     links:
       - activemq
       - registry
+
+  mastercard-integration-service:
+    container_name: mastercard_integration_service
+    image: harbor.backbase.eu/development/mastercard-integration-service:1.0.0
+    ports:
+      - "8077:8080"
+    environment:
+      <<: *common-variables
+      mastercard.accounts.api.proxy.enabled: true
+      mastercard.accounts.api.proxy.host: wiremock
+      mastercard.accounts.api.proxy.port: 8080
+    volumes:
+      - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/mastercard-integration-service", "<status>UP</status>" ]
+    links:
+      - registry
+      - backbase-identity
 
   user-manager:
     container_name: user_manager
@@ -287,12 +308,13 @@ services:
 
   wiremock:
     container_name: wiremock
-    image: wiremock/wiremock:2.32.0
-    profiles:
-      - with-mocks
+    image: wiremock/wiremock
     command:
       - --global-response-templating
+      - --enable-browser-proxying
+      - --trust-all-proxy-targets
       - --verbose
+#      - --record-mappings
     volumes:
       - ./stubs:/home/wiremock
 
@@ -319,8 +341,9 @@ services:
     image: harbor.backbase.eu/development/retail-banking-app-usa:2023.02-LTS
     platform: linux/amd64
     environment:
-      AUTH_URL: http://localhost:8180/auth/
       API_ROOT: http://localhost:8080/api/
+      AUTH_URL: http://localhost:8180/auth/
+      AUTH_REALM: mastercard
     ports:
       - "8080:8080"
     volumes:
