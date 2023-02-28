@@ -63,6 +63,7 @@
       "clientId": "bb-tooling-client",
       "enabled": true,
       "publicClient": true,
+      "directAccessGrantsEnabled": true,
       "protocolMappers": [
         {
           "name": "realm-access",
