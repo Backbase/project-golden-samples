@@ -196,6 +196,7 @@ services:
     links:
       - activemq
       - registry
+      - mastercard-integration-service
 
   mastercard-integration-service:
     container_name: mastercard_integration_service
@@ -209,6 +210,7 @@ services:
       mastercard.accounts.api.proxy.port: 8080
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
+      - ./certs/wiremock/cacerts:/etc/ssl/certs/java/cacerts
     healthcheck:
       <<: *healthcheck-defaults
       test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/mastercard-integration-service", "<status>UP</status>" ]
@@ -316,6 +318,7 @@ services:
       - --verbose
 #      - --record-mappings
     volumes:
+      - ./certs/wiremock/ca-cert.jks:/root/.wiremock/ca-keystore.jks
       - ./stubs:/home/wiremock
 
   employee-app:
