@@ -10,7 +10,7 @@
         <codegen.openapi.generated-sources-dir>${generated-sources-dir}/openapi</codegen.openapi.generated-sources-dir>
         <compiler-plugin.version>3.8.1</compiler-plugin.version>
         <generated-sources-dir>${project.build.directory}/generated-sources</generated-sources-dir>
-        <keycloak-dependency.version>18.0.0</keycloak-dependency.version>
+        <keycloak-dependency.version>21.0.0</keycloak-dependency.version>
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
