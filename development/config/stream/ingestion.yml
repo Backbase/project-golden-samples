@@ -14,7 +14,7 @@ bootstrap:
         externalProductId: "savings-account"
   # Used by legal-entity-bootstrap-task
   legalEntity:
-    name: "Backbase Bank"
+    name: "Backbase"
     realmName: "backbase"
     externalId: "backbase-bank"
     legalEntityType: "BANK"
@@ -102,11 +102,17 @@ bootstrap:
       - name: "Retail User"
         description: "Retail User Permissions"
         functionGroups:
-          - name: "Products"
+          - name: "Products and Profile"
             functions:
               - functionId: "1006"
                 name: "Product Summary"
                 functionCode: "product.summary"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "edit"
+              - functionId: "1035"
+                name: "Manage User Profiles"
+                functionCode: "manage.user.profiles"
                 privileges:
                   - privilege: "view"
                   - privilege: "edit"
@@ -152,7 +158,6 @@ bootstrap:
                     accountHolderName: "Holder Name 1 Personal Inc"
                     productTypeExternalId: "current-account"
                     currency: "GBP"
-                    externalTransferAllowed: "false"
                 savingAccounts:
                   - externalId: "aFR41134ds844a:45dfF43"
                     BBAN: "60792642576387"
@@ -160,15 +165,9 @@ bootstrap:
                     accountHolderName: "Holder Name 2 Business Inc"
                     productTypeExternalId: "savings-account"
                     currency: "GBP"
-                    externalTransferAllowed: "false"
-                    accountInterestRate: "0.05"
-                    termUnit: "Quarterly"
                   - externalId: "7y56s5:22Aa:6asdhTVC"
                     BBAN: "61792642576387"
                     name: "SandboxASPSP1 Account 3"
                     accountHolderName: "Holder Name 3 Personal Inc"
                     productTypeExternalId: "savings-account"
                     currency: "GBP"
-                    externalTransferAllowed: "false"
-                    accountInterestRate: "0.05"
-                    termUnit: "Quarterly"

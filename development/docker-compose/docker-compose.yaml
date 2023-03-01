@@ -16,9 +16,11 @@ x-common-variables: &common-variables
   management.endpoints.web.exposure.include: '*'
   management.endpoints.enabled-by-default: true
   management.security.roles: ANONYMOUS,ACTUATOR,USER
+  server.shutdown: graceful
   spring.main.banner-mode: off
   spring.zipkin.enabled: false
   spring.cloud.config.enabled: false
+  spring.cloud.kubernetes.enabled: false
   backbase.audit.enabled: false
   backbase.security.public.paths: /integration-api/**
   backbase.security.mtls.enabled: false
@@ -200,7 +202,7 @@ services:
 
   mastercard-integration-service:
     container_name: mastercard_integration_service
-    image: harbor.backbase.eu/development/mastercard-integration-service:1.0.0
+    image: harbor.backbase.eu/development/mastercard-integration-service:1.0.1
     ports:
       - "8077:8080"
     environment:
