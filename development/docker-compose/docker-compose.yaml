@@ -312,7 +312,7 @@ services:
 
   wiremock:
     container_name: wiremock
-    image: wiremock/wiremock
+    image: wiremock/wiremock:2.35.0
     command:
       - --global-response-templating
       - --enable-browser-proxying
