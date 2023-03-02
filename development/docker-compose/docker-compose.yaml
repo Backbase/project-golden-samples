@@ -187,6 +187,7 @@ services:
       spring.datasource.url: jdbc:mysql://mysql:3306/arrangement-manager?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
       backbase.communication.services.account.integration.service-id: mastercard-integration-service
       backbase.arrangement.pull-latest-balance: true
+      logging.level.com.backbase.products.contexts: INFO
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
@@ -198,7 +199,6 @@ services:
     links:
       - activemq
       - registry
-      - mastercard-integration-service
 
   mastercard-integration-service:
     container_name: mastercard_integration_service
