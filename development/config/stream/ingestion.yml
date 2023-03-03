@@ -146,6 +146,10 @@ bootstrap:
                     address: "sara@email.com"
                   mobileNumber:
                     number: "1234567890"
+                  attributes:
+                    consentId: "GFiTpF3:EBy5xGqQMatk"
+                    aspspId: "420e5cff-0e2a-4156-991a-f6eeef0478cf"
+                    psuTppCustomerId: "420e5cff-0e2a-4156-991a-f6eeef0478cf"
                 referenceJobRoleNames:
                   - "Retail User"
             productGroups:

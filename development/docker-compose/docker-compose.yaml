@@ -112,6 +112,12 @@ services:
       backbase.oidc-token-converter.whitelistedDomains[0].internalHostScheme: http
       backbase.oidc-token-converter.whitelistedDomains[0].internalHost: backbase-identity:8080
       backbase.oidc-token-converter.whitelistedDomains[0].issuerHost: localhost
+      backbase.token-converter.claimsMapping[0].external: consentId
+      backbase.token-converter.claimsMapping[0].internal: consentId
+      backbase.token-converter.claimsMapping[1].external: aspspId
+      backbase.token-converter.claimsMapping[1].internal: aspspId
+      backbase.token-converter.claimsMapping[2].external: psuTppCustomerId
+      backbase.token-converter.claimsMapping[2].internal: psuTppCustomerId
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
     healthcheck:
@@ -233,6 +239,7 @@ services:
       backbase.users.identity-endpoints-enabled: true
       backbase.users.identity-integration-enabled: true
       backbase.users.sync-primary-to-identity-enabled: true
+      backbase.users.attribute-whitelist: consentId,aspspId,psuTppCustomerId
       spring.cloud.discovery.client.simple.instances.user-integration-outbound-service[0].uri: http://wiremock:8080
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java

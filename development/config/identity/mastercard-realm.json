@@ -1,21 +1,6 @@
 {
   "realm": "mastercard",
   "enabled": true,
-  "users": [
-    {
-      "username": "provisioner",
-      "enabled": true,
-      "credentials": [
-        {
-          "type": "password",
-          "value": "provisioner"
-        }
-      ],
-      "realmRoles": [
-        "ROLE_ADMIN"
-      ]
-    }
-  ],
   "roles": {
     "realm": [
       {
@@ -36,27 +21,14 @@
       "clientId": "bb-web-client",
       "enabled": true,
       "publicClient": true,
-      "protocolMappers": [
-        {
-          "name": "realm roles",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-realm-role-mapper",
-          "config": {
-            "multivalued": "true",
-            "userinfo.token.claim": "true",
-            "user.attribute": "foo",
-            "id.token.claim": "false",
-            "access.token.claim": "true",
-            "claim.name": "authorities",
-            "jsonType.label": "String"
-          }
-        }
-      ],
       "redirectUris": [
         "*"
       ],
       "webOrigins": [
         "*"
+      ],
+      "defaultClientScopes": [
+        "mastercard"
       ]
     },
     {
@@ -64,9 +36,42 @@
       "enabled": true,
       "publicClient": true,
       "directAccessGrantsEnabled": true,
+      "redirectUris": [
+        "*"
+      ],
+      "webOrigins": [
+        "*"
+      ],
+      "defaultClientScopes": [
+        "mastercard"
+      ]
+    }
+  ],
+  "clientScopes": [
+    {
+      "name": "mastercard",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "display.on.consent.screen": "false"
+      },
       "protocolMappers": [
         {
-          "name": "realm-access",
+          "name": "username",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "username",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "preferred_username",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "realm roles",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-usermodel-realm-role-mapper",
           "config": {
@@ -77,13 +82,49 @@
             "claim.name": "authorities",
             "jsonType.label": "String"
           }
+        },
+        {
+          "name": "consentId",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "consentId",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "claim.name": "consentId",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "psuTppCustomerId",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "psuTppCustomerId",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "claim.name": "psuTppCustomerId",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "aspspId",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "aspspId",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "claim.name": "aspspId",
+            "jsonType.label": "String"
+          }
         }
-      ],
-      "redirectUris": [
-        "*"
-      ],
-      "webOrigins": [
-        "*"
       ]
     }
   ]

@@ -44,7 +44,6 @@
           "config": {
             "multivalued": "true",
             "userinfo.token.claim": "true",
-            "user.attribute": "foo",
             "id.token.claim": "false",
             "access.token.claim": "true",
             "claim.name": "authorities",
@@ -66,7 +65,7 @@
       "directAccessGrantsEnabled": true,
       "protocolMappers": [
         {
-          "name": "realm-access",
+          "name": "realm roles",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-usermodel-realm-role-mapper",
           "config": {
