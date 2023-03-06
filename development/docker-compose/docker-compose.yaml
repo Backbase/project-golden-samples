@@ -351,7 +351,7 @@ services:
 
   employee-app:
     container_name: employee_app
-    image: harbor.backbase.eu/development/employee-web-app-essentials:2023.01
+    image: harbor.backbase.eu/development/employee-web-app-essentials:2023.02-LTS
     platform: linux/amd64
     environment:
       AUTH_URL: http://localhost:8180/auth/
