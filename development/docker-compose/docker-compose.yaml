@@ -1,26 +1,30 @@
 version: "3.9"
 # https://docs.docker.com/compose/compose-file/
 
+x-discovery-variables: &discovery-variables
+  server.shutdown: graceful
+  spring.cloud.kubernetes.enabled: false
+  eureka.instance.initialStatus: STARTING
+  eureka.instance.non-secure-port: 8080
+  eureka.instance.prefer-ip-address: true
+  eureka.client.healthcheck.enabled: true
+  eureka.client.serviceUrl.defaultZone: http://registry:8080/eureka
+  eureka.client.registry-fetch-interval-seconds: 15
+  eureka.client.instance-info-replication-interval-seconds: 15
+
 x-common-variables: &common-variables
+  <<: *discovery-variables
   JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=60.0
   SIG_SECRET_KEY: JWTSecretKeyDontUseInProduction!
   USERCTX_KEY: JWTSecretKeyDontUseInProduction!
   logging.level.com.backbase: DEBUG
   logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
-  eureka.client.serviceUrl.defaultZone: http://registry:8080/eureka
-  eureka.client.healthcheck.enabled: true
-  eureka.client.registry-fetch-interval-seconds: 15
-  eureka.client.instance-info-replication-interval-seconds: 15
-  eureka.instance.non-secure-port: 8080
-  eureka.instance.initialStatus: STARTING
   management.endpoints.web.exposure.include: '*'
   management.endpoints.enabled-by-default: true
   management.security.roles: ANONYMOUS,ACTUATOR,USER
-  server.shutdown: graceful
   spring.main.banner-mode: off
   spring.zipkin.enabled: false
   spring.cloud.config.enabled: false
-  spring.cloud.kubernetes.enabled: false
   backbase.audit.enabled: false
   backbase.security.public.paths: /integration-api/**
   backbase.security.mtls.enabled: false
@@ -72,6 +76,21 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  spring-boot-admin:
+    container_name: spring_boot_admin
+    image: backbasecs/spring-boot-admin-server
+    profiles:
+      - monitoring
+    ports:
+      - "9080:8080"
+    environment:
+      <<: *discovery-variables
+      eureka.client.enabled: true
+      spring.cloud.discovery.client.simple.instances.backbase-identity[0].uri: http://backbase-identity:8080
+      spring.cloud.discovery.client.simple.instances.backbase-identity[0].metadata.management.context-path: /auth/q
+      spring.cloud.discovery.client.simple.instances.backbase-identity[0].metadata.health.path: health
+      logging.level.de.codecentric: DEBUG
 
   registry:
     container_name: registry
@@ -208,7 +227,7 @@ services:
 
   mastercard-integration-service:
     container_name: mastercard_integration_service
-    image: harbor.backbase.eu/development/mastercard-integration-service:1.0.1
+    image: harbor.backbase.eu/development/mastercard-integration-service:1.1.0
     ports:
       - "8077:8080"
     environment:
