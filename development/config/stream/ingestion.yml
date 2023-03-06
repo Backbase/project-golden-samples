@@ -99,10 +99,10 @@ bootstrap:
                 name: "Revoke access"
                 privileges:
                   - privilege: "create"
-      - name: "Retail User - USA"
-        description: "Retail User Permissions for USA"
+      - name: "Retail User"
+        description: "Retail User Permissions"
         functionGroups:
-          - name: "Products"
+          - name: "Products and Profile"
             functions:
               - functionId: "1006"
                 name: "Product Summary"
@@ -110,14 +110,12 @@ bootstrap:
                 privileges:
                   - privilege: "view"
                   - privilege: "edit"
-    administrators:
-      - externalId: "admin"
-        fullName: "Backbase Root Admin"
-        identityLinkStrategy: "CREATE_IN_IDENTITY"
-        emailAddress:
-          address: "bbadmin@email.com"
-        mobileNumber:
-          number: "1234567890"
+              - functionId: "1035"
+                name: "Manage User Profiles"
+                functionCode: "manage.user.profiles"
+                privileges:
+                  - privilege: "view"
+                  - privilege: "edit"
     users:
       - user:
           externalId: "admin"
@@ -149,7 +147,7 @@ bootstrap:
                   mobileNumber:
                     number: "1234567890"
                 referenceJobRoleNames:
-                  - "Retail User - USA"
+                  - "Retail User"
             productGroups:
               - name: "sara-arrangements"
                 description: "Product group containing user arrangements"

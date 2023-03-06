@@ -368,14 +368,14 @@ releases:
     values:
       - image:
           repository: harbor.backbase.eu/development/employee-web-app-essentials
-          tag: "2023.01"
+          tag: "2023.02-LTS"
           pullPolicy: IfNotPresent
         imagePullSecrets:
           - name: harbor-registry
         priorityClassName: ''
         replicaCount: 1
         env:
-          API_ROOT: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/api"
+          API_ROOT: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/api/"
           AUTH_URL: "{{ .Values.ingress.proto }}://{{ .Values.ingress.host }}/auth/"
           BASE_DOMAIN: {{ .Values.ingress.host }}
           PROTOCOL: {{ .Values.ingress.proto }}
