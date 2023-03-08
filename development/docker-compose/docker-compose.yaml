@@ -1,4 +1,3 @@
-version: "3.9"
 # https://docs.docker.com/compose/compose-file/
 
 x-discovery-variables: &discovery-variables
