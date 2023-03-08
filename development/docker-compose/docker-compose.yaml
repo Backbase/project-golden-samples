@@ -323,6 +323,10 @@ services:
     container_name: employee_app
     image: harbor.backbase.eu/development/employee-web-app-essentials:2023.02-LTS
     platform: linux/amd64
+    build:
+      context: ../images/employee-web-app-essentials
+      secrets:
+        - npm
     environment:
       AUTH_URL: http://localhost:8180/auth/
       API_ROOT: http://localhost:9090/api/
@@ -341,6 +345,10 @@ services:
     container_name: retail_app
     image: harbor.backbase.eu/development/retail-banking-app-usa:2023.02-LTS
     platform: linux/amd64
+    build:
+      context: ../images/retail-banking-app-usa
+      secrets:
+        - npm
     environment:
       API_ROOT: http://localhost:8080/api/
       AUTH_URL: http://localhost:8180/auth/
@@ -361,3 +369,7 @@ volumes:
 networks:
   default:
     name: backbase_default
+
+secrets:
+  npm:
+    file: ${HOME}/.npmrc
