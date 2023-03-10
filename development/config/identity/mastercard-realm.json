@@ -1,6 +1,9 @@
 {
   "realm": "mastercard",
   "enabled": true,
+  "attributes": {
+    "frontendUrl": "http://host.docker.internal:8180/auth"
+  },
   "roles": {
     "realm": [
       {
@@ -126,6 +129,56 @@
           }
         }
       ]
+    }
+  ],
+  "identityProviders": [
+    {
+      "alias": "mastercard",
+      "displayName": "Mastercard OpenBanking Connect",
+      "providerId": "oidc",
+      "enabled": true,
+      "updateProfileFirstLoginMode": "on",
+      "trustEmail": false,
+      "storeToken": false,
+      "addReadTokenRoleOnCreate": false,
+      "authenticateByDefault": false,
+      "linkOnly": false,
+      "firstBrokerLoginFlowAlias": "first broker login",
+      "config": {
+        "userInfoUrl": "http://host.docker.internal:8081/userinfo",
+        "validateSignature": "true",
+        "clientId": "mastercard-client",
+        "tokenUrl": "http://host.docker.internal:8081/oauth2/token",
+        "authorizationUrl": "http://host.docker.internal:8081/oauth2/authorize",
+        "clientAuthMethod": "client_secret_basic",
+        "jwksUrl": "http://host.docker.internal:8081/oauth2/jwks",
+        "syncMode": "FORCE",
+        "clientSecret": "secret",
+        "issuer": "http://host.docker.internal:8081",
+        "useJwksUrl": "true"
+      }
+    }
+  ],
+  "identityProviderMappers": [
+    {
+      "name": "aspspId",
+      "identityProviderAlias": "mastercard",
+      "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+      "config": {
+        "syncMode": "INHERIT",
+        "claim": "aspspId",
+        "user.attribute": "aspspId"
+      }
+    },
+    {
+      "name": "consentId",
+      "identityProviderAlias": "mastercard",
+      "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+      "config": {
+        "syncMode": "INHERIT",
+        "claim": "consentId",
+        "user.attribute": "consentId"
+      }
     }
   ]
 }
