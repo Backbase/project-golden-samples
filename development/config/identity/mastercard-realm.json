@@ -147,7 +147,7 @@
       "config": {
         "userInfoUrl": "http://host.docker.internal:8081/userinfo",
         "validateSignature": "true",
-        "clientId": "mastercard-client",
+        "clientId": "keycloak-broker-client",
         "tokenUrl": "http://host.docker.internal:8081/oauth2/token",
         "authorizationUrl": "http://host.docker.internal:8081/oauth2/authorize",
         "clientAuthMethod": "client_secret_basic",
