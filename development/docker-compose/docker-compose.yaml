@@ -256,16 +256,17 @@ services:
 
   mastercard-integration-service:
     container_name: mastercard_integration_service
-    image: harbor.backbase.eu/development/mastercard-integration-service:1.1.0
+    image: harbor.backbase.eu/development/mastercard-integration-service:1.1.1
     deploy:
       <<: *resources-limits-defaults
     ports:
       - "8077:8080"
     environment:
       <<: *common-variables
-      mastercard.accounts.api.proxy.enabled: false
-      mastercard.accounts.api.proxy.host: wiremock
-      mastercard.accounts.api.proxy.port: 8080
+      mastercard.mcob.ais.api.base-uri: https://developer.mastercard.com/apigwproxy/openbanking/connect/api
+      mastercard.mcob.ais.api.proxy.enabled: false
+      mastercard.mcob.ais.api.proxy.host: wiremock
+      mastercard.mcob.ais.api.proxy.port: 8080
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
       - ./certs/wiremock/cacerts:/etc/ssl/certs/java/cacerts
@@ -277,11 +278,29 @@ services:
 
   authorization-server:
     container_name: authorization_server
-    image: harbor.backbase.eu/development/authorization-server:1.0.0
+    image: harbor.backbase.eu/development/authorization-server:1.2.0
     deploy:
       <<: *resources-limits-defaults
     ports:
       - "8081:8080"
+    environment:
+      mastercard.mcob.ais.api.base-uri: https://developer.mastercard.com/apigwproxy/openbanking/connect/api
+      mastercard.mcob.ais.aspsps[0].id: 420e5cff-0e2a-4156-991a-f6eeef0478cf
+      mastercard.mcob.ais.aspsps[0].consents[0].user.username: sara
+      mastercard.mcob.ais.aspsps[0].consents[0].user.roles: USER
+      security.authorization.client-registration.keycloak-broker-client.secret: "{noop}secret"
+      security.authorization.client-registration.keycloak-broker-client.client-authentication-methods: client_secret_basic
+      security.authorization.client-registration.keycloak-broker-client.authorization-grant-types: client_credentials,authorization_code,refresh_token
+      security.authorization.client-registration.keycloak-broker-client.redirect-uris: http://host.docker.internal:8180/auth/realms/mastercard/broker/mastercard/endpoint
+      security.authorization.client-registration.keycloak-broker-client.scopes: openid,profile
+      security.authorization.client-registration.keycloak-broker-client.claim-mappers[0].attributeName: aspspId
+      security.authorization.client-registration.keycloak-broker-client.claim-mappers[0].toAccessToken: true
+      security.authorization.client-registration.keycloak-broker-client.claim-mappers[1].attributeName: consentId
+      security.authorization.client-registration.keycloak-broker-client.claim-mappers[1].toAccessToken: true
+      security.authorization.client-registration.keycloak-broker-client.claim-mappers[2].attributeName: preferred_username
+      security.authorization.client-registration.keycloak-broker-client.claim-mappers[2].toIdToken: true
+      logging.level.com.backbase: DEBUG
+      logging.level.org.springframework.security: TRACE
 
   user-manager:
     container_name: user_manager
