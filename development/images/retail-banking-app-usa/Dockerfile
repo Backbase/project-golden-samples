@@ -6,9 +6,9 @@ RUN unzip retail-banking-app-usa-package.zip -d /tmp/retail-banking-app-usa-pack
 WORKDIR /tmp/retail-banking-app-usa-package/web/retail-usa-web
 
 RUN npm i -g replace-in-file
-RUN replace-in-file '${AUTH_URL}realms/${AUTH_REALM}' '${AUTH_URL}' apps/retail-usa/src/environments/environment.prod.ts
-
 RUN --mount=type=secret,id=npm,dst=./.npmrc npm i --legacy-peer-deps
+
+RUN replace-in-file '${AUTH_URL}realms/${AUTH_REALM}' '${AUTH_URL}' apps/retail-usa/src/environments/environment.prod.ts
 RUN npm run build
 
 FROM repo.backbase.com/backbase-docker-releases/web-base:1.1.4
