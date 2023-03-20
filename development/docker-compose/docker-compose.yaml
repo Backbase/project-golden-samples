@@ -256,7 +256,7 @@ services:
 
   mastercard-integration-service:
     container_name: mastercard_integration_service
-    image: harbor.backbase.eu/development/mastercard-integration-service:1.1.1
+    image: harbor.backbase.eu/development/mastercard-integration-service:1.2.0
     deploy:
       <<: *resources-limits-defaults
     ports:
@@ -454,8 +454,7 @@ services:
         - npm
     environment:
       API_ROOT: http://localhost:8080/api/
-      AUTH_URL: http://host.docker.internal:8180/auth/
-      AUTH_REALM: mastercard
+      AUTH_URL: http://host.docker.internal:8180/auth/realms/mastercard
     ports:
       - "8080:8080"
     volumes:

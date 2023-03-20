@@ -101,20 +101,6 @@
           }
         },
         {
-          "name": "psuTppCustomerId",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-attribute-mapper",
-          "consentRequired": false,
-          "config": {
-            "userinfo.token.claim": "true",
-            "user.attribute": "psuTppCustomerId",
-            "id.token.claim": "false",
-            "access.token.claim": "true",
-            "claim.name": "psuTppCustomerId",
-            "jsonType.label": "String"
-          }
-        },
-        {
           "name": "aspspId",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-usermodel-attribute-mapper",
