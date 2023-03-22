@@ -144,11 +144,12 @@ services:
       - "7779:8080"
     environment:
       <<: *common-variables
+      backbase.oidc-token-converter.dbs-token-enhancer.enabled: false
       backbase.oidc-token-converter.whitelistedDomains[0].internalHostScheme: http
       backbase.oidc-token-converter.whitelistedDomains[0].internalHost: backbase-identity:8080
       backbase.oidc-token-converter.whitelistedDomains[0].issuerHost: localhost
       backbase.oidc-token-converter.whitelistedDomains[1].internalHostScheme: http
-      backbase.oidc-token-converter.whitelistedDomains[1].internalHost: backbase-identity:8080
+      backbase.oidc-token-converter.whitelistedDomains[1].internalHost: authorization-server:8080
       backbase.oidc-token-converter.whitelistedDomains[1].issuerHost: host.docker.internal
       backbase.token-converter.claimsMapping[1].external: aspspId
       backbase.token-converter.claimsMapping[1].internal: aspspId
@@ -288,17 +289,18 @@ services:
       mastercard.mcob.ais.aspsps[0].id: 420e5cff-0e2a-4156-991a-f6eeef0478cf
       mastercard.mcob.ais.aspsps[0].available-consents[0].user.username: sara
       mastercard.mcob.ais.aspsps[0].available-consents[0].user.roles: USER
-      security.authorization.client-registration.keycloak-broker-client.secret: "{noop}secret"
-      security.authorization.client-registration.keycloak-broker-client.client-authentication-methods: client_secret_basic
-      security.authorization.client-registration.keycloak-broker-client.authorization-grant-types: client_credentials,authorization_code,refresh_token
-      security.authorization.client-registration.keycloak-broker-client.redirect-uris: http://host.docker.internal:8180/auth/realms/mastercard/broker/mastercard/endpoint
-      security.authorization.client-registration.keycloak-broker-client.scopes: openid,profile
-      security.authorization.client-registration.keycloak-broker-client.claim-mappers[0].attributeName: aspspId
-      security.authorization.client-registration.keycloak-broker-client.claim-mappers[0].toAccessToken: true
-      security.authorization.client-registration.keycloak-broker-client.claim-mappers[1].attributeName: consentId
-      security.authorization.client-registration.keycloak-broker-client.claim-mappers[1].toAccessToken: true
-      security.authorization.client-registration.keycloak-broker-client.claim-mappers[2].attributeName: preferred_username
-      security.authorization.client-registration.keycloak-broker-client.claim-mappers[2].toIdToken: true
+      security.authorization.server-configuration[settings.authorization-server.jwk-set-endpoint]: /protocol/openid-connect/certs
+      security.authorization.server-configuration[settings.authorization-server.oidc-user-info-endpoint]: /protocol/openid-connect/userinfo
+      security.authorization.client-registration.web-client.client-authentication-methods: none
+      security.authorization.client-registration.web-client.authorization-grant-types: authorization_code,refresh_token
+      security.authorization.client-registration.web-client.redirect-uris: http://host.docker.internal:8080/en/select-context
+      security.authorization.client-registration.web-client.scopes: openid
+      security.authorization.client-registration.web-client.claim-mappers[0].attributeName: aspspId
+      security.authorization.client-registration.web-client.claim-mappers[0].toAccessToken: true
+      security.authorization.client-registration.web-client.claim-mappers[1].attributeName: consentId
+      security.authorization.client-registration.web-client.claim-mappers[1].toAccessToken: true
+      security.authorization.client-registration.web-client.claim-mappers[2].attributeName: preferred_username
+      security.authorization.client-registration.web-client.claim-mappers[2].toIdToken: true
       logging.level.com.backbase: DEBUG
       logging.level.org.springframework.security: TRACE
 
@@ -318,7 +320,6 @@ services:
       spring.datasource.url: jdbc:mysql://mysql:3306/user-manager?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
       backbase.users.identity-endpoints-enabled: true
       backbase.users.identity-integration-enabled: true
-      backbase.users.sync-primary-to-identity-enabled: true
       spring.cloud.discovery.client.simple.instances.user-integration-outbound-service[0].uri: http://wiremock:8080
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
@@ -453,8 +454,9 @@ services:
       secrets:
         - npm
     environment:
-      API_ROOT: http://localhost:8080/api/
-      AUTH_URL: http://host.docker.internal:8180/auth/realms/mastercard
+      API_ROOT: http://host.docker.internal:8080/api/
+      AUTH_URL: http://host.docker.internal:8081
+      AUTH_CLIENT_ID: web-client
     ports:
       - "8080:8080"
     volumes:

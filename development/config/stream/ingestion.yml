@@ -129,23 +129,17 @@ bootstrap:
           - "Entitlements - Manager"
     subsidiaries:
       - name: "Mastercard"
-        realmName: "mastercard"
         externalId: "mastercard-bank"
         legalEntityType: "BANK"
         subsidiaries:
           - name: "Sara"
-            realmName: "mastercard"
             externalId: "sara"
             legalEntityType: "CUSTOMER"
             users:
               - user:
                   externalId: "sara"
                   fullName: "Sara Jones"
-                  identityLinkStrategy: "CREATE_IN_IDENTITY"
-                  emailAddress:
-                    address: "sara@email.com"
-                  mobileNumber:
-                    number: "1234567890"
+                  identityLinkStrategy: "IDENTITY_AGNOSTIC"
                 referenceJobRoleNames:
                   - "Retail User"
             productGroups:
