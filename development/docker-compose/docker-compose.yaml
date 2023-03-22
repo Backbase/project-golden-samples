@@ -278,7 +278,7 @@ services:
 
   authorization-server:
     container_name: authorization_server
-    image: harbor.backbase.eu/development/authorization-server:1.2.0
+    image: harbor.backbase.eu/development/authorization-server:1.3.0
     deploy:
       <<: *resources-limits-defaults
     ports:
@@ -286,8 +286,8 @@ services:
     environment:
       mastercard.mcob.ais.api.base-uri: https://developer.mastercard.com/apigwproxy/openbanking/connect/api
       mastercard.mcob.ais.aspsps[0].id: 420e5cff-0e2a-4156-991a-f6eeef0478cf
-      mastercard.mcob.ais.aspsps[0].consents[0].user.username: sara
-      mastercard.mcob.ais.aspsps[0].consents[0].user.roles: USER
+      mastercard.mcob.ais.aspsps[0].available-consents[0].user.username: sara
+      mastercard.mcob.ais.aspsps[0].available-consents[0].user.roles: USER
       security.authorization.client-registration.keycloak-broker-client.secret: "{noop}secret"
       security.authorization.client-registration.keycloak-broker-client.client-authentication-methods: client_secret_basic
       security.authorization.client-registration.keycloak-broker-client.authorization-grant-types: client_credentials,authorization_code,refresh_token
