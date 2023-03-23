@@ -101,6 +101,7 @@ services:
       spring.cloud.discovery.client.simple.instances.backbase-identity[0].uri: http://backbase-identity:8080
       spring.cloud.discovery.client.simple.instances.backbase-identity[0].metadata.management.context-path: /auth/q
       spring.cloud.discovery.client.simple.instances.backbase-identity[0].metadata.health.path: health
+      spring.cloud.discovery.client.simple.instances.authorization-server[0].uri: http://authorization-server:8080
 
   registry:
     container_name: registry
@@ -279,7 +280,7 @@ services:
 
   authorization-server:
     container_name: authorization_server
-    image: harbor.backbase.eu/development/authorization-server:1.3.0
+    image: harbor.backbase.eu/development/authorization-server:1.4.0
     deploy:
       <<: *resources-limits-defaults
     ports:
@@ -289,18 +290,21 @@ services:
       mastercard.mcob.ais.aspsps[0].id: 420e5cff-0e2a-4156-991a-f6eeef0478cf
       mastercard.mcob.ais.aspsps[0].available-consents[0].user.username: sara
       mastercard.mcob.ais.aspsps[0].available-consents[0].user.roles: USER
+      management.endpoints.web.exposure.include: '*'
+      management.endpoints.enabled-by-default: true
+      security.authorization.public-paths: /actuator/**
       security.authorization.server-configuration[settings.authorization-server.jwk-set-endpoint]: /protocol/openid-connect/certs
       security.authorization.server-configuration[settings.authorization-server.oidc-user-info-endpoint]: /protocol/openid-connect/userinfo
       security.authorization.client-registration.web-client.client-authentication-methods: none
       security.authorization.client-registration.web-client.authorization-grant-types: authorization_code,refresh_token
       security.authorization.client-registration.web-client.redirect-uris: http://host.docker.internal:8080/en/select-context
       security.authorization.client-registration.web-client.scopes: openid
-      security.authorization.client-registration.web-client.claim-mappers[0].attributeName: aspspId
-      security.authorization.client-registration.web-client.claim-mappers[0].toAccessToken: true
-      security.authorization.client-registration.web-client.claim-mappers[1].attributeName: consentId
-      security.authorization.client-registration.web-client.claim-mappers[1].toAccessToken: true
-      security.authorization.client-registration.web-client.claim-mappers[2].attributeName: preferred_username
-      security.authorization.client-registration.web-client.claim-mappers[2].toIdToken: true
+      security.authorization.client-registration.web-client.token-configuration[settings.token.claim-mappers][0].attributeName: aspspId
+      security.authorization.client-registration.web-client.token-configuration[settings.token.claim-mappers][0].toAccessToken: true
+      security.authorization.client-registration.web-client.token-configuration[settings.token.claim-mappers][1].attributeName: consentId
+      security.authorization.client-registration.web-client.token-configuration[settings.token.claim-mappers][1].toAccessToken: true
+      security.authorization.client-registration.web-client.token-configuration[settings.token.claim-mappers][2].attributeName: preferred_username
+      security.authorization.client-registration.web-client.token-configuration[settings.token.claim-mappers][2].toIdToken: true
       logging.level.com.backbase: DEBUG
       logging.level.org.springframework.security: TRACE
 
