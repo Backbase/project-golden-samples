@@ -239,8 +239,8 @@ services:
       <<: *message-broker-variables
       <<: *database-variables
       spring.datasource.url: jdbc:mysql://mysql:3306/arrangement-manager?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
-      backbase.communication.services.account.integration.service-id: mastercard-integration-service
-#      spring.cloud.discovery.client.simple.instances.account-integration-service[0].uri: http://host.docker.internal:9999
+#      backbase.communication.services.account.integration.service-id: mastercard-integration-service
+      spring.cloud.discovery.client.simple.instances.account-integration-service[0].uri: http://host.docker.internal:9999
       backbase.arrangement.pull-latest-balance: true
       logging.level.com.backbase.products.contexts: INFO
     volumes:
@@ -248,6 +248,91 @@ services:
     healthcheck:
       <<: *healthcheck-defaults
       test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/arrangement-manager", "<status>UP</status>" ]
+    depends_on:
+      mysql:
+        condition: service_healthy
+    links:
+      - activemq
+      - registry
+
+  payment-order-service:
+    container_name: payment_order_service
+    image: repo.backbase.com/backbase-docker-releases/payment-order-service:${BB_VERSION}
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+    ports:
+      - "8051:8080"
+    environment:
+      <<: *common-variables
+      <<: *message-broker-variables
+      <<: *database-variables
+      spring.datasource.url: jdbc:mysql://mysql:3306/payment-order-service?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
+#      backbase.communication.services.dbs.integration.external.outbound.paymentorder.service-id: mastercard-integration-service
+      spring.cloud.discovery.client.simple.instances.payment-order-integration-service[0].uri: http://host.docker.internal:9999
+      backbase.payments.limits.enabled: false
+      backbase.payments.types.FASTER_PAYMENT.business-function: UK Faster Payments
+      backbase.payments.types.FASTER_PAYMENT.validation.rules: non-zero-transaction
+      backbase.payments.types.CHAPS.business-function: UK CHAPS
+      backbase.payments.types.CHAPS.validation.rules: non-zero-transaction
+      backbase.payments.types.INTERNAL_TRANSFER.business-function: A2A Transfer
+      backbase.payments.types.INTERNAL_TRANSFER.validation.rules: non-zero-transaction,has-counterparty,has-counterparty-account-arrangement
+    volumes:
+      - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/payment-order-service", "<status>UP</status>" ]
+    depends_on:
+      mysql:
+        condition: service_healthy
+    links:
+      - activemq
+      - registry
+
+  payment-order-options:
+    container_name: payment_order_options
+    image: repo.backbase.com/backbase-docker-releases/payment-order-options:${BB_VERSION}
+    deploy:
+      <<: *resources-limits-defaults
+    ports:
+      - "8052:8080"
+    environment:
+      <<: *common-variables
+      <<: *message-broker-variables
+      backbase.payment-options.rules.location: "file:/tmp/payment-config/rules-uk.yml"
+      backbase.payments.types.location: "file:/tmp/payment-config/payment-types-uk.yml"
+      backbase.payments.sanctioned-currencies.location: "file:/tmp/payment-config/sanctioned-currencies-uk.yml"
+      backbase.payments.sanctioned-countries.location: "file:/tmp/payment-config/sanctioned-countries-uk.yml"
+    volumes:
+      - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
+      - ../config/payments:/tmp/payment-config
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/payment-order-options", "<status>UP</status>" ]
+    links:
+      - activemq
+      - registry
+
+  contact-manager:
+    container_name: contact_manager
+    image: repo.backbase.com/backbase-docker-releases/contact-manager:${BB_VERSION}
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+    ports:
+      - "8053:8080"
+    environment:
+      <<: *common-variables
+      <<: *message-broker-variables
+      <<: *database-variables
+      spring.datasource.url: jdbc:mysql://mysql:3306/contact-manager?useSSL=false&allowPublicKeyRetrieval=true&cacheServerConfiguration=true&createDatabaseIfNotExist=true
+    volumes:
+      - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: [ "CMD", "java", "/tmp/HealthCheck.java", "http://registry:8080/eureka/apps/contact-manager", "<status>UP</status>" ]
     depends_on:
       mysql:
         condition: service_healthy
@@ -264,10 +349,10 @@ services:
       - "8077:8080"
     environment:
       <<: *common-variables
-      mastercard.mcob.ais.api.base-uri: https://developer.mastercard.com/apigwproxy/openbanking/connect/api
-      mastercard.mcob.ais.api.proxy.enabled: false
-      mastercard.mcob.ais.api.proxy.host: wiremock
-      mastercard.mcob.ais.api.proxy.port: 8080
+      mastercard.mcob.api.base-uri: https://developer.mastercard.com/apigwproxy/openbanking/connect/api
+      mastercard.mcob.api.proxy.enabled: false
+      mastercard.mcob.api.proxy.host: wiremock
+      mastercard.mcob.api.proxy.port: 8080
     volumes:
       - ./scripts/HealthCheck.java:/tmp/HealthCheck.java
       - ./certs/wiremock/cacerts:/etc/ssl/certs/java/cacerts
@@ -421,7 +506,7 @@ services:
 
   employee-app:
     container_name: employee_app
-    image: harbor.backbase.eu/development/employee-web-app-essentials:2023.02-LTS
+    image: harbor.backbase.eu/development/employee-web-app-essentials:2023.01
     platform: linux/amd64
     deploy:
       resources:
@@ -437,6 +522,31 @@ services:
       PORT: 9090
     ports:
       - "9090:9090"
+    volumes:
+      - ./nginx/api.conf:/nginx-config/server/15-api.conf
+    healthcheck:
+      disable: true
+    links:
+      - edge
+
+  business-app:
+    container_name: business_app
+    image: harbor.backbase.eu/development/business-universal:1.0.5
+    platform: linux/amd64
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+    build:
+      context: ../images/business-banking-app-universal
+      secrets:
+        - npm
+    environment:
+      API_ROOT: http://localhost:7070/api/
+      AUTH_URL: http://host.docker.internal:8180/auth/realms/mastercard
+      PORT: 7070
+    ports:
+      - "7070:7070"
     volumes:
       - ./nginx/api.conf:/nginx-config/server/15-api.conf
     healthcheck:

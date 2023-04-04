@@ -1,0 +1,124 @@
+backbase:
+  payments:
+    international-payment-option-types-settings:
+      types:
+        - payment-type: FASTER_PAYMENT
+          business-functions:
+            - UK Faster Payments
+          business-function-payment-type:
+            FASTER_PAYMENT: UK Faster Payments
+          options:
+            - instruction-priority: NORM
+              transfer-fee:
+                amount: 0
+                currency-code: GBP
+              execution-time-frame:
+                unit: HOUR
+                max: 0
+              cut-off-time: "23:30"
+          rules:
+            - "counterparty-country-gb"
+            - "counterparty-account-scheme-bban"
+            - "instructed-amount-currency-gbp"
+            - "instructed-amount-amount-less-than-250000"
+        - payment-type: CHAPS
+          business-functions:
+            - UK CHAPS
+          business-function-payment-type:
+            CHAPS: UK CHAPS
+          options:
+            - instruction-priority: NORM
+              transfer-fee:
+                amount: 20
+                currency-code: GBP
+              execution-time-frame:
+                unit: BUSINESS_DAY
+                max: 0
+              cut-off-time: "17:30"
+          rules:
+            - "counterparty-country-gb"
+            - "counterparty-account-scheme-bban"
+            - "instructed-amount-currency-gbp"
+        - payment-type: SEPA_CREDIT_TRANSFER
+          business-functions:
+            - SEPA CT
+            - SEPA CT - closed
+            - SEPA CT - Intracompany
+          closed-type: SEPA_CT_CLOSED
+          intra-legal-entity-type: SEPA_CT_ILE
+          business-function-payment-type:
+            SEPA_CREDIT_TRANSFER: SEPA CT
+            SEPA_CT_CLOSED: SEPA CT - closed
+            SEPA_CT_ILE: SEPA CT - Intracompany
+          options:
+            - instruction-priority: NORM
+              transfer-fee:
+                amount: 0.35
+                currency-code: GBP
+              execution-time-frame:
+                unit: BUSINESS_DAY
+                max: 1
+              cut-off-time: "16:00"
+            - instruction-priority: HIGH
+              transfer-fee:
+                amount: 12.50
+                currency-code: GBP
+              execution-time-frame:
+                unit: BUSINESS_DAY
+                max: 0
+              cut-off-time: "15:00"
+          rules:
+            - "!counterparty-country-gb"
+            - "counterparty-country-is-sepa"
+            - "instructed-amount-currency-eur"
+            - "counterparty-account-scheme-iban"
+        - payment-type: INTERNATIONAL_TRANSFER
+          business-functions:
+            - US Foreign Wire
+          business-function-payment-type:
+            INTERNATIONAL_TRANSFER: US Foreign Wire
+          options:
+            - instruction-priority: NORM
+              transfer-fee:
+                amount: 15
+                currency-code: GBP
+              chargeBearer:
+                - OUR
+                - SHA
+                - BEN
+              execution-time-frame:
+                unit: BUSINESS_DAY
+                max: 4
+                min: 1
+              cut-off-time: "17:30"
+            - instruction-priority: HIGH
+              transfer-fee:
+                amount: 22.50
+                currency-code: GBP
+              chargeBearer:
+                - OUR
+                - SHA
+                - BEN
+              execution-time-frame:
+                unit: BUSINESS_DAY
+                max: 2
+              cut-off-time: "16:30"
+          rules:
+            - "!counterparty-country-gb"
+            - "not-sepa-zone-or-not-amount-currency-eur"
+        - payment-type: INTERNAL_TRANSFER
+          business-functions:
+            - A2A Transfer
+          business-function-payment-type:
+            INTERNAL_TRANSFER: A2A Transfer
+          options:
+            - instruction-priority: NORM
+              transfer-fee:
+                amount: 0
+                currency-code: GBP
+              execution-time-frame:
+                unit: HOUR
+                max: 0
+              cut-off-time: "23:59"
+          rules:
+            - "instructed-amount-amount-less-than-250000"

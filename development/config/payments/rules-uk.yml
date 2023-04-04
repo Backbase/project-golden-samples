@@ -1,0 +1,75 @@
+sepa-countries: &sepa-countries
+  - "AD"
+  - "AT"
+  - "BE"
+  - "BG"
+  - "CH"
+  - "CY"
+  - "CZ"
+  - "DE"
+  - "DK"
+  - "EE"
+  - "ES"
+  - "FI"
+  - "FR"
+  - "GB"
+  - "GI"
+  - "GR"
+  - "HR"
+  - "HU"
+  - "IE"
+  - "IS"
+  - "IT"
+  - "LI"
+  - "LT"
+  - "LU"
+  - "LV"
+  - "MC"
+  - "MT"
+  - "NL"
+  - "NO"
+  - "PL"
+  - "PT"
+  - "RO"
+  - "SE"
+  - "SI"
+  - "SK"
+  - "SM"
+  - "VA"
+
+backbase:
+  payment-options:
+    international-payment-option-rules-settings:
+      rules:
+        - name: counterparty-country-gb
+          type: equals
+          attribute: counterpartyCountry
+          value: GB
+        - name: counterparty-account-scheme-bban
+          type: equals
+          attribute: counterpartyAccount.schemeName
+          value: BBAN
+        - name: instructed-amount-currency-gbp
+          type: equals
+          attribute: instructedAmount.currencyCode
+          value: GBP
+        - name: instructed-amount-amount-less-than-250000
+          type: SpEL-field
+          attribute: new java.math.BigDecimal(instructedAmount.amount) lt 250000
+        - name: counterparty-country-is-sepa
+          type: in
+          attribute: counterpartyCountry
+          values: *sepa-countries
+        - name: instructed-amount-currency-eur
+          type: equals
+          attribute: instructedAmount.currencyCode
+          value: EUR
+        - name: counterparty-account-scheme-iban
+          type: equals
+          attribute: counterpartyAccount.schemeName
+          value: IBAN
+        - name: not-sepa-zone-or-not-amount-currency-eur
+          type: or
+          values:
+            - "!counterparty-country-is-sepa"
+            - "!instructed-amount-currency-eur"

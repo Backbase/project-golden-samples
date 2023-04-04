@@ -1,0 +1,1053 @@
+purpose-of-payments-in: &purpose-of-payments-in
+  - code: P1004
+    description: Legal services
+  - code: P0401
+    description: Postal services
+  - code: P0402
+    description: Courier services
+  - code: P0404
+    description: Satellite services
+  - code: P0801
+    description: Hardware consultancy
+  - code: P0805
+    description: News agency services
+  - code: P1012
+    description: Distribution services
+  - code: P1013
+    description: Environmental services
+  - code: P1401
+    description: Compensation of employees
+  - code: P0403
+    description: Telecommunication services
+  - code: P1306
+    description: Receipts / Refund of taxes
+  - code: P1302
+    description: Personal gifts and donations
+  - code: P0604
+    description: Receipts of Reinsurance premium
+  - code: P1008
+    description: Research & Development services
+  - code: P1407
+    description: Receipt of dividends by Indians
+  - code: P1406
+    description: Repatriation of profits to India
+  - code: P0012
+    description: Loans from Non-Residents to India
+  - code: P0803
+    description: Database, data processing charges
+  - code: P0601
+    description: Receipts of life insurance premium
+  - code: P1019
+    description: Other services not included elsewhere
+  - code: P1501
+    description: Refunds/rebates on account of imports
+  - code: P1590
+    description: Receipts below $10,000 (say Rs 5,00,000)
+  - code: P1201
+    description: Maintenance of foreign embassies in India
+  - code: P0006
+    description: Foreign direct investment in India in equity
+  - code: P0308
+    description: FC surrendered by returning Indian tourists.
+  - code: P0011
+    description: Repayment of loans extended to Non- Residents
+  - code: P0018
+    description: Other capital receipts not included elsewhere
+  - code: P0606
+    description: Receipts on account of the settlement of claims
+  - code: P0804
+    description: Repair and maintenance of computer and software
+  - code: P0008
+    description: Foreign direct investment in India in real estate
+  - code: P0003
+    description: Repatriation of Indian investment abroad in branches
+  - code: P0007
+    description: Foreign direct investment in India in debt securities
+  - code: P1011
+    description: Inward remittance for maintenance of offices in India
+  - code: P0009
+    description: Foreign portfolio investment in India in equity shares
+  - code: P0105
+    description: Export bills (in respect of goods) sent on collection.
+  - code: P0005
+    description: Repatriation of Indian investment abroad in real estate
+  - code: P0016
+    description: Purchase of a foreign currency against another currency
+  - code: P0603
+    description: Receipts on account of other general insurance premiums
+  - code: P1002
+    description: Trade-related services – Commission on exports/imports.
+  - code: P1009
+    description: Architectural, engineering and other technical services
+  - code: P1303
+    description: Donations to religious and charitable institutions in India
+  - code: P0002
+    description: Repatriation of Indian investment abroad in debt securities.
+  - code: P0702
+    description: Investment banking – brokerage, underwriting commission, etc.
+  - code: P0106
+    description: Conversion of overdue export bills from NPD to collection mode
+  - code: P1005
+    description: Accounting, auditing, bookkeeping, and tax consulting services
+  - code: P0103
+    description: Advance receipts against export contracts (export of goods only)
+  - code: P1006
+    description: Business and management consultancy and public relations services
+  - code: P0001
+    description: Repatriation of Indian investment abroad in equity capital (shares)
+  - code: P0501
+    description: Receipts for the cost of construction of services projects in India
+  - code: P0602
+    description: Receipts of freight insurance – relating to import & export of goods
+  - code: P0605
+    description: Receipts on account of Auxiliary services { commission on Insurance)
+  - code: P0004
+    description: Repatriation of Indian investment abroad in subsidiaries and associates
+  - code: P0806
+    description: Other information services- Subscription to newspapers, periodicals, etc.
+  - code: P1502
+    description: Reversal of wrong entries, refunds of the amount remitted for non-imports
+  - code: P0107
+    description: The realization of NPD export bills (full value of the bill to be reported)
+  - code: P0211
+    description: Purchases on account of operational leasing (with crew) -Airlines companies
+  - code: P0205
+    description: Purchases on account of operational leasing (with crew) – Shipping companies
+  - code: P1404
+    description: Inward remittance of interest on debt securities – debentures/bonds/FRNsetc,
+  - code: P1503
+    description: Remittances (receipts) by residents under the international bidding process.
+  - code: P0010
+    description: Foreign portfolio investment in India in debt securities including debt funds
+  - code: P0802
+    description: Software implementation/consultancy (other than those covered in SOFTEX form)
+  - code: P1007
+    description: Advertising, trade fair, market research, and public opinion polling services
+  - code: P1301
+    description: Inward remittance from Indian nonresidents towards family maintenance and savings
+  - code: P1403
+    description: Inward remittance towards interest on loans extended to non-residents (ST/MT/LT loans)
+  - code: P0017
+    description: Sale of intangible assets like patents, copyrights, trademarks, etc. by Indian companies
+  - code: P0201
+    description: Receipts of surplus freight/passenger fare by Indian shipping companies operating abroad
+  - code: P0207
+    description: Receipts of surplus freight/passenger fare by Indian Airlines companies operating abroad.
+  - code: P0208
+    description: Receipt on account of operating expenses of Foreign Airlines companies operating in India
+  - code: P1405
+    description: Inward remittance towards interest receipts of ADs on their own account (on investments.)
+  - code: P0202
+    description: Purchases, on account of operating expenses of Foreign shipping companies operating in India
+  - code: P0102
+    description: The realization of export bills (in respect of goods) sent on collection (full invoice value)
+  - code: P0901
+    description: Franchises services – patents, copyrights, trademarks, industrial processes, franchises, etc.
+  - code: P1304
+    description: Grants and donations to governments and charitable institutions established by the governments
+  - code: P0104
+    description: Receipts against the export of goods not covered by the GR/PP/SOFTEX/EC copy of shipping bill etc.
+  - code: P1001
+    description: Merchanting Services – net receipts (from sale and purchase of goods without crossing the border).
+  - code: P0213
+    description: Receipts on account of other transportation services (stevedoring, demurrage, port handling charges, etc.)
+  - code: P0703
+    description: Auxiliary services – charges on operation & regulatory fees, custodial services, depository services, etc.
+  - code: P1203
+    description: Maintenance of international institutions such as offices of IMF mission, World Bank, UNICEF, etc. In India
+  - code: P1003
+    description: Operational leasing services (other than financial leasing and without operating crew) including charter hire
+  - code: P0902
+    description: Receipts for use, through licensing arrangements, of produced originals or prototypes (such as manuscripts and films)
+  - code: P0101
+    description: Value of export bills negotiated/purchased/discounted etc. (covered under GR/PP/SOFTEX/EC copy of shipping bills etc.)
+  - code: P000H
+    description: Receipts of Non-Resident deposits (FCNRB/NRERA etc.) ADs should report these even if funds are not “swapped” into Rupees.
+  - code: P0015
+    description: Loans & overdrafts taken by ADs on their account. (Any amount of loan credited to the NOSTRO account which may not be swapped into Rupees should also be reported)
+  - code: P0701
+    description: Financial intermediation except investment banking – Bank charges, collection charges, LC charges, cancellation of forwarding contracts, commission on financial! Leasing etc.
+  - code: P1102
+    description: Personal, cultural services such as those related to museums, libraries, archives, and sporting activities and fees for correspondence courses of Indian Universities/Institutes
+  - code: P1010
+    description: Agricultural, mining and on-site processing services – protection against insects & disease, increasing harvest yields, forestry services, mining services like analysis of ores, etc.
+  - code: P1101
+    description: Audio-visual and related services -services and associated fees related to the production of motion pictures, rentals, fees received by actors, directors, producers, and fees for distribution rights.
+  - code: P0301
+    description: 'Purchases towards travel (Includes purchases of foreign TCs, currency: notes, etc. over the counter, by hotels, hospitals, Emporiums, Educational institutions, etc. as well as the amount received by TT/SWIFT transfers or debit.'
+
+purpose-of-payments-ae: &purpose-of-payments-ae
+  - code: BON
+    description: Bonus
+  - code: SAL
+    description: Salary
+  - code: STR
+    description: Travel
+  - code: PEN
+    description: Pension
+  - code: TKT
+    description: Tickets
+  - code: OVT
+    description: Overtime
+  - code: ALW
+    description: Allowances
+  - code: COM
+    description: Commission
+  - code: GDE
+    description: Goods sold
+  - code: COP
+    description: Compensation
+  - code: GDI
+    description: Goods bought
+  - code: LAS
+    description: Leave salary
+  - code: LNC
+    description: Loan charges
+  - code: SCO
+    description: Construction
+  - code: ATS
+    description: Air transport
+  - code: RNT
+    description: Rent payments
+  - code: STS
+    description: Sea transport
+  - code: EOS
+    description: End of Service
+  - code: FAM
+    description: Family support
+  - code: LEA
+    description: Leasing abroad
+  - code: SAA
+    description: Salary advance
+  - code: IOL
+    description: Income on loans
+  - code: DIV
+    description: Dividend payouts
+  - code: ACM
+    description: Agency commission
+  - code: IPO
+    description: IPO subscriptions
+  - code: ITS
+    description: Computer services
+  - code: FIS
+    description: Financial services
+  - code: INS
+    description: Insurance services
+  - code: IOD
+    description: Income on deposits
+  - code: LEL
+    description: Leasing in the UAE
+  - code: LND
+    description: Loan disbursements
+  - code: EDU
+    description: Educational support
+  - code: CRP
+    description: Credit card payments
+  - code: IFS
+    description: Information services
+  - code: IGT
+    description: Inter group transfer
+  - code: OAT
+    description: Own account transfer
+  - code: PIN
+    description: Personal investments
+  - code: IGD
+    description: Intra group dividends
+  - code: MWI
+    description: Mobile wallet cash in
+  - code: UTL
+    description: Utility bill payments
+  - code: CCP
+    description: Corporate card payment
+  - code: CIN
+    description: Commercial investments
+  - code: LIP
+    description: Loan interest payments
+  - code: MWO
+    description: Mobile wallet cash out
+  - code: MWP
+    description: Mobile wallet payments
+  - code: POS
+    description: POS merchant settlement
+  - code: CHC
+    description: Charitable contributions
+  - code: OTS
+    description: Other modes of transport
+  - code: PRP
+    description: Profit rate swap payments
+  - code: SVI
+    description: Stored value card cash‐in
+  - code: SVO
+    description: Stored value card cash‐out
+  - code: SVP
+    description: Stored value card payments
+  - code: TCS
+    description: Telecommunication services
+  - code: AES
+    description: Advance payment against EOS
+  - code: EMI
+    description: Equated monthly instalments
+  - code: IRP
+    description: Interest rate swap payments
+  - code: PIP
+    description: Profits on Islamic products
+  - code: PRW
+    description: Profit rate unwind payments
+  - code: RFS
+    description: Repos on foreign securities
+  - code: IID
+    description: Intra group interest on debt
+  - code: FDA
+    description: Financial derivatives foreign
+  - code: IRW
+    description: Interest rate unwind payments
+  - code: FIA
+    description: Investment fund shares foreign
+  - code: PRR
+    description: Profits or rents on real estate
+  - code: FDL
+    description: Financial derivatives in the UAE
+  - code: FIL
+    description: Investment fund shares in the UAE
+  - code: ISH
+    description: Income on investment funds shares
+  - code: RDS
+    description: Research and development services
+  - code: TCP
+    description: Trade credits and advances payable
+  - code: DOE
+    description: Dividends on equity not intra group
+  - code: TCR
+    description: Trade credits and advances receivable
+  - code: LDS
+    description: Debt instruments intragroup securities
+  - code: ISL
+    description: Interest on securities more than a year
+  - code: ISS
+    description: Interest on securities less than a year
+  - code: RLS
+    description: Repos on securities issued by residents
+  - code: POR
+    description: Refunds or reversals on IPO subscriptions
+  - code: LDL
+    description: Debt instruments intragroup loans, deposits
+  - code: PPA
+    description: Purchase of real estate abroad from residents
+  - code: DSF
+    description: Debt instruments intragroup foreign securities
+  - code: GOS
+    description: Government goods and services, embassies, etc.
+  - code: PMS
+    description: Professional and management consulting services
+  - code: DLF
+    description: Debt instruments intragroup loans, deposits foreign
+  - code: GMS
+    description: Processing repair and maintenance services on goods
+  - code: PPL
+    description: Purchase of real estate in the UAE from n‐residents
+  - code: TTS
+    description: Technical trade‐related and other business services
+  - code: DCP
+    description: Pre‐Paid Reloadable & Personalized Debit Card Payments
+  - code: IPC
+    description: Charges for the use of intellectual property royalties
+  - code: TOF
+    description: Transfer of funds between persons normal and juridical
+  - code: PRS
+    description: Personal, cultural, audio-visual and recreational services
+  - code: FSA
+    description: Equity other than investment fund shares in related companies abroad
+  - code: AFL
+    description: Receipts or payments from personal n‐resident bank accounts in the UAE
+  - code: MCR
+    description: Monetary claim reimbursements, medical insurance, auto insurance, etc.
+  - code: FSL
+    description: Equity other than investment fund shares in related companies in the UAE
+  - code: LLA
+    description: Loans ‐ drawings or repayments on loans extended to n‐residents ‐ long term
+  - code: AFA
+    description: Receipts or payments from personal residents bank account or deposits abroad
+  - code: SLA
+    description: Loans ‐ drawings or repayments on loans extended to n‐residents ‐ short term
+  - code: LLL
+    description: Loans ‐ drawings or repayments on foreign loans extended to residents ‐ long term
+  - code: SLL
+    description: Loans ‐ drawings or repayments on foreign loans extended to residents ‐ short term
+  - code: DLA
+    description: Purchases and sales of foreign debt securities more than a year in related companies
+  - code: DSA
+    description: Purchases and sales of foreign debt securities less than a year in related companies
+  - code: DLL
+    description: Purchases and sales of securities issued by residents more than a year in related companies
+  - code: DSL
+    description: Purchases and sales of securities issued by residents less than a year in related companies
+  - code: CEA
+    description: Equity for the establishment of new company from residents abroad, equity of merger or acquisition of companies abroad from residents and participation to capital increase
+  - code: CEL
+    description: Equity for the establishment of new company in the UAE from n‐ residents, equity of merger or acquisition of companiesin the UAE from n‐residents participation to capital increase of related companies
+
+purpose-of-payments-cn: &purpose-of-payments-cn
+  - code: PAYT/02123
+    description: Individual Payment
+  - code: PAYT/02112
+    description: Trade related Payment
+  - code: PAYT/02114
+    description: Service related Payment
+  - code: PAYT/02116
+    description: Capital item related Payment
+  - code: PAYT/02124
+    description: Return of an Individual Payment
+  - code: PAYT/02113
+    description: Return of a Trade related Payment
+  - code: PAYT/02115
+    description: Return of a Service related Payment
+  - code: PAYT/02125
+    description: Other recurrent item related payments*
+  - code: PAYT/02117
+    description: Return of a Capital item related Payment
+  - code: PAYT/02127
+    description: Inter-bank cross-border funding transfer
+
+purpose-of-payments-ru: &purpose-of-payments-ru
+  - code: '01010'
+    description: Selling by Residents of foreign currencies for Russian Roubles
+  - code: '99010'
+    description: The return to Residents, of erroneously debited (credited) funds
+  - code: '01030'
+    description: Purchases by Residents of foreign currencies for Russian Roubles
+  - code: '57030'
+    description: Settlements by resident trustors in favor of non-resident trustees
+  - code: '57035'
+    description: Settlements by non-resident trustees in favor of resident trustors
+  - code: '02020'
+    description: Selling by Non-Residents, of Russian Roubles for foreign currencies
+  - code: '99020'
+    description: The return to Non-Residents, of erroneously debited (credited) funds
+  - code: '02010'
+    description: Purchases by Non-Residents, of Russian Roubles for foreign currencies
+  - code: '23300'
+    description: Settlements by Residents in favor of Non-Residents under financial rent (leasing)
+  - code: '57010'
+    description: Settlements by Resident trustors in favor of Resident trustees, in foreign currency
+  - code: '57015'
+    description: Settlements by Resident trustees, in favor of Resident trustors in foreign currency
+  - code: '01040'
+    description: Selling (purchasing) by Residents of one foreign currency for another foreign currency
+  - code: '42035'
+    description: Interest payments of Residents in favor of Non-Residents under credit or loan agreements
+  - code: '55230'
+    description: Payments of Resident in favor of Non-Resident in payment of income on investment fund units
+  - code: '80110'
+    description: Settlements in foreign currencies between Residents and licensed banks under loan contracts
+  - code: '80010'
+    description: Settlements in Russian Roubles between Non-Residents and licensed banks under loan contracts
+  - code: '22300'
+    description: Settlements by Non-Residents in favor of Residents under financial rental contracts (leasing)
+  - code: '50110'
+    description: Settlements of Residents to Non-Residents related of dividend (revenue) on capital investment
+  - code: '61175'
+    description: Credits in foreign currency to a Resident’s foreign currency account maintained with a licensed bank
+  - code: '70120'
+    description: Settlements by Non-Residents in favor of Residents, relating to the implementation of court verdicts
+  - code: '70125'
+    description: Settlements by Residents in favor of Non-Residents, relating to the implementation of court verdicts
+  - code: '43035'
+    description: Settlements by Non-Residents in favor of Residents, relating to paying off interest under loan contracts
+  - code: '60095'
+    description: Credits of cash in Russian Roubles to Non-Residents’ Russian Rouble accounts maintained with a licensed bank
+  - code: '57025'
+    description: Settlement by Resident trustees, in favor of Non-resident trustors in foreign currency and in Russian Roubles
+  - code: '61163'
+    description: Settlements in foreign currency between Residents, in execution and (or) termination of a derivative contract
+  - code: '60090'
+    description: Withdrawals of cash in Russian Roubles from Residents’ Russian Rouble accounts maintained with a licensed bank
+  - code: '42015'
+    description: Settlements by Residents in favor of Non-Residents under repayment of principal under credit or loan agreements
+  - code: '55330'
+    description: Settlements by Non-Residents in favor of Residents, relating to paying off income on shares in investment funds
+  - code: '61170'
+    description: Cash withdrawals in foreign currency from the Resident’s foreign currency account maintained with a licensed bank
+  - code: '40030'
+    description: Settlements by Residents in favor of Non-Residents, relating to the supplies of monetary funds under loan contracts
+  - code: '43015'
+    description: Settlements by Non-Residents in favor of Residents, relating to the return of principal amounts under loan contracts
+  - code: '50210'
+    description: Settlements by Non-Residents in favor of Residents, relating to paying off dividends (income) from capital investments
+  - code: '52235'
+    description: Payments of Resident in favor of Non-Resident, relating to purchases of units in investment funds founded by Residents
+  - code: '55210'
+    description: Payments of Resident in favor of Non-Resident in fulfilling obligations on bonds, debentures and other equity securities
+  - code: '52230'
+    description: Payments of Resident in favor of Non-Resident, relating to purchases of units in investment funds founded by Non-Residents
+  - code: '51230'
+    description: Settlements by Non-Residents in favor of Residents, relating to purchases of shares in investment funds founded by Residents
+  - code: '32025'
+    description: Settlements by Resident in favor of Non-Resident, for debts novated by Resident to Non-Resident under debt novation contracts
+  - code: '80021'
+    description: Credits in Russian Roubles to a Non-Residents’ Russian Rouble bank account in connection with the closing of letters of credit
+  - code: '57020'
+    description: Settlements, in foreign currencies and Russian Roubles, by non-resident asset management trustors in favor of resident trustees
+  - code: '51235'
+    description: Settlements by Non-Residents in favor of Residents, relating to purchases of shares in investment funds founded by Non-Residents
+  - code: '32020'
+    description: Settlements by Non-Residents in favor of Residents, for debts novated by Non-Residents to Residents under debt novation contracts
+  - code: '50800'
+    description: Settlements by Residents in favor of Non-Residents when making return of excessive funds received on capital investment transactions
+  - code: '70115'
+    description: Settlements by Residents in favor of Non-Residents, relating to payments of insurance cover under insurance or reinsurance contracts
+  - code: '80020'
+    description: Withdrawals in Russian Roubles from a Non-Residents’ Russian Rouble bank account in connection with the opening of letters of credit
+  - code: '70110'
+    description: Settlements by Non-Residents in favor of Residents, relating to payments of insurance cover under insurance or re-insurance contracts
+  - code: '32010'
+    description: Settlements by Non-Residents in favor of Residents, for claims assigned by Residents to Non-Residents under claim assignment contracts
+  - code: '32015'
+    description: Settlements by Resident in favor of Non-Resident for claims assigned to the Resident by Non-Residents under claim assignment contracts
+  - code: '61200'
+    description: Withdrawals from a Resident’s current account maintained with a licensed bank where the withdrawal is made with the use of a bank card
+  - code: '41030'
+    description: Settlements by Non-Residents in favor of Residents, relating to the supplies of monetary funds under credit agreements or loan contracts
+  - code: '52210'
+    description: Payments of Resident in favor of Non-Resident, relating to purchases of Residents’ bonds, debentures, shares and other equity securities
+  - code: '58030'
+    description: Settlements between Residents in foreign currency under brokerage service contracts, including payments of brokers’ fees and commissions
+  - code: '42050'
+    description: Other settlements by Residents in favor of Non-residents related to fees (commissions) and other payments under credit or loan agreements
+  - code: '70800'
+    description: Settlements by Residents in favor of Non-Residents, relating to the return of superfluous monetary funds on non-trade-related transactions
+  - code: '70900'
+    description: Settlements by Non-Residents in favor of Residents, relating to the return of superfluous monetary funds on non-trade-related transactions
+  - code: '43850'
+    description: Settlements by Residents in favor of Non-Residents when making return of excessive funds received in interest payments under loan agreement
+  - code: '52215'
+    description: Payments of Resident in favor of Non-Resident, relating to purchases of Non-residents’ bonds, debentures, shares and other equity securities
+  - code: '43800'
+    description: Settlements by Residents in favor of Non-Residents when making return of excessive funds received in principal repayment under loan agreement
+  - code: '51210'
+    description: Settlements by Non-Residents in favor of Residents, relating to purchases of Residents’ bonds, debentures, shares and other equity securities
+  - code: '55310'
+    description: Settlements by Non-Residents in favor of Residents where Non-Residents fulfil obligations under bonds, debentures and other equity securities
+  - code: '99090'
+    description: Settlements under transactions not described explicitly in Groups 01–80 of this list and not relating to payments under VO Codes 99010, 99020
+  - code: '50900'
+    description: Settlements by Non-Residents in favor of Residents, relating to the return of superfluous funds received under capital investment transactions
+  - code: '58800'
+    description: Settlements by Residents, relating to the return to Non-Residents, of monetary funds excessively transferred under brokerage service contracts
+  - code: '58900'
+    description: Settlements by Non-Residents, relating to the return to Residents, of monetary funds excessively transferred under brokerage service contracts
+  - code: '35030'
+    description: Settlements by Non-Residents in favor of Residents under other foreign trade transactions not described explicitly in Groups 10–23 of this list
+  - code: '35040'
+    description: Settlements by Residents in favor of Non-Residents under other foreign trade transactions not described explicitly in Groups 10–23 of this list
+  - code: '43050'
+    description: Other settlements by Non-Residents in favor of Residents, relating to payments of premiums (fees) and other monetary funds under loans attracted
+  - code: '58020'
+    description: Settlements by Non-Resident in favor of resident brokers under brokerage service contracts, payments of resident brokers’ fees and remunerations
+  - code: '51215'
+    description: Settlements by Non-Residents in favor of Residents, relating to purchases of Non-Residents’ bonds, debentures, shares and other equity securities
+  - code: '58015'
+    description: Settlements by non-resident brokers in favor of Residents under brokerage service contracts, except for settlements described under VO Code 58900
+  - code: '58025'
+    description: Settlements by resident brokers in favor of Non-Residents under brokerage service contracts, except for settlements described under VO Code 58800
+  - code: '70090'
+    description: Settlements relating to the provision by Non-Residents to Residents, of gratis financial aid, except for settlements described under VO Code 70100
+  - code: '70095'
+    description: Settlements relating to the provision by Residents to Non-Residents, of gratis financial aid, except for settlements described under VO Code 70105
+  - code: '57800'
+    description: Settlements by Residents in favor of Non-residents relating to return of excessive funds transferred under contracts on trust management of property
+  - code: '61145'
+    description: Fund transfers in foreign currency from a Resident’s account maintained with a non-resident bank to an account of another Resident with a licensed bank
+  - code: '22800'
+    description: Settlements by Residents in favor of Non-Residents, relating to the return of superfluous funds received under arrangements (contracts) of the mixed type
+  - code: '23900'
+    description: Settlements by Non-Residents in favor of Residents, relating to the return of superfluous funds received under arrangements (contracts) of the mixed type
+  - code: '42950'
+    description: Settlements by Non-Residents in favor of Residents, relating to the return of superfluous amounts of interest under credit arrangements or loan contracts
+  - code: '55250'
+    description: Payments of Resident in favor of Non-Resident in fulfilling Resident’s obligations on promissory notes, bills of exchange and other non-equity securities
+  - code: '20300'
+    description: Settlements by Non-Residents in favor of Residents under rent contracts for movable and/or immovable property except for financial rent (leasing) contracts
+  - code: '52250'
+    description: Payments by Resident in favor of Resident, relating to purchases of promissory notes, bills of exchange and other non-equity securities issued by Residents
+  - code: '56800'
+    description: Payments of Resident in favor of Non-Resident when making return of excessive funds received on above transactions and funds on failed obligations thereunder
+  - code: '61164'
+    description: Fund transfers in Russian Roubles from a Resident’s account maintained with a non-resident bank, to another resident’s account maintained with a licensed bank
+  - code: '70010'
+    description: Settlements by Non-Residents in favor of Residents, relating to payments of taxes, duties and other dues, except for settlements described under VO Code 70120
+  - code: '70020'
+    description: Settlements by Residents in favor of Non-Residents, relating to payments of taxes, duties and other dues, except for settlements described under VO Code 70125
+  - code: '55350'
+    description: Settlements by Non-Residents in favor of Residents where Non-Residents fulfil obligations under promissory notes, bills of exchange other non-equity securities
+  - code: '58010'
+    description: Settlements by Residents in favor of non-resident brokers under brokerage service contracts, including payments of non-resident brokers’ fees and remunerations
+  - code: '61155'
+    description: Fund transfers in foreign currency from a Resident’s current account maintained with a licensed bank, to an account of another Resident with a non-resident bank
+  - code: '56900'
+    description: Settlements by Non-Residents, relating to the return to Residents, of superfluous monetary funds received under unfulfilled obligations described under this Group
+  - code: '52255'
+    description: Payments by Resident in favor of Non-Resident, relating to purchases of promissory notes, bills of exchange and other non-equity securities issued by Non-Residents
+  - code: '51250'
+    description: Settlements by Non-Residents in favor of Residents, relating to purchases of promissory notes, bills of exchange and other non-equity securities issued by Residents
+  - code: '13010'
+    description: Settlements by Non-Residents in favor of Residents, for goods being sold in the Russian Federation, except for settlements described under VO Codes 22110, 22210, 22300
+  - code: '13020'
+    description: Settlements by Residents in favor of Non-Residents, for goods being sold in the Russian Federation, except for settlements described under VO Codes 23110, 23210, 23300
+  - code: '51255'
+    description: Settlements by Non-Residents in favor of Residents, relating to purchases of promissory notes, bills of exchange and other non-equity securities issued by Non-Residents
+  - code: '57900'
+    description: Settlements by Non-Residents in favor of Residents, relating to the return to Residents of superfluous monetary funds transferred under asset trust management contracts
+  - code: '60200'
+    description: Withdrawals of Russian Roubles from a Non-Resident’s Russian Rouble bank account maintained with a licensed bank, where the withdrawal is made with the use of a bank card
+  - code: '61165'
+    description: Fund transfers in Russian Roubles from a Resident’s account maintained with a licensed bank, to an account maintained with a non-resident bank in the name of another Resident
+  - code: '61150'
+    description: Fund transfers in foreign currency or Russian Roubles from a Resident’s current account maintained with a licensed bank to the same Resident’s account with a non-resident bank
+  - code: '61100'
+    description: Transfer of foreign currency from a Resident’s transit currency account to another transit currency account or to the settlement account of the same Resident in foreign currency
+  - code: '70100'
+    description: Settlements relating to the provision by Non-Residents to Residents, of charitable aid, collection of donations, paying off (receipt) of grants and other payments on a gratis basis
+  - code: '70105'
+    description: Settlements relating to the provision by Residents to Non-Residents, of charitable aid, collection of donations, paying off (receipt) of grants and other payments on a gratis basis
+  - code: '61140'
+    description: Fund transfers in foreign currency or Russian Roubles from a Resident’s account maintained with a non-resident bank to an account of the same Resident maintained with a licensed bank
+  - code: '55800'
+    description: Payments of Residents in favor of Non-residents when making return of excessive funds received on fulfilling operations with securities and funds on unfulfilled obligations thereunder
+  - code: '70030'
+    description: Settlements relating to payments by Non-Residents in favor of Residents, of pensions, doles, benefits, and other social allowances, except for settlements described under VO Code 70120
+  - code: '70040'
+    description: Settlements relating to payments by Residents in favor of Non-Residents, of pensions, doles, benefits, and other social allowances, except for settlements described under VO Code 70125
+  - code: '70200'
+    description: Other settlements by Non-Residents in favor of Residents on non-trade-related transactions, except for settlements described under VO Codes 70010, 70030, 70050, 70090, 70100, 70110, 70120
+  - code: '70205'
+    description: Other settlements by Residents in favor of Non-Residents on non-trade-related transactions, except for settlements described under VO Codes 70020, 70040, 70060, 70095, 70105, 70115, 70125
+  - code: '30800'
+    description: Return of excess-funds received by Residents from Non-Residents in transactions with immovable property including those relating to shared participation in construction of immovable property
+  - code: '80121'
+    description: Credits in foreign currencies or Russian Roubles to Residents’ current accounts maintained with a licensed bank, in connection with the closing of letters of credit in favor of Non-Residents
+  - code: '70050'
+    description: Settlements relating to payments by Non-Residents in favor of Residents, of salaries, wages, and other payments earned for work or service, except for settlements described under VO Code 70120
+  - code: '70060'
+    description: Settlements relating to payments by Residents in favor of Non-Residents, of salaries, wages, and other payments earned for work or service, except for settlements described under VO Code 70125
+  - code: '80120'
+    description: Withdrawals in foreign currencies or Russian Roubles from Residents’ current accounts maintained with a licensed bank in connection with the opening of letters of credit in favor of Non-Residents
+  - code: '40900'
+    description: Settlements by Non-Residents in favor of Residents, relating to the return of superfluous monetary funds received, in connection with loans granted by Residents to Non-Residents under loan contracts
+  - code: '42900'
+    description: Settlements by Non-Residents in favor of Residents, relating to the return of superfluous funds received where Residents pay off the principal amount of loans under credit arrangements or loan contracts
+  - code: '13800'
+    description: Settlements by Residents in favor of Non-Residents, relating to the return of superfluous monetary funds while selling goods in the Russian Federation, except for settlements described under VO Code 22800
+  - code: '13900'
+    description: Settlements by Non-Residents in favor of Residents, relating to the return of superfluous monetary funds while selling goods in the Russian Federation, except for settlements described under VO Code 23900
+  - code: '51800'
+    description: Payments of Resident in favor of Non-Resident when making return of excessive funds received on transactions with securities (rights certified by securities) and funds on unexecuted obligations thereunder
+  - code: '60080'
+    description: Fund transfers in Russian Roubles from a Non-Resident’s Russian Rouble bank account to a Russian Rouble bank account (deposit account) maintained with the same licensed bank in the name of another Non-Resident
+  - code: '12800'
+    description: Settlements by Residents in favor of Non-Residents, relating to the return of superfluous monetary funds while selling goods outside of the Russian Federation, except for settlements described under VO Code 22800
+  - code: '12900'
+    description: Settlements by Non-Residents in favor of Residents, relating to the return of superfluous monetary funds while selling goods outside of the Russian Federation, except for settlements described under VO Code 23900
+  - code: '12050'
+    description: Settlements by Non-Residents in favor of Residents, for goods sold outside of the Russian Federation without being imported to the Russian Federation, except for settlements described under VO Codes 22110, 22210, 22300
+  - code: '12060'
+    description: Settlements by Residents in favor of Non-Residents, for goods sold outside of the Russian Federation without being imported to the Russian Federation, except for settlements described under VO Codes 23110, 23210, 23300
+  - code: '11900'
+    description: Settlements by Non-Residents in favor of Residents, in connection with the return of superfluous monetary funds relating to imports of goods to the Russian Federation, except for settlements described under VO Code 23900
+  - code: '41800'
+    description: Settlements by Residents in favor of Non-Residents, relating to the return of superfluous monetary funds received, in connection with loans granted by Non-Residents to Residents under credit arrangements or loan contracts
+  - code: '10800'
+    description: Settlements by Residents in favor of Non-Residents, in connection with the return of superfluous monetary funds relating to exports of goods from the Russian Federation, except for settlements described under VO Code 22800
+  - code: '60086'
+    description: Fund transfers in Russian Roubles from a Non-Resident’s bank account (deposit account) maintained with a non-resident bank, to a Russian Rouble bank account maintained with a licensed bank in the name of another Non-Resident
+  - code: '80150'
+    description: Settlements in foreign currencies between Residents and licensed banks under other transactions, except for settlements described under Groups 01, 57 58 of this list, and settlements described under VO Codes 80110, 80120, 80121
+  - code: '30900'
+    description: Settlements by Non-Residents in favor of Residents, relating to the return of superfluous funds received under immovable property transactions including ones relating to shared participation in construction of immovable property
+  - code: '60085'
+    description: Fund transfers in Russian Roubles from a Non-Resident’s Russian Rouble bank account with a licensed bank, to a Russian Rouble bank account (deposit account) maintained in the name of another Non-Resident with a non-resident bank
+  - code: '80050'
+    description: Settlements in Russian Roubles between Non-Residents and licensed banks under other transactions, except for settlements described under Groups 02, 57 and 58 of this list, and settlements described under VO Codes 80010, 80020, 80021
+  - code: '52900'
+    description: Settlements by Non-Residents in favour of Residents, relating to the return of superfluous monetary funds received under transactions in securities (rights certified by securities), and monetary funds under such unfulfilled obligations
+  - code: '55900'
+    description: Settlements by Non-Residents in favor of Residents, relating to the return of superfluous monetary funds received in connection with fulfilling obligations under transactions in securities, and monetary funds under unfulfilled obligations
+  - code: '60075'
+    description: Fund transfers in Russian Roubles from a Non-Resident’s Russian Rouble bank account maintained with a licensed bank, to a Russian Rouble bank account (deposit account) maintained in the name of the same Non-Resident with a non-resident bank
+  - code: '60076'
+    description: Fund transfers in Russian Roubles from a Non-Resident’s Russian Rouble bank account (deposit account) maintained with a non-resident bank, to a Russian Rouble bank account maintained in the name of the same Non-Resident with a licensed bank
+  - code: '60081'
+    description: Fund transfers in Russian Roubles from a Non-Resident’s Russian Rouble bank account maintained with a licensed bank to a Russian Rouble bank account (deposit account) maintained in the name of another Non-Resident with another licensed bank
+  - code: '50100'
+    description: Payments of Residents in favor Non-Residents related to transactions with stakes, units and participation interests in property (statutory or share capital or unit fund of a cooperative) of a body corporate and under a particular partnership
+  - code: '50200'
+    description: Settlements by Non-Residents in favor of Residents, in connection with transactions in shares, deposits, portions in equity (chartered capital, share capital, cooperative unit trust) of legal entities, and also under special partnership agreements
+  - code: '30040'
+    description: Payments by Residents in favor of Non-Residents for immovable property purchased in the Russian Federation, including payments relating to shared participation by Residents in construction by Non-Resident, of immovable property in the Russian Federation
+  - code: '30030'
+    description: Settlements by Non-Residents in favor of Residents for immovable property purchased in the Russian Federation, including settlements relating to shared participation by Non-Residents in construction by Resident, of immovable property in the Russian Federation
+  - code: '30020'
+    description: Payments by Residents in favor of Non-Residents for immovable property purchased outside the Russian Federation, including payments relating to shared participation by Residents in construction by Non-Resident, of immovable property outside the Russian Federation
+  - code: '56060'
+    description: Payments of Resident in favor of Non-Resident, relating to transactions in futures and derivative financial instruments (premiums, margin and guarantee payments, other funds transferred under such contracts, except for settlements relating to delivery of underlying assets)
+  - code: '30010'
+    description: Settlements by Non-Residents in favor of Residents for immovable property purchased outside of the Russian Federation, including settlements relating to shared participation by Non-Residents in construction by Resident, of immovable property outside of the Russian Federation
+  - code: '23110'
+    description: Payments of Resident by way of prepayment in favor of Non-resident for products, works, services, information and the results of intellectual activity, including exclusive rights thereto, under agreements (contracts) specified in subclause 5.1.2 of clause 5.1 hereof (prepayment)
+  - code: '11100'
+    description: Settlements by Residents in the form of advance payments to Non-Residents for goods to be imported to the Russian Federation, including imports under commission fee contracts (agent contracts, assignment contracts) (advance payment), except for settlements described in Group 23 of this list
+  - code: '11200'
+    description: Settlements by Residents where Non-Residents allows for a deferred payment for goods to be imported to the Russian Federation including imports under commission fee contracts (agent contracts, assignment contracts) (deferred payment), except for settlements described in Group 23 of this list
+  - code: '23210'
+    description: Payments of resident in case of grace period provided by the non-resident for products, works, services, information and the results of intellectual activity, including exclusive rights thereto under contracts (agreements) specified in sub-clause 5.1.2 of clause 5.1 hereof (deferred payment)
+  - code: '10100'
+    description: Settlements by Non-Residents in the form of advance payments to Residents for goods to be exported from the Russian Federation, including exports under commission fee contracts (agent contracts, assignment contracts) (advance payment), except for settlements described in Group 22 of this list
+  - code: '10200'
+    description: Settlements by Non-Residents where Residents allows for a deferred payment for goods to be exported from the Russian Federation including exports under commission fee contracts (agent contracts, assignment contracts) (deferred payment), except for settlements described in Group 22 of this list
+  - code: '56010'
+    description: Settlements by Non-Residents in favor of Residents, relating to transactions in futures and derivative financial instruments (premiums, margin and guarantee payments, other funds transferred in conformity with provisions of such contracts, except for settlements relating to supplies of underlying assets)
+  - code: '20800'
+    description: Payments of Resident in favor of Non-Resident when making return of excessive funds received for providing services by the resident of selling goods, works, services, information and the results of intellectual activity, including exclusive rights thereto, except for settlements in Group 22 and 58 of this list
+  - code: '61162'
+    description: Settlements in foreign currency between Residents consignees (agents, trustees), and Resident consignors (clients, principals), for consignees’ services related to concluding and execution of agreements with obligations subject to clearing in accordance with the Federal Law no. 7-FZ “On Clearing and Clearing Activities”
+  - code: '22110'
+    description: Settlements by Non-Residents in the form of down payment to Residents for goods supplied, works fulfilled, services rendered, information or outcomes of intellectual activities including exclusive rights thereon provided, under arrangements (contracts) defined in Clause 5.1.2 of the Bank of Russia’s Regulation No.138-I as of 4 June 2012 (advance payment)
+  - code: '22210'
+    description: Settlements by Non-Residents where Residents provide deferment for payment for goods supplied, works fulfilled, services rendered, information or outcomes of intellectual activities including exclusive rights thereon provided, under arrangements (contracts) defined in Clause 5.1.2 of the Bank of Russia’s Regulation No.138-I as of 4 June 2012 (deferred payment)
+  - code: '61135'
+    description: Fund transfers in foreign currency from a Resident’s foreign currency current account maintained with a licensed bank to the same Resident’s foreign currency account with another licensed bank; from a Resident’s foreign currency account maintained with a licensed bank, to the same Resident’s foreign currency current account maintained with another licensed bank
+  - code: '61130'
+    description: Fund transfers in foreign currency from a Resident’s foreign currency current account maintained with a licensed bank to the same Resident’s foreign currency account with the same licensed bank; from a Resident’s foreign currency account maintained with a licensed bank, to the same Resident’s foreign currency current account maintained with the same licensed bank
+  - code: '61070'
+    description: Settlements between residents in foreign currency under forwarding, shipping and freight chartering (Charter) contracts for services of forwarder, carrier and freight agent related to transportation of goods exported from or imported to the Russian Federation Russian or transit of goods through the territory of the Russian Federation, as well as the cargo insurance contracts
+  - code: '60070'
+    description: Fund transfers in Russian Roubles from a Non-Resident’s Russian Rouble bank account to other Russian Rouble bank account (deposit account) of the same Non-Resident, where both accounts are maintained with the same licensed bank, from a Non-Resident’s Russian Rouble deposit account to a bank account of the same Non-Resident, where both accounts are maintained with the same licensed bank
+  - code: '60071'
+    description: Fund transfers in Russian Roubles from a Non-Resident’s Russian Rouble bank account maintained with one licensed bank, to a Russian Rouble bank account (deposit account) maintained with another licensed bank in the name of the same Non-Resident, from a Non-Resident’s Russian Rouble deposit account to a bank account maintained in the name of the same Non-Resident with another licensed bank
+  - code: '23200'
+    description: Payments of resident commission principal (consignor, principal) in case of grace period provided by the non-resident commission agent for products, brought to the Russian Federation, works, services, information and the results of intellectual activity, including exclusive rights thereto (deferred payment), except for settlements under 23110 code and payment of fees to non-resident broker under brokerage agreement (Group 58 hereof)
+  - code: '20500'
+    description: Payments of resident commission agents (consignees, assignors) in favor of non-resident consignors (commission principals, principals) for providing services by the resident of selling products, works, services, information and results of intellectual activity, including exclusive rights thereto, of the Nonresident under the Commission contract (agency agreement or assignment contract), except for settlements in Group 58 of this list
+  - code: '23100'
+    description: Payments of Resident commission principal (consignor, principal) by way of prepayment in favor of non-resident consignee (commission agent, assignor) for products, brought to the Russian Federation, works, services, information and the results of intellectual activity, including exclusive rights thereto (advance payment), except for settlements under 23110 code and payment of fees to non-resident broker under brokerage agreement (Group 58 hereof)
+  - code: '20400'
+    description: Settlements by non-resident consignors (commission principals, principals) in favor of resident commission agents (consignees, attorneys) in connection with payments for purchases from the third parties, of goods, works, services, information, and results of intellectual activity including exclusive rights thereto, for the benefit of Non-Residents, in conformity with commission contracts (agency contracts), except for settlements described under Group 58 of this list
+  - code: '61115'
+    description: Settlements in foreign currency between Residents consignees (agents, trustees), and Resident consignors (clients, principals), for consignees’ services related to concluding and execution of agreements with Non-Residents on the transfer of goods, performance of work, provision of services and transfer of information and the results of intellectual activity, including exclusive rights thereto, including return to the consignees (principals, clients) of funds except for payments under VO Codes 57010, 58030 61162
+  - code: '22100'
+    description: Settlements by non-resident consignors (principals, warrantors) in the form of down payment to resident commission agents or warrantors for goods exported from the Russian Federation, works fulfilled, services rendered, information or outcomes of intellectual activities including exclusive rights thereon provided (advance payment), except for settlements described under VO Code 22110 and settlements relating to paying out remuneration to resident brokers under brokerage services contracts (Group 58 of this list)
+  - code: '20200'
+    description: Settlements by Non-Residents for works fulfilled, services rendered, information or outcomes of intellectual activities including exclusive rights thereon provided, by Residents, including fulfilment of such obligations under commission fee contracts (agent contracts, assignment contracts) (deferred payment), except for settlements described under VO Code 20400, settlements described under Group 22 of this list, and settlements relating to paying out remuneration to resident brokers under brokerage services contracts (Group 58 of this list)
+  - code: '61160'
+    description: Settlements in foreign currency between Residents, associated with making and return of cover securing individual and/or collective clearing in accordance with the Federal Law no. 7-FZ “On Clearing and Clearing Activities” of 7 February 2011 (Code of Laws of the Russian Federation, 2011, N 7, Art. 904; N 48, Art. 6728; N 49, St. 7040, Art. 7061) (hereafter Federal Law “On Clearing and Clearing Activity”) 61 161 Settlements in foreign currency between Residents upon clearing in accordance with the Federal Law no. 7-FZ “On Clearing and Clearing Activities”
+  - code: '20100'
+    description: Settlements by Non-Residents in the form of down payment for works fulfilled, services rendered, information or outcomes of intellectual activities including exclusive rights thereon provided, by Residents, including fulfilment of such obligations under commission fee contracts (agent contracts, assignment contracts) (advance payment), except for settlements described under VO Code 20400, settlements described under Group 22 of this list, and settlements relating to paying out remuneration to resident brokers under brokerage services contracts (Group 58 of this list)
+
+backbase:
+  payments:
+    international-payment-order-country-settings:
+        api-fields:
+          account-number: transferTransactionInformation.counterpartyAccount.identification.identification
+          bank-code: transferTransactionInformation.counterpartyBank.bankBranchCode
+          currency: transferTransactionInformation.instructedAmount.currencyCode
+        countries:
+          GB:
+            is-default-country: true
+            sanctioned-countries:
+              AU:
+                order: 1
+                input-form-settings:
+                  account-number:
+                    format: BBAN
+                    mandatory: true
+                    label:
+                      account-number: Account number
+                  bank-code:
+                    regex: /^[0-9]{6}$/
+                    label:
+                      bsb: BSB code
+                    mandatory: true
+                  currency:
+                    mandatory: true
+                    values:
+                      - AUD
+                      - EUR
+                      - GBP
+                      - USD
+              BR:
+                order: 2
+                input-form-settings:
+                  account-number:
+                    format: IBAN
+                    regex: /^[a-zA-Z0-9]{29}$/
+                    mandatory: true
+                    label:
+                      account-number: IBAN
+                  bank-code:
+                    not-applicable: true
+                  purpose-of-payment:
+                    mandatory: true
+                  currency:
+                    mandatory: true
+                    values:
+                      - BRL
+                      - EUR
+                      - GBP
+                      - USD
+              CA:
+                order: 3
+                input-form-settings:
+                  account-number:
+                    format: BBAN
+                    mandatory: true
+                    label:
+                      account-number: Account number
+                  bank-code:
+                    regex: /^[0-9]{9}$/
+                    label:
+                      routing-number: Routing number
+                    mandatory: true
+                  currency:
+                    mandatory: true
+                    values:
+                      - CAD
+                      - EUR
+                      - GBP
+                      - USD
+              CN:
+                order: 4
+                input-form-settings:
+                  account-number:
+                    format: BBAN
+                    mandatory: true
+                    label:
+                      account-number: Account number
+                  bank-code:
+                    not-applicable: true
+                  currency:
+                    mandatory: true
+                    values:
+                      - EUR
+                      - GBP
+                      - USD
+                  purpose-of-payment:
+                    mandatory: true
+                    predefinedValues: true
+                purposes-of-payment: *purpose-of-payments-cn
+              HK:
+                order: 5
+                input-form-settings:
+                  account-number:
+                    format: BBAN
+                    mandatory: true
+                    label:
+                      account-number: Account number
+                  bank-code:
+                    regex: /^[0-9]{3}$/
+                    label:
+                      clearing: Clearing code
+                    mandatory: true
+                  currency:
+                    mandatory: true
+                    values:
+                      - HKD
+                      - EUR
+                      - GBP
+                      - USD
+              IN:
+                order: 6
+                input-form-settings:
+                  account-number:
+                    format: BBAN
+                    mandatory: true
+                    label:
+                      account-number: Account number
+                  bank-code:
+                    label:
+                      ifsc: IFSC
+                    regex: /^[A-Z]{4}0[A-Z0-9]{6}$/
+                    mandatory: true
+                  currency:
+                    mandatory: true
+                    values:
+                      - INR
+                      - EUR
+                      - GBP
+                      - USD
+                  purpose-of-payment:
+                    mandatory: true
+                    predefinedValues: true
+                purposes-of-payment: *purpose-of-payments-in
+              JP:
+                order: 7
+                input-form-settings:
+                  account-number:
+                    format: BBAN
+                    mandatory: true
+                    label:
+                      account-number: Account number
+                  bank-code:
+                    not-applicable: true
+                  currency:
+                    mandatory: true
+                    values:
+                      - JPY
+                      - EUR
+                      - GBP
+                      - USD
+              JO:
+                order: 8
+                input-form-settings:
+                  account-number:
+                    format: IBAN
+                    regex: /^[a-zA-Z0-9]{30}$/
+                    mandatory: true
+                    label:
+                      account-number: IBAN
+                  bank-code:
+                    not-applicable: true
+                  currency:
+                    mandatory: true
+                    values:
+                        - JOD
+                        - EUR
+                        - GBP
+                        - USD
+              NL:
+                order: 9
+                input-form-settings:
+                  account-number:
+                    format: IBAN
+                    regex: /^[a-zA-Z0-9]{18}$/
+                    mandatory: true
+                    label:
+                      account-number: IBAN
+                  bank-code:
+                    not-applicable: true
+                  currency:
+                    mandatory: true
+                    values:
+                        - EUR
+                        - GBP
+                        - USD
+              RU:
+                order: 10
+                input-form-settings:
+                  account-number:
+                    format: BBAN
+                    mandatory: true
+                    label:
+                      account-number: Account number
+                  bank-code:
+                    regex: /^[0-9]{9}$/
+                    label:
+                      bik: BIK
+                    mandatory: true
+                  currency:
+                    mandatory: true
+                    values:
+                      - RUB
+                      - EUR
+                      - GBP
+                      - USD
+                  purpose-of-payment:
+                    mandatory: true
+                    predefinedValues: true
+                purposes-of-payment: *purpose-of-payments-ru
+              SG:
+                order: 11
+                input-form-settings:
+                  account-number:
+                    format: BBAN
+                    mandatory: true
+                    label:
+                      account-number: Account number
+                  bank-code:
+                    not-applicable: true
+                  currency:
+                    mandatory: true
+                    values:
+                      - SGD
+                      - EUR
+                      - GBP
+                      - USD
+              ZA:
+                order: 12
+                input-form-settings:
+                  account-number:
+                    format: BBAN
+                    mandatory: true
+                    label:
+                      account-number: Account number
+                  bank-code:
+                    regex: /^[0-9]{6}$/
+                    label:
+                      za-code: ZA code
+                    mandatory: true
+                  currency:
+                    mandatory: true
+                    values:
+                      - ZAR
+                      - EUR
+                      - GBP
+                      - USD
+              AE:
+                order: 13
+                input-form-settings:
+                  account-number:
+                    format: IBAN
+                    regex: /^[a-zA-Z0-9]{23}$/
+                    mandatory: true
+                    label:
+                      account-number: IBAN
+                  bank-code:
+                    not-applicable: true
+                  currency:
+                    mandatory: true
+                    values:
+                        - AED
+                        - EUR
+                        - GBP
+                        - USD
+                  purpose-of-payment:
+                    mandatory: true
+                    predefinedValues: true
+                purposes-of-payment: *purpose-of-payments-ae
+              GB:
+                order: 14
+                is-default: true
+                input-form-settings:
+                  account-number:
+                    format: BBAN
+                    mandatory: true
+                    label:
+                      account-number: Account number
+                  bank-code:
+                    regex: /^[0-9]{6}$/
+                    label:
+                      sort-code: Sort code
+                    mandatory: true
+                  currency:
+                    mandatory: true
+                    values:
+                      - EUR
+                      - GBP
+                      - USD
+              US:
+                order: 15
+                input-form-settings:
+                  account-number:
+                    format: BBAN
+                    mandatory: true
+                    label:
+                      account-number: Account number
+                  bank-code:
+                    regex: /^[0-9]{9}$/
+                    label:
+                      routing-number: Routing transit number (ABA)
+                    mandatory: true
+                  currency:
+                    mandatory: true
+                    values:
+                      - EUR
+                      - GBP
+                      - USD

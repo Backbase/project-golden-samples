@@ -1,0 +1,10 @@
+backbase:
+  payments:
+    international-payment-order-country-settings:
+      countries:
+        GB:
+          is-default-country: true
+          sanctioned-currencies:
+            default: GBP
+            popular: EUR, GBP, USD
+            normal: AED, AUD, BRL, CAD, CNY, HKD, INR, JPY, JOD, RUB, SGD, ZAR
