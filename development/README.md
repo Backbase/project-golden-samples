@@ -1,6 +1,5 @@
 # Setup Backbase Local Environment
 
-In these guides we'll help you to set up a basic Backbase installation. There are two possible flavors:
+In these guides we'll help you to set up a basic Backbase installation [using Kubernetes](kubernetes).
 
-- [Using Kubernetes](kubernetes)
-- [Using Docker Compose](docker-compose)
+The official Backbase local environment using Docker Compose can be found at [Backbase/local-backend-setup](https://github.com/Backbase/local-backend-setup) repository.
