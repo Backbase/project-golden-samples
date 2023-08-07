@@ -1,0 +1,148 @@
+#!/usr/bin/env groovy
+
+@Library('pipeline-libs') _
+
+properties([
+        parameters([
+                [$class      : 'ChoiceParameter',
+                 choiceType  : 'PT_MULTI_SELECT',
+                 description : 'Select one or more repositories from the list',
+                 filterLength: 1,
+                 filterable  : true,
+                 name        : 'REPOSITORY',
+                 script      : [
+                         $class           : 'ScriptlerScript',
+                         scriptlerScriptId: 'ListRepositories.groovy'
+                 ]
+                ],
+                string(name: 'CREDENTIALS_ID', defaultValue: '$CREDENTIALS_ID_REPLACE_IT', description: 'User with credentials to push without Pull Request constraints to repositories.'),
+                string(name: 'BRANCH_NAME', defaultValue: 'develop', description: 'Branch name'),
+                string(name: 'VERSION', description: 'Version for which changelog should be generated'),
+        ])
+])
+
+def prefix = "# Release Notes\n" +
+        "## ${params.VERSION}\n" +
+        "\n" +
+        "| Repository                             | Tag                                                                                                                          | Changes                                                                                                                                   |\n" +
+        "|----------------------------------------|------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|\n" +
+        "| repository-name                        | [BE-v${params.VERSION}](https://github.com/repository-name/BE-v${params.VERSION})                                            | [Changelog](https://github.com/repository-name/BE-v${params.VERSION}/CHANGELOG.md)                 |\n" +
+
+        "\n" +
+        "---\n" +
+        "\n" +
+        "\n" +
+        "## Configurations\n" +
+        "<span style=\"color:red\"> *PLEASE FILL CONFIGURATIONS, JIRA IDs, MISSING VERSIONS AND VERIFY RELEASE NOTES*</span>\n" +
+        "\n" +
+        "## Applications Released\n" +
+        "\n" +
+        "| Service Name                           | Version                                                            | SSDK Version                                                       | Backbase BOM Version                                                       | Repository                               | Exposed Health Check Endpoint                                                   | Mandatory |\n" +
+        "|----------------------------------------|--------------------------------------------------------------------|--------------------------------------------------------------------|----------------------------------------------------------------------------|------------------------------------------|---------------------------------------------------------------------------------|-----------|\n" +
+        "| backbase-identity                      | `{versions.backbase-identity-version}`                             | `{versions.backbase-identity-ssdk}`                                | `{versions.backbase-identity-backbase-bom}`                                | [rbs-coutts-identity]                    | https://`<hostname>`/auth/health/live                                           | Yes       |\n" +
+        "| confirmation                           | `{versions.confirmation-version}`                                  | `{versions.confirmation-ssdk}`                                     | `{versions.confirmation-backbase-bom}`                                     | [rbs-coutts-identity]                    | N/A                                                                             | Yes       |\n" +
+        "# Changelog\n"
+
+
+def jiraIdsPrefix = "\n\n---" +
+        "\n" +
+        "## Jira IDs\n"
+
+def scanDir = "changelog-sources"
+
+node('be-slave-jdk17') {
+  stage('Provision container') {
+    container('be-slave-jdk17') {
+      stage('Prepare Workspace') {
+          libPipeline.cleanWS()
+          sh """
+              mkdir ${scanDir}
+          """
+      }
+      stage('Generate release notes') {
+          def builder = new StringBuilder()
+          def jiraIds = new HashSet()
+          def versionsPropertiesFile = "versions/versions.properties"
+          def projects = params.REPOSITORY.split(',')
+          sh "mkdir versions && touch ${versionsPropertiesFile}"
+          echo "No repositories selected. Using default repositories."
+          builder.append(prefix)
+          dir('projectData') {
+              withMaven(jdk: 'jdk-17', maven: 'Maven 3.9.0', tempBinDir: '', traceability: false) {
+                  projects.each {
+                      String changelog = getChangelog("${it}", versionsPropertiesFile)
+                      jiraIds.addAll(getJiraIds(changelog))
+                      builder.append(changelog)
+                  }
+              }
+          }
+          sh "pwd"
+          echo "All project versions:"
+          sh "cat versions/versions.properties"
+          echo "All project versions end"
+          builder.append(jiraIdsPrefix)
+          jiraIds.each { builder.append("https://backbase.atlassian.net/browse/${it}\n")}
+          builder.append(suffix)
+          changelog = updateChangelogWithVersions(builder.toString(), versionsPropertiesFile)
+          echo "**********************************************"
+          echo "******************RELEASE NOTES***************"
+          echo "**********************************************"
+          echo changelog
+      }
+    }
+  }
+}
+
+Set<String> getJiraIds(changelog) {
+    Set<String> jiraIds = new HashSet<>()
+    changelog.split('\n').each {
+        if (it.startsWith("- [")){
+            jiraIds.add(it.substring(3, it.indexOf(']')))
+        }
+    }
+
+    return jiraIds
+}
+
+String getChangelog(project, versionsPropertiesFile) {
+    echo "Performing changelog concatenation for ${project}."
+    def repoUrl = "github.com/your_project_name/${project}.git"
+
+    gitCheckout(repoUrl, params.CREDENTIALS_ID, params.BRANCH_NAME)
+    appendProjectVersionsToFile(versionsPropertiesFile)
+    String changelog = readFile("./CHANGELOG.md")
+    if (changelog.indexOf("## [${params.VERSION}") != -1) {
+        if (changelog.indexOf("## [", changelog.indexOf("## [${params.VERSION}") + 1) != -1) {
+            changelog = changelog.substring(changelog.indexOf("## [${params.VERSION}"), changelog.indexOf("## [", changelog.indexOf("## [${params.VERSION}") + 1))
+            changelog = changelog.replace("## [${params.VERSION}]", "## [" + project + "]")
+            echo "CHANGELOG: ${changelog}"
+            libPipeline.cleanWS();
+            return changelog
+        } else {
+            changelog = changelog.substring(changelog.indexOf("## [${params.VERSION}"))
+            changelog = changelog.replace("## [${params.VERSION}]", "## [" + project + "]")
+            echo "CHANGELOG: ${changelog}"
+            libPipeline.cleanWS();
+            return changelog
+        }
+    }
+    return "## [" + project + "] \r"
+}
+
+def updateChangelogWithVersions(changelog, versionsPropertiesFileString) {
+    def versionsProperties = readProperties(file: versionsPropertiesFileString)
+
+    versionsProperties.each { key, value ->
+        changelog = changelog.replace("`{versions." + key + "}`", "`" + value + "`")
+    }
+
+    return changelog
+}
+
+def appendProjectVersionsToFile(versionsPropertiesFile) {
+    sh "mvn -U -q -Prbs-coutts com.rbs.maven:rbs-coutts-versions-plugin:0.0.1:versions >> ../${versionsPropertiesFile}"
+}
+
+def gitCheckout(url, credentials, branchName) {
+    git url: "https://${url}", branch: branchName, credentialsId: credentials
+}
