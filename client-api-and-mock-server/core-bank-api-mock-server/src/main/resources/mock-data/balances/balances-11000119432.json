@@ -1,0 +1,16 @@
+{
+  "status-code": 500,
+  "response": {
+    "Code": "500",
+    "Errors": [
+      {
+        "ErrorCode": "500",
+        "Message": "Internal Server Error",
+        "Path": "/Error",
+        "Url": ""
+      }
+    ],
+    "Id": "123-123-123",
+    "Message": "Internal Server Error"
+  }
+}

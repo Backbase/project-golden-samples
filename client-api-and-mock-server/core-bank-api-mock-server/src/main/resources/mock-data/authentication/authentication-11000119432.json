@@ -1,0 +1,6 @@
+{
+  "status-code": 200,
+  "response": {
+    "authenticationToken": "eyJhbGciOiJIUzI1NiJ9.ew0KCSJUb2tlbklkIiA6ICIvRk50d0NEZVByNE52MEV0eEdUaEdNRGE4cE09IiwNCgkiQ1dVc2VyIiA6ICIxMTAwMDExOTQzMiIsDQoJImV4cCIgOiAiMjAxOS0wNy0wOFQxMDo0NTozMVoiDQp9.sBju12zUYJiQjhPEJKGSROUrKgsTWkgD_m_6eXom-WI"
+  }
+}
